@@ -1,0 +1,20 @@
+{
+  "name": "Sync",
+  "version": "0.4",
+  "slug": "sync",
+  "description": "Sync config files over sftp",
+  "startup": "once",
+  "boot": "manual",
+  "map": ["config"],
+  "options": {
+    "target": null,
+    "username": null,
+    "password": ""
+  },
+  "schema": {
+    "target": "url",
+    "username": "str",
+    "password": "str"
+  },
+  "image": "hub/{arch}-sync"
+}
