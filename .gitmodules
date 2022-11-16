@@ -1,0 +1,6 @@
+[submodule "submodules/bigthundersr/onstar2mqtt"]
+	path = submodules/bigthundersr/onstar2mqtt
+	url = https://github.com/BigThunderSR/onstar2mqtt.git
+[submodule "submodules/michaelwoods/onstar2mqtt"]
+	path = submodules/michaelwoods/onstar2mqtt
+	url = https://github.com/michaelwoods/onstar2mqtt.git
