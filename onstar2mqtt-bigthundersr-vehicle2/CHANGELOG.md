@@ -12,6 +12,6 @@
 
 1.0.7 - Further testing
 
-1.0.6 - Let's try this again
+1.0.6 - Test process
 
 1.0.0 - Initial Test
