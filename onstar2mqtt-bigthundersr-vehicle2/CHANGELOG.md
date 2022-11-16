@@ -1,3 +1,5 @@
+1.1.0 - Created submodules structure to simplify maintenance and added ability to choose either BigThunderSR or michaelwoods build of onstar2mqtt
+
 1.0.14 - Code Cleanup
 
 1.0.13 - Added Ability to Run Two Independent Instances for Two Vehicles

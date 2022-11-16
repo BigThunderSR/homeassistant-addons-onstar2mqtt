@@ -1,0 +1,39 @@
+name: OnStar2MQTT Home Assistant Add-on (michaelwoods) for Vehicle 1
+version: 1.1.0
+slug: onstar2mqtt-michaelwoods-vehicle1
+description: Home Assistant Add On Version of michaelwoods/onstar2mqtt for Vehicle 1
+#startup: application
+#boot: auto
+arch:
+  - aarch64
+  - amd64
+  - armhf
+  - armv7
+  - i386
+url: "https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt"
+#image: 'bigthundersr/onstar2mqtt'
+services:
+  - "mqtt:need"
+init: false
+options:
+  ONSTAR_DEVICEID: ""
+  ONSTAR_VIN: ""
+  ONSTAR_USERNAME: ""
+  ONSTAR_PASSWORD: ""
+  ONSTAR_PIN: ""
+  ONSTAR_URL: "https://api.gm.com"
+  ONSTAR_REFRESH: 1800000
+  MQTT_HOST: ""
+  MQTT_USERNAME: ""
+  MQTT_PASSWORD: ""
+schema:
+  ONSTAR_DEVICEID: str
+  ONSTAR_VIN: str
+  ONSTAR_USERNAME: str
+  ONSTAR_PASSWORD: password
+  ONSTAR_PIN: password
+  ONSTAR_URL: str
+  ONSTAR_REFRESH: int
+  MQTT_HOST: str
+  MQTT_USERNAME: str
+  MQTT_PASSWORD: password
