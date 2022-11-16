@@ -1,0 +1,36 @@
+# https://developers.home-assistant.io/docs/add-ons/configuration#add-on-config
+name: BigThunderSR onstar2mqtt
+version: "1.0.0"
+slug: onstar2mqtt
+description: BigThunderSR Home Assistant Add On for onstar2mqtt
+url: "https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/tree/main/example"
+startup: "application"
+boot: "auto"
+host_network : false
+
+arch:
+  - armhf
+  - armv7
+  - aarch64
+  - amd64
+  - i386
+init: false
+map:
+  - share:rw
+  - ssl
+image: ""
+
+options:
+  - ssl: false
+  - certfile: "fullchain.pem"
+  - keyfile: "privkey.pem"
+  - pulse_login" : 
+      username: ""
+      password: ""
+      fingerprint: ""
+     
+  - mqtt_host : "core-mosquitto"
+	- mqtt_url : ""
+	- mqtt_connect_options:  
+      username: ""
+      password: ""
