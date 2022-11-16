@@ -10,9 +10,15 @@ Home Assistant Add-on combining my fork of [michaelwoods/onstar2mqtt](https://gi
 
 This repository contains the following add-ons
 
-### 
-- [OnStar2MQTT for Vehicle 1](./onstar2mqtt-vehicle1) 
-- [OnStar2MQTT for Vehicle 2](./onstar2mqtt-vehicle2)
+###
+
+- [OnStar2MQTT for Vehicle 1 Using BigThunderSR/onstar2mqtt Build](./onstar2mqtt-bigthundersr-vehicle1)
+- [OnStar2MQTT for Vehicle 2 Using BigThunderSR/onstar2mqtt Build](./onstar2mqtt-bigthundersr-vehicle2)
+
+If you prefer to use the OG build of onstar2mqtt :-)
+
+- [OnStar2MQTT for Vehicle 1 Using michaelwoods/onstar2mqtt Build](./onstar2mqtt-michaelwoods-vehicle1)
+- [OnStar2MQTT for Vehicle 2 Using michaelwoods/onstar2mqtt Build](./onstar2mqtt-michaelwoods-vehicle2)
 
 ![Supports aarch64 Architecture][aarch64-shield]
 ![Supports amd64 Architecture][amd64-shield]
@@ -23,7 +29,9 @@ This repository contains the following add-ons
 [![Lint](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/actions/workflows/lint.yaml/badge.svg)](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/actions/workflows/lint.yaml)
 
 ## Running
+
 Collect the following information:
+
 1. [Generate](https://www.uuidgenerator.net/version4) a v4 uuid for the device ID
 1. OnStar login: username, password, PIN
 1. Your car's VIN. Easily found in the monthly OnStar diagnostic emails.
