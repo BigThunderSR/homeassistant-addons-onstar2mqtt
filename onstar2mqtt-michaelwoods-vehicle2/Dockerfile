@@ -6,15 +6,14 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 RUN apk add --no-cache \
     nodejs \
-    npm \
-    git
+    npm
 
 RUN mkdir /app
 WORKDIR /app
 
 COPY ["package.json", "/app/"]
 COPY ["package-lock.json", "/app/"]
-RUN npm install --no-fund
+RUN npm ci --omit=dev --no-fund
 
 COPY ["src", "/app/src"]
 
