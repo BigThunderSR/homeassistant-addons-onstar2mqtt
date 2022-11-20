@@ -1,6 +1,7 @@
 #!/usr/bin/with-contenv bashio
 set +u
 
+export VEHICLE_NAME=$(bashio::config 'VEHICLE_NAME')
 export ONSTAR_DEVICEID=$(bashio::config 'ONSTAR_DEVICEID')
 export ONSTAR_VIN=$(bashio::config 'ONSTAR_VIN')
 export ONSTAR_USERNAME=$(bashio::config 'ONSTAR_USERNAME')
@@ -12,5 +13,5 @@ export MQTT_HOST=$(bashio::config 'MQTT_HOST')
 export MQTT_USERNAME=$(bashio::config 'MQTT_USERNAME')
 export MQTT_PASSWORD=$(bashio::config 'MQTT_PASSWORD')
 
-bashio::log.info "Starting OnStar2MQTT for Vehicle 2..."
+bashio::log.info "Starting OnStar2MQTT for $VEHICLE_NAME..."
 npm run start

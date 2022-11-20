@@ -16,6 +16,7 @@ services:
   - "mqtt:need"
 init: false
 options:
+  VEHICLE_NAME: "Vehicle 1"
   ONSTAR_DEVICEID: ""
   ONSTAR_VIN: ""
   ONSTAR_USERNAME: ""
@@ -27,6 +28,7 @@ options:
   MQTT_USERNAME: ""
   MQTT_PASSWORD: ""
 schema:
+  VEHICLE_NAME: str
   ONSTAR_DEVICEID: str
   ONSTAR_VIN: str
   ONSTAR_USERNAME: str
