@@ -6,6 +6,18 @@ updates:
     schedule:
       interval: "weekly"
   - package-ecosystem: "npm"
-    directory: "/"
+    directory: "/onstar2mqtt-bigthundersr-vehicle1"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "npm"
+    directory: "/onstar2mqtt-bigthundersr-vehicle2"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "npm"
+    directory: "/onstar2mqtt-michaelwoods-vehicle1"
+    schedule:
+      interval: "weekly"
+  - package-ecosystem: "npm"
+    directory: "/onstar2mqtt-michaelwoods-vehicle2"
     schedule:
       interval: "weekly"
