@@ -1,5 +1,5 @@
 {
-  "name": "Example Home Assistant add-on repository",
+  "name": "Home Assistant add-on repository for homeassistant-addons-onstar2mqtt",
   "image": "ghcr.io/home-assistant/devcontainer:addons",
   "appPort": ["7123:8123", "7357:4357"],
   "postStartCommand": "sudo bash devcontainer_bootstrap",
