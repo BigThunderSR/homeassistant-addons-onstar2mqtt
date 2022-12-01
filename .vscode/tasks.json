@@ -4,7 +4,7 @@
     {
       "label": "Start Home Assistant",
       "type": "shell",
-      "command": "sudo chmod 755 /usr/bin/supervisor* && sudo sed -i 's+"$WORKSPACE_DIRECTORY"+/workspaces/homeassistant-addons-onstar2mqtt+g' /usr/bin/supervisor_run && sudo supervisor_run",
+      "command": "sudo -E chmod 755 /usr/bin/supervisor* && sudo -E supervisor_run",
       "group": {
         "kind": "test",
         "isDefault": true

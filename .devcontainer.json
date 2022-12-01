@@ -2,12 +2,10 @@
   "name": "Home Assistant add-on repository for homeassistant-addons-onstar2mqtt",
   "image": "ghcr.io/home-assistant/devcontainer:addons",
   "appPort": ["7123:8123", "7357:4357"],
-  "postStartCommand": "sudo bash devcontainer_bootstrap",
+  "postStartCommand": "sudo -E bash devcontainer_bootstrap",
   "runArgs": ["-e", "GIT_EDITOR=code --wait", "--privileged"],
   "containerEnv": {
-    "WORKSPACE_DIRECTORY": "${containerWorkspaceFolder}"
-    //"WORKSPACE_DIRECTORY": "/workspaces/homeassistant-addons-onstar2mqtt"
-
+    "WORKSPACE_DIRECTORY": "${containerWorkspaceFolder}"   
   },
   "extensions": ["timonwong.shellcheck", "esbenp.prettier-vscode"],
   "mounts": ["type=volume,target=/var/lib/docker"],
@@ -17,7 +15,7 @@
         "path": "/usr/bin/zsh"
       }
     },
-    "terminal.integrated.defaultProfile.linux": "bash",
+    "terminal.integrated.defaultProfile.linux": "zsh",
     "editor.formatOnPaste": false,
     "editor.formatOnSave": true,
     "editor.formatOnType": true,
