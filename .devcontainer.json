@@ -5,8 +5,8 @@
   "postStartCommand": "sudo bash devcontainer_bootstrap",
   "runArgs": ["-e", "GIT_EDITOR=code --wait", "--privileged"],
   "containerEnv": {
-    //"WORKSPACE_DIRECTORY": "${containerWorkspaceFolder}"
-    "WORKSPACE_DIRECTORY": "/workspaces/homeassistant-addons-onstar2mqtt"
+    "WORKSPACE_DIRECTORY": "${containerWorkspaceFolder}"
+    //"WORKSPACE_DIRECTORY": "/workspaces/homeassistant-addons-onstar2mqtt"
 
   },
   "extensions": ["timonwong.shellcheck", "esbenp.prettier-vscode"],
