@@ -1,3 +1,5 @@
+1.1.4 - Rebased BigThunderSR/onstar2mqtt submodule to v1.5.10 to pickup log colorization and timestamp additions from upstream
+
 1.1.3 - Added option to provide a name for the vehicle using this integration
 
 1.1.2 - Made some minor optimizations to the Dockerfile
