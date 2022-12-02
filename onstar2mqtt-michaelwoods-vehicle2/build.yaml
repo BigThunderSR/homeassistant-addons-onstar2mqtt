@@ -1,5 +1,4 @@
 ---
 codenotary:
   signer: bigthundersr@outlook.com
-  base_image: notary@home-assistant.io
-  
+  base_image: notary@home-assistant.io  
