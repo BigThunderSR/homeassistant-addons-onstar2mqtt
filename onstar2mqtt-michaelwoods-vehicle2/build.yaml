@@ -1,11 +1,11 @@
 ---
 build_from:
-  - aarch64
-  - amd64
-  - armhf
-  - armv7
-  - i386
+  aarch64
+  amd64
+  armhf
+  armv7
+  i386
 
 codenotary:
   signer: bigthundersr@outlook.com
-  base_image: notary@home-assistant.io  
+  base_image: notary@home-assistant.io
