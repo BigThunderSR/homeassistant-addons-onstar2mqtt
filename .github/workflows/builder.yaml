@@ -109,6 +109,3 @@ jobs:
             --image "${{ steps.check.outputs.image }}" \
             --docker-hub "ghcr.io/${{ github.repository_owner }}" \
             --addon
-          secrets:
-            CAS_API_KEY: ${{ secrets.CAS_API_KEY }}
-
