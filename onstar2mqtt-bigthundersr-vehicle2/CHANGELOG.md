@@ -1,3 +1,5 @@
+1.1.6 - Signed Assets with CAS
+
 1.1.5 - Added logo and icon files
 
 1.1.4 - Rebased BigThunderSR/onstar2mqtt submodule to v1.5.10 to pickup log colorization and timestamp additions from upstream
