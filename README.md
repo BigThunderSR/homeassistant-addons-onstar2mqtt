@@ -7,6 +7,8 @@
 ![Supports i386 Architecture][i386-shield]
 [![Lint](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/actions/workflows/lint.yaml/badge.svg)](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/actions/workflows/lint.yaml)
 [![Builder](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/actions/workflows/builder.yaml/badge.svg)](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/actions/workflows/builder.yaml)
+[![Notarize Assets with CAS](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/actions/workflows/cas_notarize.yml/badge.svg)](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/actions/workflows/cas_notarize.yml)
+[![Authenticate Assets with CAS](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/actions/workflows/cas_authenticate.yml/badge.svg)](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/actions/workflows/cas_authenticate.yml)
 
 Home Assistant Add-on combining my fork of [michaelwoods/onstar2mqtt](https://github.com/michaelwoods/onstar2mqtt) at [BigThunderSR/onstar2mqtt](https://github.com/BigThunderSR/onstar2mqtt) and modifications to [dannysporea/onstar2mqtt-addon](https://github.com/dannysporea/onstar2mqtt-addon)'s HA add-on config which provides the ability to run two independent instances if you have two vehicles that you would like to connect to.
 
