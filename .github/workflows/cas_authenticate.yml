@@ -1,0 +1,343 @@
+name: Authenticate Assets with CAS
+
+on:
+  workflow_dispatch:
+  #push:
+  #  branches: [main]
+  workflow_run:
+    workflows: ["Notarize Assets with CAS"]    
+    types: [completed]
+
+jobs:
+  authenticate-assets-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+    
+      - name: Authenticate LICENSE
+        #--> Run the GitHub action
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:
+          # Whatever asset is being authenticated, can be a target/ or dist/ compiled binary or any type of file
+          # Your signerID is the only thing needed to authenticate assets, this can be provided in both base64 or plaintext, and will be the email address used to generate your API Key
+          asset: LICENSE
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+      - name: Authenticate README.md        
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: README.md
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+      - name: Authenticate repository.yaml        
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: repository.yaml
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+          
+      
+      - name: Authenticate onstar2mqtt-bigthundersr-vehicle1/CHANGELOG.md     
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle1/CHANGELOG.md
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+      - name: Authenticate onstar2mqtt-bigthundersr-vehicle1/config.yaml        
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle1/config.yaml
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+      - name: Authenticate onstar2mqtt-bigthundersr-vehicle1/Dockerfile        
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle1/Dockerfile
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t          
+      - name: Authenticate onstar2mqtt-bigthundersr-vehicle1/icon.png        
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle1/icon.png
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t      
+      - name: Authenticate onstar2mqtt-bigthundersr-vehicle1/logo.png        
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle1/logo.png
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+      - name: Authenticate onstar2mqtt-bigthundersr-vehicle1/package.json        
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle1/package.json
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+      - name: Authenticate onstar2mqtt-bigthundersr-vehicle1/package-lock.json        
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle1/package-lock.json
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+      - name: Authenticate onstar2mqtt-bigthundersr-vehicle1/run.sh        
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle1/run.sh
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+      - name: Authenticate onstar2mqtt-bigthundersr-vehicle1/src/commands.js
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle1/src/commands.js
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+      - name: Authenticate onstar2mqtt-bigthundersr-vehicle1/src/diagnostic.js
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle1/src/diagnostic.js
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+      - name: Authenticate onstar2mqtt-bigthundersr-vehicle1/src/index.js
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle1/src/index.js
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+      - name: Authenticate onstar2mqtt-bigthundersr-vehicle1/src/logger.js
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle1/src/logger.js
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+      - name: Authenticate onstar2mqtt-bigthundersr-vehicle1/src/measurement.js
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle1/src/measurement.js
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+      - name: Authenticate onstar2mqtt-bigthundersr-vehicle1/src/mqtt.js
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle1/src/mqtt.js
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+      - name: Authenticate onstar2mqtt-bigthundersr-vehicle1/src/vehicle.js
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle1/src/vehicle.js
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+      
+
+      - name: Authenticate onstar2mqtt-bigthundersr-vehicle2/CHANGELOG.md     
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle2/CHANGELOG.md
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+      - name: Authenticate onstar2mqtt-bigthundersr-vehicle1/config.yaml        
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle2/config.yaml
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+      - name: Authenticate onstar2mqtt-bigthundersr-vehicle1/Dockerfile        
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle2/Dockerfile
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t          
+      - name: Authenticate onstar2mqtt-bigthundersr-vehicle2/icon.png        
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle2/icon.png
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t      
+      - name: Authenticate onstar2mqtt-bigthundersr-vehicle2/logo.png        
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle2/logo.png
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+      - name: Authenticate onstar2mqtt-bigthundersr-vehicle2/package.json        
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle2/package.json
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+      - name: Authenticate onstar2mqtt-bigthundersr-vehicle2/package-lock.json        
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle2/package-lock.json
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+      - name: Authenticate onstar2mqtt-bigthundersr-vehicle2/run.sh        
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle2/run.sh
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+      - name: Authenticate onstar2mqtt-bigthundersr-vehicle2/src/commands.js
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle2/src/commands.js
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+      - name: Authenticate onstar2mqtt-bigthundersr-vehicle2/src/diagnostic.js
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle2/src/diagnostic.js
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+      - name: Authenticate onstar2mqtt-bigthundersr-vehicle2/src/index.js
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle2/src/index.js
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+      - name: Authenticate onstar2mqtt-bigthundersr-vehicle2/src/logger.js
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle2/src/logger.js
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+      - name: Authenticate onstar2mqtt-bigthundersr-vehicle2/src/measurement.js
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle2/src/measurement.js
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+      - name: Authenticate onstar2mqtt-bigthundersr-vehicle2/src/mqtt.js
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle2/src/mqtt.js
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+      - name: Authenticate onstar2mqtt-bigthundersr-vehicle2/src/vehicle.js
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle2/src/vehicle.js
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+
+
+      - name: Authenticate onstar2mqtt-michaelwoods-vehicle1/CHANGELOG.md     
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle1/CHANGELOG.md
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+      - name: Authenticate onstar2mqtt-michaelwoods-vehicle1/config.yaml        
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle1/config.yaml
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+      - name: Authenticate onstar2mqtt-michaelwoods-vehicle1/Dockerfile        
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle1/Dockerfile
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t          
+      - name: Authenticate onstar2mqtt-michaelwoods-vehicle1/icon.png        
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle1/icon.png
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t      
+      - name: Authenticate onstar2mqtt-michaelwoods-vehicle1/logo.png        
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle1/logo.png
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+      - name: Authenticate onstar2mqtt-michaelwoods-vehicle1/package.json        
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle1/package.json
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+      - name: Authenticate onstar2mqtt-michaelwoods-vehicle1/package-lock.json        
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle1/package-lock.json
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+      - name: Authenticate onstar2mqtt-michaelwoods-vehicle1/run.sh        
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle1/run.sh
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+      - name: Authenticate onstar2mqtt-michaelwoods-vehicle1/src/commands.js
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle1/src/commands.js
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+      - name: Authenticate onstar2mqtt-michaelwoods-vehicle1/src/diagnostic.js
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle1/src/diagnostic.js
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+      - name: Authenticate onstar2mqtt-michaelwoods-vehicle1/src/index.js
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle1/src/index.js
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+      - name: Authenticate onstar2mqtt-michaelwoods-vehicle1/src/logger.js
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle1/src/logger.js
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+      - name: Authenticate onstar2mqtt-michaelwoods-vehicle1/src/measurement.js
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle1/src/measurement.js
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+      - name: Authenticate onstar2mqtt-michaelwoods-vehicle1/src/mqtt.js
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle1/src/mqtt.js
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+      - name: Authenticate onstar2mqtt-michaelwoods-vehicle1/src/vehicle.js
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle1/src/vehicle.js
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+
+
+      - name: Authenticate onstar2mqtt-michaelwoods-vehicle2/CHANGELOG.md     
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle2/CHANGELOG.md
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+      - name: Authenticate onstar2mqtt-michaelwoods-vehicle1/config.yaml        
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle2/config.yaml
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+      - name: Authenticate onstar2mqtt-michaelwoods-vehicle1/Dockerfile        
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle2/Dockerfile
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t          
+      - name: Authenticate onstar2mqtt-michaelwoods-vehicle2/icon.png        
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle2/icon.png
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t      
+      - name: Authenticate onstar2mqtt-michaelwoods-vehicle2/logo.png        
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle2/logo.png
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+      - name: Authenticate onstar2mqtt-michaelwoods-vehicle2/package.json        
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle2/package.json
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+      - name: Authenticate onstar2mqtt-michaelwoods-vehicle2/package-lock.json        
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle2/package-lock.json
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+      - name: Authenticate onstar2mqtt-michaelwoods-vehicle2/run.sh        
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle2/run.sh
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+      - name: Authenticate onstar2mqtt-michaelwoods-vehicle2/src/commands.js
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle2/src/commands.js
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+      - name: Authenticate onstar2mqtt-michaelwoods-vehicle2/src/diagnostic.js
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle2/src/diagnostic.js
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+      - name: Authenticate onstar2mqtt-michaelwoods-vehicle2/src/index.js
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle2/src/index.js
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+      - name: Authenticate onstar2mqtt-michaelwoods-vehicle2/src/logger.js
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle2/src/logger.js
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+      - name: Authenticate onstar2mqtt-michaelwoods-vehicle2/src/measurement.js
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle2/src/measurement.js
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+      - name: Authenticate onstar2mqtt-michaelwoods-vehicle2/src/mqtt.js
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle2/src/mqtt.js
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t
+      - name: Authenticate onstar2mqtt-michaelwoods-vehicle2/src/vehicle.js
+        uses: codenotary/cas-authenticate-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle2/src/vehicle.js
+          signerID: QmlnVGh1bmRlclNSQG91dGxvb2suY29t

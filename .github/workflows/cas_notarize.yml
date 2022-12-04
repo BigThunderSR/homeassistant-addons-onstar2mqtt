@@ -1,0 +1,339 @@
+name: Notarize Assets with CAS
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+jobs:
+  notarize-assets-job:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+    
+      - name: Notarize LICENSE
+        #--> Run the GitHub action
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:
+          # Whatever asset is being notarized, can be a target/ or dist/ compiled binary or any type of file          
+          asset: LICENSE
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+      - name: Notarize README.md        
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: README.md
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+      - name: Notarize repository.yaml        
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: repository.yaml
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+          
+      
+      - name: Notarize onstar2mqtt-bigthundersr-vehicle1/CHANGELOG.md     
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle1/CHANGELOG.md
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+      - name: Notarize onstar2mqtt-bigthundersr-vehicle1/config.yaml        
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle1/config.yaml
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+      - name: Notarize onstar2mqtt-bigthundersr-vehicle1/Dockerfile        
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle1/Dockerfile
+          cas_api_key: ${{ secrets.CAS_API_KEY }}          
+      - name: Notarize onstar2mqtt-bigthundersr-vehicle1/icon.png        
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle1/icon.png
+          cas_api_key: ${{ secrets.CAS_API_KEY }}      
+      - name: Notarize onstar2mqtt-bigthundersr-vehicle1/logo.png        
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle1/logo.png
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+      - name: Notarize onstar2mqtt-bigthundersr-vehicle1/package.json        
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle1/package.json
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+      - name: Notarize onstar2mqtt-bigthundersr-vehicle1/package-lock.json        
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle1/package-lock.json
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+      - name: Notarize onstar2mqtt-bigthundersr-vehicle1/run.sh        
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle1/run.sh
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+      - name: Notarize onstar2mqtt-bigthundersr-vehicle1/src/commands.js
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle1/src/commands.js
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+      - name: Notarize onstar2mqtt-bigthundersr-vehicle1/src/diagnostic.js
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle1/src/diagnostic.js
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+      - name: Notarize onstar2mqtt-bigthundersr-vehicle1/src/index.js
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle1/src/index.js
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+      - name: Notarize onstar2mqtt-bigthundersr-vehicle1/src/logger.js
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle1/src/logger.js
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+      - name: Notarize onstar2mqtt-bigthundersr-vehicle1/src/measurement.js
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle1/src/measurement.js
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+      - name: Notarize onstar2mqtt-bigthundersr-vehicle1/src/mqtt.js
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle1/src/mqtt.js
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+      - name: Notarize onstar2mqtt-bigthundersr-vehicle1/src/vehicle.js
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle1/src/vehicle.js
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+      
+
+      - name: Notarize onstar2mqtt-bigthundersr-vehicle2/CHANGELOG.md     
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle2/CHANGELOG.md
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+      - name: Notarize onstar2mqtt-bigthundersr-vehicle1/config.yaml        
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle2/config.yaml
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+      - name: Notarize onstar2mqtt-bigthundersr-vehicle1/Dockerfile        
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle2/Dockerfile
+          cas_api_key: ${{ secrets.CAS_API_KEY }}          
+      - name: Notarize onstar2mqtt-bigthundersr-vehicle2/icon.png        
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle2/icon.png
+          cas_api_key: ${{ secrets.CAS_API_KEY }}      
+      - name: Notarize onstar2mqtt-bigthundersr-vehicle2/logo.png        
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle2/logo.png
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+      - name: Notarize onstar2mqtt-bigthundersr-vehicle2/package.json        
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle2/package.json
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+      - name: Notarize onstar2mqtt-bigthundersr-vehicle2/package-lock.json        
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle2/package-lock.json
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+      - name: Notarize onstar2mqtt-bigthundersr-vehicle2/run.sh        
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle2/run.sh
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+      - name: Notarize onstar2mqtt-bigthundersr-vehicle2/src/commands.js
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle2/src/commands.js
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+      - name: Notarize onstar2mqtt-bigthundersr-vehicle2/src/diagnostic.js
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle2/src/diagnostic.js
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+      - name: Notarize onstar2mqtt-bigthundersr-vehicle2/src/index.js
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle2/src/index.js
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+      - name: Notarize onstar2mqtt-bigthundersr-vehicle2/src/logger.js
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle2/src/logger.js
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+      - name: Notarize onstar2mqtt-bigthundersr-vehicle2/src/measurement.js
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle2/src/measurement.js
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+      - name: Notarize onstar2mqtt-bigthundersr-vehicle2/src/mqtt.js
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle2/src/mqtt.js
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+      - name: Notarize onstar2mqtt-bigthundersr-vehicle2/src/vehicle.js
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-bigthundersr-vehicle2/src/vehicle.js
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+
+
+      - name: Notarize onstar2mqtt-michaelwoods-vehicle1/CHANGELOG.md     
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle1/CHANGELOG.md
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+      - name: Notarize onstar2mqtt-michaelwoods-vehicle1/config.yaml        
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle1/config.yaml
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+      - name: Notarize onstar2mqtt-michaelwoods-vehicle1/Dockerfile        
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle1/Dockerfile
+          cas_api_key: ${{ secrets.CAS_API_KEY }}          
+      - name: Notarize onstar2mqtt-michaelwoods-vehicle1/icon.png        
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle1/icon.png
+          cas_api_key: ${{ secrets.CAS_API_KEY }}      
+      - name: Notarize onstar2mqtt-michaelwoods-vehicle1/logo.png        
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle1/logo.png
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+      - name: Notarize onstar2mqtt-michaelwoods-vehicle1/package.json        
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle1/package.json
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+      - name: Notarize onstar2mqtt-michaelwoods-vehicle1/package-lock.json        
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle1/package-lock.json
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+      - name: Notarize onstar2mqtt-michaelwoods-vehicle1/run.sh        
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle1/run.sh
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+      - name: Notarize onstar2mqtt-michaelwoods-vehicle1/src/commands.js
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle1/src/commands.js
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+      - name: Notarize onstar2mqtt-michaelwoods-vehicle1/src/diagnostic.js
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle1/src/diagnostic.js
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+      - name: Notarize onstar2mqtt-michaelwoods-vehicle1/src/index.js
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle1/src/index.js
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+      - name: Notarize onstar2mqtt-michaelwoods-vehicle1/src/logger.js
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle1/src/logger.js
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+      - name: Notarize onstar2mqtt-michaelwoods-vehicle1/src/measurement.js
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle1/src/measurement.js
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+      - name: Notarize onstar2mqtt-michaelwoods-vehicle1/src/mqtt.js
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle1/src/mqtt.js
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+      - name: Notarize onstar2mqtt-michaelwoods-vehicle1/src/vehicle.js
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle1/src/vehicle.js
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+
+
+      - name: Notarize onstar2mqtt-michaelwoods-vehicle2/CHANGELOG.md     
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle2/CHANGELOG.md
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+      - name: Notarize onstar2mqtt-michaelwoods-vehicle1/config.yaml        
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle2/config.yaml
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+      - name: Notarize onstar2mqtt-michaelwoods-vehicle1/Dockerfile        
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle2/Dockerfile
+          cas_api_key: ${{ secrets.CAS_API_KEY }}          
+      - name: Notarize onstar2mqtt-michaelwoods-vehicle2/icon.png        
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle2/icon.png
+          cas_api_key: ${{ secrets.CAS_API_KEY }}      
+      - name: Notarize onstar2mqtt-michaelwoods-vehicle2/logo.png        
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle2/logo.png
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+      - name: Notarize onstar2mqtt-michaelwoods-vehicle2/package.json        
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle2/package.json
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+      - name: Notarize onstar2mqtt-michaelwoods-vehicle2/package-lock.json        
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle2/package-lock.json
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+      - name: Notarize onstar2mqtt-michaelwoods-vehicle2/run.sh        
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle2/run.sh
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+      - name: Notarize onstar2mqtt-michaelwoods-vehicle2/src/commands.js
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle2/src/commands.js
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+      - name: Notarize onstar2mqtt-michaelwoods-vehicle2/src/diagnostic.js
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle2/src/diagnostic.js
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+      - name: Notarize onstar2mqtt-michaelwoods-vehicle2/src/index.js
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle2/src/index.js
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+      - name: Notarize onstar2mqtt-michaelwoods-vehicle2/src/logger.js
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle2/src/logger.js
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+      - name: Notarize onstar2mqtt-michaelwoods-vehicle2/src/measurement.js
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle2/src/measurement.js
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+      - name: Notarize onstar2mqtt-michaelwoods-vehicle2/src/mqtt.js
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle2/src/mqtt.js
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
+      - name: Notarize onstar2mqtt-michaelwoods-vehicle2/src/vehicle.js
+        uses: codenotary/cas-notarize-asset-github-action@main
+        with:          
+          asset: onstar2mqtt-michaelwoods-vehicle2/src/vehicle.js
+          cas_api_key: ${{ secrets.CAS_API_KEY }}
