@@ -5,7 +5,7 @@ env:
   MONITORED_FILES: "build.yaml config.yaml Dockerfile rootfs"
 
 on:
-  worflow_dispatch:
+  workflow_dispatch:
   #push:
   #  branches:
   #    - main
