@@ -2,8 +2,15 @@ name: Notarize Assets with CAS
 
 on:
   workflow_dispatch:
-  push:
-    branches: [main]
+  #push:
+  #  branches: [main]
+  workflow_run:
+    workflows: ["Lint"]    
+    types: [completed]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
