@@ -6,15 +6,15 @@ env:
 
 on:
   workflow_dispatch:
-  #push:
-  #  branches:
-  #    - main
-  #pull_request:
-  #  branches:
-  #    - main
-  workflow_run:
-    workflows: ["Lint"]    
-    types: [completed]
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  #workflow_run:
+  #  workflows: ["Lint"]    
+  #  types: [completed]
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
