@@ -1,6 +1,7 @@
 name: Lint
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
@@ -9,6 +10,11 @@ on:
       - main
   schedule:
     - cron: "0 0 * * *"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 
 jobs:
   find:

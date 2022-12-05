@@ -8,6 +8,10 @@ on:
     workflows: ["Notarize Assets with CAS"]    
     types: [completed]
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   authenticate-assets-job:
     runs-on: ubuntu-latest
