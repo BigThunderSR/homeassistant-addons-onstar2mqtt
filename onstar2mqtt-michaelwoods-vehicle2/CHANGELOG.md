@@ -1,3 +1,5 @@
+1.1.8 - Pickup latest upstream updates
+
 1.1.7 - Resolve image issue
 
 1.1.6 - Signed Assets with CAS
