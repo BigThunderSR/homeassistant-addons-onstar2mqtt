@@ -1,3 +1,5 @@
+1.1.9 - Pickup latest upstream updates - Fixed
+
 1.1.8 - Pickup latest upstream updates
 
 1.1.7 - Resolve image issue
