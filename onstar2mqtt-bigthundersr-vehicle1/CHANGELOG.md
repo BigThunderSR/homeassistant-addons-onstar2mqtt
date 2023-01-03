@@ -1,3 +1,5 @@
+1.1.11 - Pickup latest upstream fixes in BigThunderSR/onstar2mqtt v1.5.11
+
 1.1.10 - Pickup latest upstream fixes
 
 1.1.9 - Pickup latest upstream updates - Fixed
