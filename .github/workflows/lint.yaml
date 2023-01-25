@@ -10,7 +10,7 @@ on:
       - main
   schedule:
     #- cron: "0 0 * * *"
-    - cron: '28 1 * * 0'
+    - cron: '28 2 * * 0'
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
