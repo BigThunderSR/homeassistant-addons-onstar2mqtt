@@ -1,3 +1,5 @@
+1.1.10 - Pickup latest upstream updates in michaelwoods/onstar2mqtt v1.5.3
+
 1.1.9 - Pickup latest upstream updates - Fixed
 
 1.1.8 - Pickup latest upstream updates
