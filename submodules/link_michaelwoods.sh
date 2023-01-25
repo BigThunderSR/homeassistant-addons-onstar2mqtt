@@ -14,7 +14,7 @@ ln -f ../submodules/michaelwoods/onstar2mqtt/src/mqtt.js ./src/mqtt.js
 ln -f ../submodules/michaelwoods/onstar2mqtt/src/vehicle.js ./src/vehicle.js
 
 
-cd ../onstar2mqtt-michaelwoods-vehicle1/
+cd ../onstar2mqtt-michaelwoods-vehicle2/
 
 ln -f ../submodules/michaelwoods/onstar2mqtt/package.json package.json
 ln -f ../submodules/michaelwoods/onstar2mqtt/package-lock.json package-lock.json
