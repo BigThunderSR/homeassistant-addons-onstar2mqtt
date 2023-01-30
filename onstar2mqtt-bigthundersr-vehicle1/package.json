@@ -11,7 +11,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/michaelwoods/onstar2mqtt.git"
+    "url": "git+https://github.com/BigThunderSR/onstar2mqtt.git"
   },
   "keywords": [
     "onstar",
@@ -22,12 +22,12 @@
     "home-assistant",
     "home assistant"
   ],
-  "author": "Michael Woods",
+  "author": "BigThunderSR",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/michaelwoods/onstar2mqtt/issues"
+    "url": "https://github.com/BigThunderSR/onstar2mqtt/issues"
   },
-  "homepage": "https://github.com/michaelwoods/onstar2mqtt#readme",
+  "homepage": "https://github.com/BigThunderSR/onstar2mqtt#readme",
   "dependencies": {
     "async-mqtt": "^2.6.3",
     "convert-units": "^2.3.4",
@@ -41,8 +41,8 @@
     "@babel/eslint-plugin": "^7.19.1",
     "@babel/plugin-syntax-class-properties": "^7.12.13",
     "@babel/preset-env": "^7.20.2",
-    "eslint": "^8.32.0",
-    "eslint-plugin-import": "^2.27.4",
+    "eslint": "^8.33.0",
+    "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.1.1",
     "mocha": "^10.2.0",
