@@ -19,7 +19,7 @@ Home Assistant Add-on combining my fork of [michaelwoods/onstar2mqtt](https://gi
 ## Add-ons
 
 This repository contains the following add-ons
-###
+
 - [OnStar2MQTT for Vehicle 1 Using BigThunderSR/onstar2mqtt Build](./onstar2mqtt-bigthundersr-vehicle1)
 
 - [OnStar2MQTT for Vehicle 2 Using BigThunderSR/onstar2mqtt Build](./onstar2mqtt-bigthundersr-vehicle2)
@@ -35,7 +35,6 @@ If you prefer to use the OG build of onstar2mqtt 😎
 - [OnStar2MQTT for Vehicle 1 Using michaelwoods/onstar2mqtt Build](./onstar2mqtt-michaelwoods-vehicle1)
 
 - [OnStar2MQTT for Vehicle 2 Using michaelwoods/onstar2mqtt Build](./onstar2mqtt-michaelwoods-vehicle2)
-
 
 ## Running
 
