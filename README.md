@@ -47,6 +47,10 @@ Collect the following information:
 1. Your car's VIN. Easily found in the monthly OnStar diagnostic emails.
 1. MQTT server information: hostname, username, password
 
+## My other related project which provides additional capabilities through Node-RED
+
+[https://github.com/BigThunderSR/node-red-contrib-onstar2](https://github.com/BigThunderSR/node-red-contrib-onstar2)
+
 <!-- _Example add-on to use as a blueprint for new add-ons._ -->
 
 <!--
