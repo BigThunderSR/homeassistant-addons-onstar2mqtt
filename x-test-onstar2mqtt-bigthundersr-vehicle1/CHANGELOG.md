@@ -1,3 +1,5 @@
+1.1.18 - Testing package build process
+
 1.1.17 - Testing package build process
 
 1.1.16 - Testing package build process
