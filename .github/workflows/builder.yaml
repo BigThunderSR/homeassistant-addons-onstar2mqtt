@@ -109,8 +109,6 @@ jobs:
       - name: Build ${{ matrix.addon }} add-on
         if: steps.check.outputs.build_arch == 'true'
         uses: home-assistant/builder@2023.03.0
-        env:
-          CAS_API_KEY: ${{ secrets.CAS_API_KEY }}
         with:
           args: |
             ${{ env.BUILD_ARGS }} \
@@ -119,3 +117,5 @@ jobs:
             --image "${{ steps.check.outputs.image }}" \
             --docker-hub "ghcr.io/${{ github.repository_owner }}" \
             --addon
+        env:
+          CAS_API_KEY: ${{ secrets.CAS_API_KEY }}
