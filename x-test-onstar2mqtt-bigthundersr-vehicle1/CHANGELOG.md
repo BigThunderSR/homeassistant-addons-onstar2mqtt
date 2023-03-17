@@ -1,4 +1,4 @@
-1.1.16 - Testing package build process
+1.1.16 - Testing package build process.
 
 1.1.15 - Pickup latest upstream fixes in BigThunderSR/onstar2mqtt v1.5.15
 
