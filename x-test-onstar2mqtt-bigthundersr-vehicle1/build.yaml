@@ -1,0 +1,4 @@
+---
+codenotary:
+  base_image: bigthundersr@outlook.com
+  signer: bigthundersr@outlook.com
