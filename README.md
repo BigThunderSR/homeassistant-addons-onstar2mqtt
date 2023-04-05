@@ -26,7 +26,7 @@ This repository contains the following add-ons
 
 - [OnStar2MQTT for Vehicle 2 Using BigThunderSR/onstar2mqtt Build](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/tree/main/onstar2mqtt-bigthundersr-vehicle2)
 
-  Which have these new commands not available in the OG build of onstar2mqtt:
+  Which have these new commands which were not originally available in the OG build of onstar2mqtt, have been added since v1.5.5:
   - `alertFlash`
   - `alertHonk`
 
