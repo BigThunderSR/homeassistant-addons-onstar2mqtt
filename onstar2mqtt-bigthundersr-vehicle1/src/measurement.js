@@ -68,9 +68,8 @@ class Measurement {
             case 'km':
                 value = _.round(convert(value).from('km').to('mi'), 1);
                 break;
-            case 'kPa':
-                // Fix for recent wonky tire pressure values being provided by OnStar due to unexplainable reasons
-                value = _.round(convert(value * 0.1457).from('kPa').to('psi'), 1);
+            case 'kPa':                
+                value = _.round(convert(value).from('kPa').to('psi'), 1);
                 break;
             case 'km/l(e)':
                 // km/L =  (1.609344 / 3.785411784) * MPG
