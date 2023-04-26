@@ -21,3 +21,19 @@ COPY run.sh /app/
 RUN chmod a+x /app/run.sh
 
 CMD [ "/app/run.sh" ]
+
+#  Labels 
+
+ARG BUILD_DESCRIPTION="Home Assistant Add On Version of michaelwoods/onstar2mqtt for Vehicle 1"
+ARG BUILD_NAME="OnStar2MQTT Home Assistant Add-on (michaelwoods) for Vehicle 1"
+ARG BUILD_REPOSITORY="BigThunderSR/homeassistant-addons-onstar2mqtt"
+
+LABEL \
+    maintainer="BigThunderSR (https://github.com/BigThunderSR)" \
+    org.opencontainers.image.title="${BUILD_NAME}" \
+    org.opencontainers.image.description="${BUILD_DESCRIPTION}" \
+    org.opencontainers.image.vendor="Home Assistant OnStar2MQTT Add-ons by BigThunderSR" \
+    org.opencontainers.image.authors="BigThunderSR (https://github.com/BigThunderSR)" \    
+    org.opencontainers.image.url="https://github.com/BigThunderSR" \
+    org.opencontainers.image.source="https://github.com/${BUILD_REPOSITORY}" \
+    org.opencontainers.image.documentation="https://github.com/${BUILD_REPOSITORY}/blob/main/README.md" 
