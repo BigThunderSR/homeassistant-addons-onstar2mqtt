@@ -12,7 +12,7 @@ arch:
   - armv7
   - i386
 url: "https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt"
-#image: 'ghcr.io/bigthundersr/onstar2mqtt-{arch}'
+#image: "ghcr.io/bigthundersr/ha-addons-onstar2mqtt-btsr-veh2-{arch}"
 services:
   - "mqtt:need"
 init: false
