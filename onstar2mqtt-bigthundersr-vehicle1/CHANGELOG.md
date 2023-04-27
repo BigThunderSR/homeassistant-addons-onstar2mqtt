@@ -1,26 +1,26 @@
 1.2.21 - Change add-on to use pre-built image instead of building locally
 
-1.1.21 - Pickup latest upstream fixes in BigThunderSR/onstar2mqtt v1.5.21
+1.1.21 - Pickup latest upstream fixes in [BigThunderSR/onstar2mqtt v1.5.21](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.5.21)
 
-1.1.20 - Pickup latest upstream fixes in BigThunderSR/onstar2mqtt v1.5.20
+1.1.20 - Pickup latest upstream fixes in [BigThunderSR/onstar2mqtt v1.5.20](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.5.20)
 
-1.1.19 - Pickup latest upstream fixes in BigThunderSR/onstar2mqtt v1.5.19
+1.1.19 - Pickup latest upstream fixes in [BigThunderSR/onstar2mqtt v1.5.19](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.5.19)
 
-1.1.18 - Pickup latest upstream fixes in BigThunderSR/onstar2mqtt v1.5.18
+1.1.18 - Pickup latest upstream fixes in [BigThunderSR/onstar2mqtt v1.5.18](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.5.18)
 
-1.1.17 - Pickup latest upstream fixes in BigThunderSR/onstar2mqtt v1.5.17
+1.1.17 - Pickup latest upstream fixes in [BigThunderSR/onstar2mqtt v1.5.17](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.5.17)
 
-1.1.16 - Pickup latest upstream fixes in BigThunderSR/onstar2mqtt v1.5.16
+1.1.16 - Pickup latest upstream fixes in [BigThunderSR/onstar2mqtt v1.5.16](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.5.16)
 
-1.1.15 - Pickup latest upstream fixes in BigThunderSR/onstar2mqtt v1.5.15
+1.1.15 - Pickup latest upstream fixes in [BigThunderSR/onstar2mqtt v1.5.15](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.5.15)
 
-1.1.14 - Pickup latest upstream fixes in BigThunderSR/onstar2mqtt v1.5.14
+1.1.14 - Pickup latest upstream fixes in [BigThunderSR/onstar2mqtt v1.5.14](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.5.14)
 
-1.1.13 - Pickup latest upstream fixes in BigThunderSR/onstar2mqtt v1.5.13
+1.1.13 - Pickup latest upstream fixes in [BigThunderSR/onstar2mqtt v1.5.13](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.5.13)
 
-1.1.12 - Pickup latest upstream fixes in BigThunderSR/onstar2mqtt v1.5.12
+1.1.12 - Pickup latest upstream fixes in [BigThunderSR/onstar2mqtt v1.5.12](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.5.12)
 
-1.1.11 - Pickup latest upstream fixes in BigThunderSR/onstar2mqtt v1.5.11
+1.1.11 - Pickup latest upstream fixes in [BigThunderSR/onstar2mqtt v1.5.11](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.5.11)
 
 1.1.10 - Pickup latest upstream fixes
 
