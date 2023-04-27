@@ -1,3 +1,5 @@
+1.2.14 - Change add-on to use pre-built image instead of building locally
+
 1.1.14 - Pickup latest upstream updates in michaelwoods/onstar2mqtt v1.5.6
 
 1.1.13 - Pickup latest upstream updates in michaelwoods/onstar2mqtt v1.5.5

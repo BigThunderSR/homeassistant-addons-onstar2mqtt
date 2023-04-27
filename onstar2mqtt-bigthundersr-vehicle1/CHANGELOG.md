@@ -1,3 +1,5 @@
+1.2.21 - Change add-on to use pre-built image instead of building locally
+
 1.1.21 - Pickup latest upstream fixes in BigThunderSR/onstar2mqtt v1.5.21
 
 1.1.20 - Pickup latest upstream fixes in BigThunderSR/onstar2mqtt v1.5.20
