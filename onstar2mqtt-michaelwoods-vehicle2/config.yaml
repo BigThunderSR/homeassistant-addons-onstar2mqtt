@@ -1,5 +1,5 @@
 name: OnStar2MQTT Home Assistant Add-on (michaelwoods) for Vehicle 2
-version: 1.2.14
+version: 1.2.15
 slug: onstar2mqtt-michaelwoods-vehicle2
 description: Home Assistant Add On Version of michaelwoods/onstar2mqtt for Vehicle 2
 codenotary: bigthundersr@outlook.com
