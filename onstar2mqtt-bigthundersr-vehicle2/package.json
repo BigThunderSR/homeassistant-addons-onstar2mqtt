@@ -40,7 +40,7 @@
     "@babel/eslint-parser": "^7.21.8",
     "@babel/eslint-plugin": "^7.19.1",
     "@babel/plugin-syntax-class-properties": "^7.12.13",
-    "@babel/preset-env": "^7.21.5",
+    "@babel/preset-env": "^7.22.2",
     "eslint": "^8.41.0",
     "eslint-plugin-import": "^2.27.5",
     "eslint-plugin-node": "^11.1.0",
