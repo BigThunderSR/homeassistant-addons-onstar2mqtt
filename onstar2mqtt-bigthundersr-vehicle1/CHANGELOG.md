@@ -1,3 +1,5 @@
+1.2.23 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.5.23](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.5.23)
+
 1.2.22 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.5.22](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.5.22)
 
 1.2.21 - Change add-on to use pre-built image instead of building locally
