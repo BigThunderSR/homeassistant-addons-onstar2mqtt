@@ -47,6 +47,13 @@ Collect the following information:
 1. Your car's VIN. Easily found in the monthly OnStar diagnostic emails.
 1. MQTT server information: hostname, username, password
 
+## Helpful Usage Notes
+
+- The OnStar API has rate limiting, so they will block excessive requests over a short period of time.
+- The OnStar API can be very temparamental, so you may see numerous errors every now and then where you cannot get any data from your vehicle. These tend to be very sporadic and usually go away on their own.
+- After your engine is turned off, the vehicle will respond to about 4 - 5 requests before going into a type of hibernation mode and will not respond to requests until the engine is started up again. If your engine has been off for a while, you may still not be able to get any data from the vehicle even if it is your first attempt at trying to pull data from your vehicle after the engine was turned off.
+  - **Note:** You will see an error of *"Unable to establish packet session to the vehicle"* when this occurrs.
+
 ## My other related project which provides additional capabilities through Node-RED
 
 [https://github.com/BigThunderSR/node-red-contrib-onstar2](https://github.com/BigThunderSR/node-red-contrib-onstar2)
