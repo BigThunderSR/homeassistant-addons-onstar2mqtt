@@ -1,3 +1,5 @@
+1.2.26 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.5.26](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.5.26)
+
 1.2.25 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.5.25](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.5.25)
 
 1.2.24 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.5.24](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.5.24)
