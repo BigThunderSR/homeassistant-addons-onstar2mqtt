@@ -1,6 +1,6 @@
 name: X - Do NOT Install - Testing - OnStar2MQTT Home Assistant Add-on (BigThunderSR) for Vehicle 1
-version: 1.1.27
-slug: x-test-onstar2mqtt-bigthundersr-vehicle1
+version: 1.2.27
+slug: x_test_onstar2mqtt_bigthundersr_vehicle1
 description: Do NOT Install - Testing - Home Assistant Add On Version of BigThunderSR/onstar2mqtt for Vehicle 1
 codenotary: bigthundersr@outlook.com
 #startup: application

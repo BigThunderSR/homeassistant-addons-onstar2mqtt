@@ -1,3 +1,5 @@
+1.2.x - Test Build. DO NOT Install! - Change slug to fix breaking change in HA Core 2023.9.0
+
 1.1.x - Test Build. DO NOT Install!
 
 1.1.18 - Testing package build process
