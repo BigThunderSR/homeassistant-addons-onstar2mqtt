@@ -23,8 +23,10 @@ Home Assistant Add-on combining my fork of [michaelwoods/onstar2mqtt](https://gi
 This repository contains the following add-ons
 
 - [OnStar2MQTT for Vehicle 1 Using BigThunderSR/onstar2mqtt Build](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/tree/main/onstar2mqtt-bigthundersr-vehicle1)
+  - ***NOTE:** Breaking Change for Upgrading to Version 1.3.27 and beyond. Please see [CHANGELOG](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/blob/main/onstar2mqtt-bigthundersr-vehicle1/CHANGELOG.md).*
 
 - [OnStar2MQTT for Vehicle 2 Using BigThunderSR/onstar2mqtt Build](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/tree/main/onstar2mqtt-bigthundersr-vehicle2)
+  - ***NOTE:** Breaking Change for Upgrading to Version 1.3.27 and beyond. Please see [CHANGELOG](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/blob/main/onstar2mqtt-bigthundersr-vehicle2/CHANGELOG.md).*
 
   Which have these new commands which were not originally available in the OG build of onstar2mqtt, but have been added since v1.5.5:
   - `alertFlash`
