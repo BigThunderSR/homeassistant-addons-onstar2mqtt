@@ -1,3 +1,7 @@
+1.3.27 - **WARNING!!! - BREAKING CHANGE!!! - MANUAL STEPS REQUIRED TO UPGRADE** 
+- Before upgrading, please copy/save your add-on config, uninstall the existing add-on, install this new version of the add-on, re-add the previously saved configuration, save the config and re-start Home Assistant before using the add-on.
+- Reason: Changed slug name to use "_" instead of "-" due to breaking change in HA Core 2023.9
+
 1.2.27 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.5.27](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.5.27)
 
 1.2.26 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.5.26](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.5.26)
