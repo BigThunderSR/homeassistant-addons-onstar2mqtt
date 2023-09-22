@@ -1,4 +1,7 @@
-1.3.27 - **WARNING!!! - BREAKING CHANGE!!! - MANUAL STEPS REQUIRED TO UPGRADE** 
+# Changelog
+
+1.3.27 - **WARNING!!! - BREAKING CHANGE!!! - MANUAL STEPS REQUIRED TO UPGRADE**
+
 - Before upgrading, please copy/save your add-on config, uninstall the existing add-on, install this new version of the add-on, re-add the previously saved configuration, save the config and re-start Home Assistant before using the add-on.
 - Reason: Changed slug name to use "_" instead of "-" due to breaking change in HA Core 2023.9
 
