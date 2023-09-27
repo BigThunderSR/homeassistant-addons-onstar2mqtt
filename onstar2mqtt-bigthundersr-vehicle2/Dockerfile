@@ -15,6 +15,9 @@ COPY ["package.json", "/app/"]
 COPY ["package-lock.json", "/app/"]
 RUN npm ci --omit=dev --no-fund
 
+COPY ["overrides/index.cjs", "/app/node_modules/onstarjs/dist/"]
+COPY ["overrides/index.mjs", "/app/node_modules/onstarjs/dist/"]
+
 COPY ["src", "/app/src"]
 
 COPY run.sh /app/
