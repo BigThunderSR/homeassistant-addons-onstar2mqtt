@@ -30,12 +30,12 @@ function __awaiter(thisArg, _arguments, P, generator) {
     });
 }
 
-var appId = "OMB_CVY_AND_6Q0";
-var appSecret = "86TRPmerBFaMbCU3Xk9ZjzmQDMobvnpW2nMe";
+var appId = "OMB_CVY_iOS_6S0";
+var appSecret = "53YJ67kyLqMCzVEb758ySwXYxCThn7eeLw3D";
 var optionalClientScope = "";
 var requiredClientScope = "onstar gmoc user_trailer user priv";
 var serviceUrl = "https://api.gm.com";
-var userAgent = "Mozilla/5.0 (Linux; U; Android 9; en-US; Google Pixel 2 Build/PI)";
+var userAgent = "myChevrolet/73 CFNetwork/1408.0.4 Darwin/22.5.0";
 var onStarAppConfig = {
 	appId: appId,
 	appSecret: appSecret,
