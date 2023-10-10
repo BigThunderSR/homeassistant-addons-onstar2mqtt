@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.28
+
+- Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.5.28](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.5.28)
+
 ## 1.3.27 - **WARNING!!! - BREAKING CHANGE!!! - MANUAL STEPS REQUIRED TO UPGRADE**
 
 - Before upgrading, please copy/save your add-on config, uninstall the existing add-on, install this new version of the add-on, re-add the previously saved configuration, save the config and re-start Home Assistant before using the add-on.
