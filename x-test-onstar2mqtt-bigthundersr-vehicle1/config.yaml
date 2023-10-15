@@ -25,6 +25,8 @@ options:
   ONSTAR_PIN: ""
   ONSTAR_URL: "https://api.gm.com"
   ONSTAR_REFRESH: 1800000
+  ONSTAR_POLL_INTERVAL: 6
+  ONSTAR_POLL_TIMEOUT: 90
   MQTT_HOST: ""
   MQTT_USERNAME: ""
   MQTT_PASSWORD: ""
@@ -37,6 +39,8 @@ schema:
   ONSTAR_PIN: password
   ONSTAR_URL: str
   ONSTAR_REFRESH: int
+  ONSTAR_POLL_INTERVAL: int
+  ONSTAR_POLL_TIMEOUT: int
   MQTT_HOST: str
   MQTT_USERNAME: str
   MQTT_PASSWORD: password
