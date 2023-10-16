@@ -49,4 +49,4 @@ schema:
   MQTT_PASSWORD: password
   MQTT_PORT: port
   #MQTT_TLS: bool
-  MQTT_PREFIX: string
+  #MQTT_PREFIX: string
