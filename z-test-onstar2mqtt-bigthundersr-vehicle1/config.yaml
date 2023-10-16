@@ -32,7 +32,7 @@ options:
   MQTT_PASSWORD: ""
   MQTT_PORT: 1883
   #MQTT_TLS: "false"
-  #MQTT_PREFIX: "homeassistant"
+  MQTT_PREFIX: "homeassistant"
 schema:
   VEHICLE_NAME: str
   ONSTAR_DEVICEID: str
@@ -49,4 +49,4 @@ schema:
   MQTT_PASSWORD: password
   MQTT_PORT: port
   #MQTT_TLS: bool
-  #MQTT_PREFIX: string
+  MQTT_PREFIX: string
