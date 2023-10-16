@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.3.x - Test Build. DO NOT Install!!!
+## 1.3.31 - Test Build. DO NOT Install!!!
 
 - Testing some new variables
 
