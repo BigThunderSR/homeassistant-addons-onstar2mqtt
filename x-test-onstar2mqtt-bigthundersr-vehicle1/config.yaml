@@ -47,6 +47,6 @@ schema:
   MQTT_HOST: str
   MQTT_USERNAME: str
   MQTT_PASSWORD: password
-  MQTT_PORT: int
-  MQTT_TLS: string
+  MQTT_PORT: port
+  MQTT_TLS: bool
   MQTT_PREFIX: string
