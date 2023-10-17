@@ -19,14 +19,14 @@ init: false
 options:
   VEHICLE_NAME: "Vehicle 1"
   ONSTAR_DEVICEID: ""
-    ONSTAR_VIN: ""
-    ONSTAR_USERNAME: ""
-    ONSTAR_PASSWORD: ""
-    ONSTAR_PIN: ""
-    ONSTAR_URL: "https://api.gm.com"
-    ONSTAR_REFRESH: 1800000
-    ONSTAR_POLL_INTERVAL: 6
-    ONSTAR_POLL_TIMEOUT: 90
+  ONSTAR_VIN: ""
+  ONSTAR_USERNAME: ""
+  ONSTAR_PASSWORD: ""
+  ONSTAR_PIN: ""
+  ONSTAR_URL: "https://api.gm.com"
+  ONSTAR_REFRESH: 1800000
+  ONSTAR_POLL_INTERVAL: 6
+  ONSTAR_POLL_TIMEOUT: 90
   MQTT_HOST: ""
     MQTT_USERNAME: ""
     MQTT_PASSWORD: ""
@@ -36,14 +36,14 @@ options:
 schema:
   VEHICLE_NAME: str
   ONSTAR_DEVICEID: str
-    ONSTAR_VIN: str
-    ONSTAR_USERNAME: str
-    ONSTAR_PASSWORD: password
-    ONSTAR_PIN: password
-    ONSTAR_URL: str
-    ONSTAR_REFRESH: int
-    ONSTAR_POLL_INTERVAL: int
-    ONSTAR_POLL_TIMEOUT: int
+  ONSTAR_VIN: str
+  ONSTAR_USERNAME: str
+  ONSTAR_PASSWORD: password
+  ONSTAR_PIN: password
+  ONSTAR_URL: str
+  ONSTAR_REFRESH: int
+  ONSTAR_POLL_INTERVAL: int
+  ONSTAR_POLL_TIMEOUT: int
   MQTT_HOST: str
     MQTT_USERNAME: str
     MQTT_PASSWORD: password
