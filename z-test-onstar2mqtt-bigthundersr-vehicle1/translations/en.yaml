@@ -43,21 +43,21 @@ configuration:
   MQTT_HOST:
     name: MQTT Host
     description: >-
-      Hostname of MQTT server
+      Hostname of MQTT broker/server
   MQTT_USERNAME:
     name: MQTT Username
     description: >-
-      Username for MQTT server
+      Username for MQTT broker/server
   MQTT_PASSWORD:
     name: MQTT Password
     description: >-
-      Password for MQTT server
+      Password for MQTT broker/server
   MQTT_PORT:
     name: MQTT Port
     description: >-
-      Port for MQTT server
+      Port for MQTT broker/server
   MQTT_PREFIX:
     name: MQTT Prefix
     description: >-
-      Prefix for MQTT topics published to server
+      Prefix for MQTT topics published to broker/server
       
