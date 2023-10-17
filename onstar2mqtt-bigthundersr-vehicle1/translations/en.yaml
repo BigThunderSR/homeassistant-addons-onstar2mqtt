@@ -1,0 +1,63 @@
+---
+configuration:
+  VEHICLE_NAME:
+    name: Vehicle Name
+    description: >-
+      Name/Nickname/Personal Identifier for your vehicle
+  ONSTAR_DEVICEID:
+    name: OnStar Device ID
+    description: >-
+      V4 UUID generated for your vehicle using https://www.uuidgenerator.net/version4
+  ONSTAR_VIN:
+    name: OnStar VIN
+    description: >-
+      VIN of the vehicle you want OnStar data from
+  ONSTAR_USERNAME:
+    name: OnStar User Name
+    description: >-
+      Username for your OnStar Account
+  ONSTAR_PASSWORD:
+    name: OnStar Password
+    description: >-
+      Password for your OnStar Account
+  ONSTAR_PIN:
+    name: OnStar PIN
+    description: >-
+      PIN for your OnStar Account
+  ONSTAR_URL:
+    name: OnStar URL
+    description: >-
+      OnStar URL for your OnStar Account
+  ONSTAR_REFRESH:
+    name: OnStar Refresh Period
+    description: >-
+      The refresh period for polling OnStar for data updates in milliseconds.    
+  ONSTAR_POLL_INTERVAL:
+    name: OnStar Poll Interval
+    description: >-
+      From OnStarJS: requestPollingIntervalSeconds - How often status check requests will be made
+  ONSTAR_POLL_TIMEOUT:
+    name: OnStar Poll Timeout
+    description: >-
+      From OnStarJS: requestPollingTimeoutSeconds - How long a request will make subsequent status check requests before timing out.
+  MQTT_HOST:
+    name: MQTT Host
+    description: >-
+      Hostname of MQTT broker/server
+  MQTT_USERNAME:
+    name: MQTT Username
+    description: >-
+      Username for MQTT broker/server
+  MQTT_PASSWORD:
+    name: MQTT Password
+    description: >-
+      Password for MQTT broker/server
+  MQTT_PORT:
+    name: MQTT Port
+    description: >-
+      Port for MQTT broker/server
+  MQTT_PREFIX:
+    name: MQTT Prefix
+    description: >-
+      Prefix for MQTT topics published to broker/server
+      
