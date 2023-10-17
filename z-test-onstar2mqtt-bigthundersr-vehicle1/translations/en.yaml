@@ -7,7 +7,7 @@ configuration:
   ONSTAR_DEVICEID:
     name: OnStar Device ID
     description: >-
-      UUID generated for your vehicle
+      V4 UUID generated for your vehicle using https://www.uuidgenerator.net/version4
   ONSTAR_VIN:
     name: OnStar VIN
     description: >-
