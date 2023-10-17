@@ -18,21 +18,20 @@ services:
 init: false
 options:
   VEHICLE_NAME: "Vehicle 1"
-  ONSTAR_DEVICEID: ""
-  ONSTAR_VIN: ""
-  ONSTAR_USERNAME: ""
-  ONSTAR_PASSWORD: ""
-  ONSTAR_PIN: ""
+  ONSTAR_DEVICEID: null
+  ONSTAR_VIN: null
+  ONSTAR_USERNAME: null
+  ONSTAR_PASSWORD: null
+  ONSTAR_PIN: null
   ONSTAR_URL: "https://api.gm.com"
   ONSTAR_REFRESH: 1800000
   ONSTAR_POLL_INTERVAL: 6
   ONSTAR_POLL_TIMEOUT: 90
-  MQTT Settings:
-    MQTT_HOST: ""
-    MQTT_USERNAME: ""
-    MQTT_PASSWORD: ""
-    MQTT_PORT: 1883
-    MQTT_PREFIX: "homeassistant"
+  MQTT_HOST: null
+  MQTT_USERNAME: null
+  MQTT_PASSWORD: null
+  MQTT_PORT: 1883
+  MQTT_PREFIX: "homeassistant"
   #MQTT_TLS: false
 schema:
   VEHICLE_NAME: str
@@ -45,10 +44,9 @@ schema:
   ONSTAR_REFRESH: int
   ONSTAR_POLL_INTERVAL: int
   ONSTAR_POLL_TIMEOUT: int
-  MQTT Settings:
-    MQTT_HOST: str
-    MQTT_USERNAME: str
-    MQTT_PASSWORD: password
-    MQTT_PORT: port
-    MQTT_PREFIX: str
+  MQTT_HOST: str
+  MQTT_USERNAME: str
+  MQTT_PASSWORD: password
+  MQTT_PORT: port
+  MQTT_PREFIX: str
   #MQTT_TLS: bool
