@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.4.1
+
+- Added detailed descriptions for all required data fields
+
 ## 1.4.0
 
 - Exposed additional parameters available in the program to the add-on.
