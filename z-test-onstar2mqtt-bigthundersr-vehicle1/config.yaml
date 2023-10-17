@@ -27,7 +27,8 @@ options:
   ONSTAR_REFRESH: 1800000
   ONSTAR_POLL_INTERVAL: 6
   ONSTAR_POLL_TIMEOUT: 90
-  MQTT_HOST: ""
+  MQTT Settings:
+    MQTT_HOST: ""
     MQTT_USERNAME: ""
     MQTT_PASSWORD: ""
     MQTT_PORT: 1883
@@ -44,7 +45,8 @@ schema:
   ONSTAR_REFRESH: int
   ONSTAR_POLL_INTERVAL: int
   ONSTAR_POLL_TIMEOUT: int
-  MQTT_HOST: str
+  MQTT Settings:
+    MQTT_HOST: str
     MQTT_USERNAME: str
     MQTT_PASSWORD: password
     MQTT_PORT: port
