@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.4.0
+
+- Exposed additional parameters available in the program to the add-on.
+
 ## 1.3.28
 
 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.5.28](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.5.28)
