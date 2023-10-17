@@ -31,7 +31,7 @@ configuration:
   ONSTAR_REFRESH:
     name: OnStar Refresh Period
     description: >-
-      The refresh period for polling OnStar for data updates in seconds.    
+      The refresh period for polling OnStar for data updates in milliseconds.    
   ONSTAR_POLL_INTERVAL:
     name: OnStar Poll Interval
     description: >-
