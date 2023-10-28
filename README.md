@@ -60,6 +60,10 @@ Collect the following information:
 
 [https://github.com/BigThunderSR/node-red-contrib-onstar2](https://github.com/BigThunderSR/node-red-contrib-onstar2)
 
+Example Lovelace Dashboard Using Example Code in Documentation Tab:
+
+![lovelace screenshot](images/lovelace.png)
+
 <!-- _Example add-on to use as a blueprint for new add-ons._ -->
 
 <!--
