@@ -1,8 +1,8 @@
-# Sample configs for MQTT Home Assistant integration
+# Sample Configs for MQTT Home Assistant Integration
 
 ## Commands
 
-### Example script yaml
+### Example Script YAML
 
 ```yaml
 alias: Car - Start Vehicle
@@ -15,7 +15,7 @@ mode: single
 icon: 'mdi:car-electric'
 ```
 
-### Trigger precondition via calendar
+### Trigger Precondition via Calendar
 
 ````yaml
 alias: Car Precondition
@@ -53,7 +53,7 @@ device_tracker:
       your_car_name: homeassistant/device_tracker/YOUR_CAR_VIN/getlocation/state
 ```
 
-#### script yaml
+#### Script YAML
 
 ```yaml
 alias: Car - Location
@@ -83,7 +83,7 @@ action:
 mode: single
 ```
 
-#### Commands
+#### Available Commands
 
 [OnStarJS Command Docs](https://github.com/samrum/OnStarJS#commands)
 
@@ -97,9 +97,6 @@ mode: single
 8. `chargeOverride`
 9. `cancelChargeOverride`
 10. `getLocation`
-
-#### New in this build of onstar2mqtt
-
 11. `alertFlash`
 12. `alertHonk`
 
@@ -109,7 +106,7 @@ Create a new dashboard, or use the cards in your own view. The `mdi:car-electric
 
 ![lovelace screenshot](images/lovelace.png)
 
-#### dashboard yaml
+#### Dashboard YAML
 
 ```yaml
 views:

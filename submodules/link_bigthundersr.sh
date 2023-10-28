@@ -16,7 +16,7 @@ ln -f ../submodules/bigthundersr/onstar2mqtt/src/mqtt.js ./src/mqtt.js
 ln -f ../submodules/bigthundersr/onstar2mqtt/src/vehicle.js ./src/vehicle.js
 
 ln -f ../submodules/bigthundersr/onstar2mqtt/HA-MQTT.md ./DOCS.md
-ln -f ../submodules/bigthundersr/onstar2mqtt/images ./
+ln -sf ../submodules/bigthundersr/onstar2mqtt/images ./images
 
 echo "Vehicle 2"
 
@@ -34,6 +34,6 @@ ln -f ../submodules/bigthundersr/onstar2mqtt/src/mqtt.js ./src/mqtt.js
 ln -f ../submodules/bigthundersr/onstar2mqtt/src/vehicle.js ./src/vehicle.js
 
 ln -f ../submodules/bigthundersr/onstar2mqtt/HA-MQTT.md ./DOCS.md
-ln -f ../submodules/bigthundersr/onstar2mqtt/images ./
+ln -sf ../submodules/bigthundersr/onstar2mqtt/images ./images
 
 echo "Done!"
