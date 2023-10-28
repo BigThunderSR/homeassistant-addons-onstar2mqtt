@@ -15,6 +15,8 @@ ln -f ../submodules/bigthundersr/onstar2mqtt/src/measurement.js ./src/measuremen
 ln -f ../submodules/bigthundersr/onstar2mqtt/src/mqtt.js ./src/mqtt.js
 ln -f ../submodules/bigthundersr/onstar2mqtt/src/vehicle.js ./src/vehicle.js
 
+ln -f ../submodules/bigthundersr/onstar2mqtt/HA-MQTT.md ./DOCS.md
+
 echo "Vehicle 2"
 
 cd ../onstar2mqtt-bigthundersr-vehicle2/
@@ -30,5 +32,6 @@ ln -f ../submodules/bigthundersr/onstar2mqtt/src/measurement.js ./src/measuremen
 ln -f ../submodules/bigthundersr/onstar2mqtt/src/mqtt.js ./src/mqtt.js
 ln -f ../submodules/bigthundersr/onstar2mqtt/src/vehicle.js ./src/vehicle.js
 
+ln -f ../submodules/bigthundersr/onstar2mqtt/HA-MQTT.md ./DOCS.md
 
 echo "Done!"
