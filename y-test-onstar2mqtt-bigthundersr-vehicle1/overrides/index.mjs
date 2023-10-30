@@ -28,12 +28,12 @@ function __awaiter(thisArg, _arguments, P, generator) {
     });
 }
 
-var appId = "OMB_CVY_iOS_6S0";
-var appSecret = "53YJ67kyLqMCzVEb758ySwXYxCThn7eeLw3D";
+var appId = "OMB_CVY_iOS_6T0";
+var appSecret = "TNvVSfSfstbqdVSxd4yuJFFHZgUXsL3CCzoe";
 var optionalClientScope = "";
 var requiredClientScope = "onstar gmoc user_trailer user priv";
 var serviceUrl = "https://api.gm.com";
-var userAgent = "myChevrolet/73 CFNetwork/1408.0.4 Darwin/22.5.0";
+var userAgent = "myChevrolet/95 CFNetwork/1408.0.4 Darwin/22.5.0";
 var onStarAppConfig = {
 	appId: appId,
 	appSecret: appSecret,

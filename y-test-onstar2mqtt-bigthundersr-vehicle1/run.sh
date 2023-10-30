@@ -14,6 +14,8 @@ export ONSTAR_POLL_TIMEOUT=$(bashio::config 'ONSTAR_POLL_TIMEOUT')
 export MQTT_HOST=$(bashio::config 'MQTT_HOST')
 export MQTT_USERNAME=$(bashio::config 'MQTT_USERNAME')
 export MQTT_PASSWORD=$(bashio::config 'MQTT_PASSWORD')
+export MQTT_PORT=$(bashio::config 'MQTT_PORT')
+export MQTT_PREFIX=$(bashio::config 'MQTT_PREFIX')
 
 bashio::log.info "Starting OnStar2MQTT for $VEHICLE_NAME..."
 npm run start
