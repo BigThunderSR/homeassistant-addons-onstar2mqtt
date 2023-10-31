@@ -62,7 +62,7 @@ Collect the following information:
 
 Example Lovelace Dashboard Using Example Code in Documentation Tab:
 
-![lovelace screenshot](images/lovelace.png)
+![lovelace screenshot](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/raw/main/images/lovelace.png)
 
 <!-- _Example add-on to use as a blueprint for new add-ons._ -->
 
