@@ -104,7 +104,7 @@ mode: single
 
 Create a new dashboard, or use the cards in your own view. The `mdi:car-electric` icon works well here.
 
-![lovelace screenshot](https://github.com/BigThunderSR/onstar2mqtt/blob/main/images/lovelace.png)
+![lovelace screenshot](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/blob/main/images/lovelace.png)
 
 #### Dashboard YAML
 
