@@ -173,18 +173,30 @@ const configureMQTT = async (commands, client, mqttHA) => {
         };
 
         const main = async () => run()
-            .then(() => logger.info('Updates complete, sleeping.'))
-            .catch(e => {
-                if (e instanceof Error) {
-                    logger.error('Error', {error: _.pick(e, [
-                        'message', 'stack',
-                        'response.status', 'response.statusText', 'response.headers', 'response.data',
-                        'request.method', 'request.body', 'request.contentType', 'request.headers', 'request.url'
-                        ])});
-                } else {
-                    logger.error('Error', {error: e});
-                }
-            });
+          .then(() => logger.info('Updates complete, sleeping.'))
+          .catch(e => {
+            if (e instanceof Error) {
+              const errorMessage = JSON.stringify({
+                error: _.pick(e, [
+                  'message', 'stack',
+                  'response.status', 'response.statusText', 'response.headers', 'response.data',
+                  'request.method', 'request.body', 'request.contentType', 'request.headers', 'request.url'
+                ])
+              });
+        
+              // Publish the error message to a specific topic
+              client.publish(topic, errorMessage);
+        
+              logger.error('Error', { error: _.pick(e, ['message']) });
+            } else {
+              const errorMessage = JSON.stringify({ error: e });
+        
+              // Publish the error message to a specific topic
+              client.publish(topic, errorMessage);
+        
+              logger.error('Error', { error: e });
+            }
+          });
 
         await main();
         setInterval(main, onstarConfig.refreshInterval);
