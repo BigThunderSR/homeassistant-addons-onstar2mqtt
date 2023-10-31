@@ -185,14 +185,14 @@ const configureMQTT = async (commands, client, mqttHA) => {
               });
         
               // Publish the error message to a specific topic
-              client.publish(topic, errorMessage, {retain: true});
+              client.publish('test/error', errorMessage, {retain: true});
         
               logger.error('Error', { error: _.pick(e, ['message']) });
             } else {
               const errorMessage = JSON.stringify({ error: e });
         
               // Publish the error message to a specific topic
-              client.publish(topic, errorMessage, {retain: true});
+              client.publish('test/error', errorMessage, {retain: true});
         
               logger.error('Error', { error: e });
             }
