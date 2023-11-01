@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.4.2
+
+- Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.5.29](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.5.29)
+
 ## 1.4.1
 
 - Added detailed descriptions for all required data fields
