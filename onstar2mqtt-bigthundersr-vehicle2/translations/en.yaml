@@ -36,10 +36,11 @@ configuration:
     name: OnStar Poll Interval
     description: >-
       From OnStarJS: requestPollingIntervalSeconds - How often status check requests will be made
+      Note: Reducing the polling timeout to less than the default set by the add-on (30 minutes/1800000 ms) is likely to get you rate limited (Error 429)
   ONSTAR_POLL_TIMEOUT:
     name: OnStar Poll Timeout
     description: >-
-      From OnStarJS: requestPollingTimeoutSeconds - How long a request will make subsequent status check requests before timing out.
+      From OnStarJS: requestPollingTimeoutSeconds - How long a request will make subsequent status check requests before timing out
   MQTT_HOST:
     name: MQTT Host
     description: >-
