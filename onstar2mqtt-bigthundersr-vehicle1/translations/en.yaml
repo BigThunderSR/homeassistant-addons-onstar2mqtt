@@ -40,7 +40,7 @@ configuration:
   ONSTAR_POLL_TIMEOUT:
     name: OnStar Poll Timeout
     description: >-
-      From OnStarJS: requestPollingTimeoutSeconds - How long a request will make subsequent status check requests before timing out.
+      From OnStarJS: requestPollingTimeoutSeconds - How long a request will make subsequent status check requests before timing out
   MQTT_HOST:
     name: MQTT Host
     description: >-
