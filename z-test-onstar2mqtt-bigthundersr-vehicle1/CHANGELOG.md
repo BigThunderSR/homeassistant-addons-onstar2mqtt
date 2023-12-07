@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.39 - Test Build. DO NOT Install!!!
+
+- Testing
+
 ## 1.3.38 - Test Build. DO NOT Install!!!
 
 - Testing

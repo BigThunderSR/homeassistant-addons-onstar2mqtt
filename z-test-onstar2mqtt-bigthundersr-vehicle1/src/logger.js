@@ -1,6 +1,23 @@
 const winston = require('winston');
 const _ = require('lodash');
 
+function stringify(obj) {
+    let cache = [];
+    let str = JSON.stringify(obj, function(key, value) {
+      if (typeof value === "object" && value !== null) {
+        if (cache.indexOf(value) !== -1) {
+          // Circular reference found, discard key
+          return;
+        }
+        // Store value in our collection
+        cache.push(value);
+      }
+      return value;
+    });
+    cache = null; // reset the cache
+    return str;
+  }
+
 const logger = winston.createLogger({
     level: _.get(process, 'env.LOG_LEVEL', 'info'),
     format: winston.format.combine(
@@ -13,7 +30,7 @@ const logger = winston.createLogger({
           } = info;
     
           const ts = timestamp.slice(0, 19).replace('T', ' ');
-          return `${ts} [${level}]: ${message} ${Object.keys(args).length ? JSON.stringify(args, null, 2) : ''}`;
+          return `${ts} [${level}]: ${message} ${Object.keys(args).length ? stringify(args, null, 2) : ''}`;
         }),
           ),
     // format: winston.format.json(),
