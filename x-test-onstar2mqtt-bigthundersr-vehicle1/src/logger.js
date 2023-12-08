@@ -21,11 +21,11 @@ function stringify(obj) {
 const logger = winston.createLogger({
     level: _.get(process, 'env.LOG_LEVEL', 'info'),
     format: winston.format.combine(
-        winston.format.colorize(),
+        winston.format.colorize({ all: true }),
         winston.format.timestamp({
           format: 'YYYY-MM-DD HH:mm:ss'
         }),
-        winston.format.align(),
+        //winston.format.align(),
         winston.format.printf((info) => {
           const {
             timestamp, level, message, ...args
@@ -37,7 +37,7 @@ const logger = winston.createLogger({
         }),
           ),
     // format: winston.format.json(),
-    transports: [new winston.transports.Console({stderrLevels: ['error']})]
+    transports: [new winston.transports.Console({ format: winston.format.colorize({all:true}), stderrLevels: ['error']})]
 })
 
 
