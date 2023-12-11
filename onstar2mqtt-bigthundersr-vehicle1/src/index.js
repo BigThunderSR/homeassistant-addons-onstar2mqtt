@@ -87,18 +87,14 @@ const configureMQTT = async (commands, client, mqttHA) => {
         }
         const commandFn = cmd.bind(commands);
         logger.info('Command sent', { command });        
-        //const topicArray = _.concat({topic},'/',{ command }.command,'/','state');        
-        //const commandStatusTopic = topicArray.map(item => item.topic || item).join('');
         logger.info(commandStatusTopic);
-        client.publish(commandStatusTopic, JSON.stringify({ "Command":"Sent" }), {retain: false});
+        client.publish(commandStatusTopic, JSON.stringify({ "Command":"Sent" }), {retain: true});
         commandFn(options || {})
             .then(data => {
                 // TODO refactor the response handling for commands - Partially Done!
                 logger.info('Command completed', { command });                
-                //const topicArray = _.concat({topic},'/',{ command }.command,'/','state');                        
-                //const commandStatusTopic = topicArray.map(item => item.topic || item).join('');
                 logger.info(commandStatusTopic);
-                client.publish(commandStatusTopic, JSON.stringify({ "Command":"Completed Successfully" }), {retain: false});
+                client.publish(commandStatusTopic, JSON.stringify({ "Command":"Completed Successfully" }), {retain: true});
                 const responseData = _.get(data, 'response.data');
                 if (responseData) {
                     logger.info('Command response data', { responseData });
@@ -114,10 +110,8 @@ const configureMQTT = async (commands, client, mqttHA) => {
                 }
             })
             .catch((err)=> {logger.error('Command error', {command, err})            
-            //const topicArray = _.concat({topic},'/',{ command }.command,'/','state');            
-            //const commandStatusTopic = topicArray.map(item => item.topic || item).join('');
             logger.info(commandStatusTopic);
-            client.publish(commandStatusTopic, JSON.stringify({"Command": err}), {retain: false})});
+            client.publish(commandStatusTopic, JSON.stringify({"Command": err}), {retain: true})});
     });
     const topic = mqttHA.getCommandTopic();
     logger.info('Subscribed to command topic', {topic});
