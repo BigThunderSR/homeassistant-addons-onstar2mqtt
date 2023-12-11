@@ -1,5 +1,5 @@
 name: OnStar2MQTT Home Assistant Add-on (BigThunderSR) for Vehicle 2
-version: 1.4.3
+version: 1.6.0
 slug: onstar2mqtt_bigthundersr_vehicle2
 description: Home Assistant Add On Version of BigThunderSR/onstar2mqtt for Vehicle 2
 codenotary: bigthundersr@outlook.com
@@ -32,6 +32,7 @@ options:
   MQTT_PASSWORD: ""
   MQTT_PORT: 1883
   MQTT_PREFIX: "homeassistant"
+  MQTT_ONSTAR_POLLING_STATUS_TOPIC: "homeassistant/onstar2mqtt/vehicle1/polling"
 schema:
   VEHICLE_NAME: str
   ONSTAR_DEVICEID: str
@@ -48,3 +49,4 @@ schema:
   MQTT_PASSWORD: password
   MQTT_PORT: port
   MQTT_PREFIX: str
+  MQTT_ONSTAR_POLLING_STATUS_TOPIC: str

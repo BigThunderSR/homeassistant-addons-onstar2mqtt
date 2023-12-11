@@ -61,4 +61,8 @@ configuration:
     name: MQTT Prefix
     description: >-
       Prefix for MQTT topics published to broker/server
+  MQTT_ONSTAR_POLLING_STATUS_TOPIC:
+    name: MQTT OnSTAR Polling Status Topic
+    description: >-
+      Topic for publishing OnStar data polling success/failure True/False status and detailed messages to broker/server
       

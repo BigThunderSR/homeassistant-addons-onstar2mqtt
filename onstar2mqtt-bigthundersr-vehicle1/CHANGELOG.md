@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.6.0
+
+- Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.6.0](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.6.0)
+- Added ability to provide MQTT topic for Onstar Data Polling Status to monitor success/failure when OnStar is polled for data - Details in [README](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt#)
+- Command Response Status is now published to MQTT topics - Details in [README](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt#)
+
 ## 1.4.3
 
 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.5.30](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.5.30)
