@@ -32,7 +32,7 @@ options:
   MQTT_PASSWORD: ""
   MQTT_PORT: 1883
   MQTT_PREFIX: "homeassistant"
-  MQTT_ONSTAR_POLLING_STATUS_TOPIC: "homeassistant/onstar2mqtt/vehicle1/polling"
+  MQTT_ONSTAR_POLLING_STATUS_TOPIC: "homeassistant/onstar2mqtt/vehicle2/polling"
 schema:
   VEHICLE_NAME: str
   ONSTAR_DEVICEID: str
