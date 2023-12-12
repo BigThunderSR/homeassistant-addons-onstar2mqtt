@@ -66,6 +66,24 @@ mode: single
 icon: 'mdi:map-marker'
 ```
 
+#### MQTT Polling Status Success Monitor
+
+Create a MQTT binary sensor in Home Assistant
+
+```yaml
+mqtt:
+  binary_sensor:
+    - name: "<Vehicle_Name> OnStar Polling Status Successful"
+      unique_id: <vehicle_name>_onstar_polling_status_successful
+      availability_topic: homeassistant/<vehicle_vin>/available
+      payload_available: "true"
+      payload_not_available: "false"
+      state_topic: "homeassistant/onstar2mqtt/vehicle1/polling/lastpollsuccessful"
+      payload_on: "false"
+      payload_off: "true"
+      device_class: problem
+```
+
 ### Automation
 
 Create an automation to update the location whenever the odometer changes, instead of on a time interval.
