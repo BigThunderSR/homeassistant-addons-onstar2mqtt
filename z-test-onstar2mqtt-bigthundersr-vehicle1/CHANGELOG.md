@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.3.43 - Test Build. DO NOT Install!!!
+
+- Testing
+
 ## 1.3.42 - Test Build. DO NOT Install!!!
 
 - Testing
