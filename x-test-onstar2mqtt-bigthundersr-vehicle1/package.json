@@ -1,6 +1,6 @@
 {
   "name": "onstar2mqtt",
-  "version": "1.5.30",
+  "version": "1.6.0",
   "description": "OnStarJS wrapper for MQTT",
   "main": "src/index.js",
   "scripts": {
@@ -32,6 +32,7 @@
     "async-mqtt": "^2.6.3",
     "circular-json": "^0.5.9",
     "convert-units": "^2.3.4",
+    "dotenv": "^16.3.1",
     "lodash": "^4.17.21",
     "onstarjs": "^2.3.29",
     "uuid": "^9.0.1",
@@ -41,9 +42,9 @@
     "@babel/eslint-parser": "^7.23.3",
     "@babel/eslint-plugin": "^7.23.5",
     "@babel/plugin-syntax-class-properties": "^7.12.13",
-    "@babel/preset-env": "^7.23.5",
-    "eslint": "^8.55.0",
-    "eslint-plugin-import": "^2.29.0",
+    "@babel/preset-env": "^7.23.6",
+    "eslint": "^8.56.0",
+    "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.1.1",
     "mocha": "^10.2.0",
