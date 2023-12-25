@@ -7,6 +7,7 @@ const {Diagnostic} = require('./diagnostic');
 const MQTT = require('./mqtt');
 const Commands = require('./commands');
 const logger = require('./logger');
+const CircularJSON = require('circular-json');
 
 
 const onstarConfig = {
@@ -117,7 +118,7 @@ const configureMQTT = async (commands, client, mqttHA) => {
             //const topicArray = _.concat({topic},'/',{ command }.command,'/','state');            
             //const commandStatusTopic = topicArray.map(item => item.topic || item).join('');
             logger.info(commandStatusTopic);
-            client.publish(commandStatusTopic, JSON.stringify({"Command": err}), {retain: false})});
+            client.publish(commandStatusTopic, CircularJSON.stringify({"Command": err}), {retain: false})});
     });
     const topic = mqttHA.getCommandTopic();
     logger.info('Subscribed to command topic', {topic});
