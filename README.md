@@ -61,7 +61,7 @@ Collect the following information:
 - The OnStar API has rate limiting, so they will block excessive requests over a short period of time.
   - Reducing the polling timeout to less than the default set by the add-on (30 minutes/1800000 ms) is likely to get you rate limited (Error 429).
 - The OnStar API can be very temperamental, so you may see numerous errors every now and then where you cannot get any data from your vehicle. These tend to be very sporadic and usually go away on their own.
-- After your engine is turned off, the vehicle will respond to about 4 - 5 requests before going into a type of hibernation mode and will not respond to requests until the engine is started up again. If your engine has been off for a while, you may still not be able to get any data from the vehicle even if it is your first attempt at trying to pull data from your vehicle after the engine was turned off.
+- After your engine is turned off, the vehicle will respond to about 4 - 5 requests before going into a type of hibernation mode and will not respond to requests or commands until the engine is started up again. If your engine has been off for a while, you may still not be able to get any data from the vehicle or run commands even if it is your first attempt at trying to pull data from your vehicle after the engine was turned off.
   - **Note:** You will see an error of *"Unable to establish packet session to the vehicle"* when this occurs.
 
 ## My other related project which provides additional capabilities through Node-RED
