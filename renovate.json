@@ -6,4 +6,7 @@
   "ignorePaths": [
       ".old/","example/"
   ]
+  "labels": [
+    "Renovate"
+  ]
 }
