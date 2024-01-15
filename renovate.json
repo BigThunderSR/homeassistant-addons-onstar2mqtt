@@ -13,13 +13,27 @@
   "packageRules": [
     { 
      "matchManagers": ["npm"],
-     "labels": ["javascript"],
+     "addLabels": ["javascript"]
+    },
+    {
+     "matchLanguages":["js"],
+     "addLabels": ["javascript"]
+    },
+    {
      "matchManagers": ["github-actions"],
-     "labels": ["github_actions"],
+     "addLabels": ["github_actions"]
+    },
+    {
+     "matchManagers": ["dockerfile"],
+     "addLabels": ["dockerfile"]
+    },
+    {
      "matchPackagePatterns": ["dockerfile"],
-     "labels": ["dockerfile"],
+     "addLabels": ["dockerfile"]
+    },
+    {
      "matchManagers": ["nvm"],
-     "labels": ["nvm"] 
-    }
+     "addLabels": ["nvm"] 
+    }  
   ]
 }
