@@ -30,8 +30,8 @@ function __awaiter(thisArg, _arguments, P, generator) {
     });
 }
 
-var appId = "OMB_CVY_iOS_6V0";
-var appSecret = "HWi9JcBRXWm4rFp6UQsatfVJbHG6Fu8YgyWD";
+var appId = "OMB_CVY_iOS_6W2";
+var appSecret = "obZ6sTewyPd8c7JE9SyfLnmeLpX6gLtpoytz";
 var optionalClientScope = "";
 var requiredClientScope = "onstar gmoc user_trailer user priv";
 var serviceUrl = "https://api.gm.com";
