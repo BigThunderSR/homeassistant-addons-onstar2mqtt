@@ -27,7 +27,7 @@ configuration:
   ONSTAR_URL:
     name: OnStar URL
     description: >-
-      OnStar URL for your OnStar Account
+      OnStar URL for your OnStar Account. For USA, use the default. For Canada, use: https://api.gm.ca
   ONSTAR_REFRESH:
     name: OnStar Refresh Period
     description: >-
