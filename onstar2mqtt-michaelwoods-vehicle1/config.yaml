@@ -23,7 +23,7 @@ options:
   ONSTAR_USERNAME: ""
   ONSTAR_PASSWORD: ""
   ONSTAR_PIN: ""
-  ONSTAR_URL: "https://api.gm.com"
+  ONSTAR_URL: "https://api.gm.com" #This value is hard coded in the program code and cannot be changed at this time
   ONSTAR_REFRESH: 1800000
   MQTT_HOST: ""
   MQTT_USERNAME: ""

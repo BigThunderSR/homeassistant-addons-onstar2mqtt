@@ -23,7 +23,7 @@ options:
   ONSTAR_USERNAME: null
   ONSTAR_PASSWORD: null
   ONSTAR_PIN: null
-  ONSTAR_URL: "https://api.gm.com"
+  ONSTAR_URL: "https://api.gm.com" #This value is hard coded in the program code and cannot be changed at this time
   ONSTAR_REFRESH: 1800000
   ONSTAR_POLL_INTERVAL: 6
   ONSTAR_POLL_TIMEOUT: 90
