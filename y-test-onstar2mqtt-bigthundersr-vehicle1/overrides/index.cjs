@@ -415,7 +415,7 @@ class RequestService {
     }
     getAccountVehicles() {
         return __awaiter(this, void 0, void 0, function* () {
-            const request = new Request(`${this.getApiUrlForPath("/account/vehicles")}?includeCommands=true&includeEntit%20lements=true&includeModules=true`)
+            const request = new Request(`${this.getApiUrlForPath("/account/vehicles")}?includeCommands=true&includeEntitlements=true&includeModules=true&includeSharedVehicles=true`)
                 .setUpgradeRequired(false)
                 .setMethod(RequestMethod.Get);
             return this.sendRequest(request);
