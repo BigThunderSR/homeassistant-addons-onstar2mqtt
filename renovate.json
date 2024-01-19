@@ -3,6 +3,9 @@
   "extends": [
     "config:recommended"
   ],
+  "npm": {
+    "minimumReleaseAge": "3 days"
+  },
   "ignorePaths": [
       ".old/","example/"
   ],
