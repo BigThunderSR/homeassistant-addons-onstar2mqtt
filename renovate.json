@@ -4,7 +4,8 @@
     "config:recommended"
   ],
   "npm": {
-    "minimumReleaseAge": "3 days"
+    "minimumReleaseAge": "3 days",
+    "rangeStrategy": "replace"
   },
   "ignorePaths": [
       ".old/","example/"
