@@ -5,7 +5,7 @@
   ],
   "npm": {
     "minimumReleaseAge": "3 days",
-    "rangeStrategy": "replace"
+    "rangeStrategy": "bump"
   },
   "ignorePaths": [
       ".old/","example/"
