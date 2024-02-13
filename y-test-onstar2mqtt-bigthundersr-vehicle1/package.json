@@ -32,22 +32,22 @@
     "async-mqtt": "^2.6.3",
     "circular-json": "^0.5.9",
     "convert-units": "^2.3.4",
-    "dotenv": "^16.3.2",
+    "dotenv": "^16.4.3",
     "lodash": "^4.17.21",
     "onstarjs": "^2.3.30",
     "uuid": "^9.0.1",
     "winston": "^3.11.0"
   },
   "devDependencies": {
-    "@babel/eslint-parser": "^7.23.3",
+    "@babel/eslint-parser": "^7.23.10",
     "@babel/eslint-plugin": "^7.23.5",
     "@babel/plugin-syntax-class-properties": "^7.12.13",
-    "@babel/preset-env": "^7.23.8",
+    "@babel/preset-env": "^7.23.9",
     "eslint": "^8.56.0",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^6.1.1",
-    "mocha": "^10.2.0",
+    "mocha": "^10.3.0",
     "nyc": "^15.1.0"
   }
 }
