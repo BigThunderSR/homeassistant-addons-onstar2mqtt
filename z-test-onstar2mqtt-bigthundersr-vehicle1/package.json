@@ -32,7 +32,7 @@
     "async-mqtt": "^2.6.3",
     "circular-json": "^0.5.9",
     "convert-units": "^2.3.4",
-    "dotenv": "^16.4.4",
+    "dotenv": "^16.4.5",
     "lodash": "^4.17.21",
     "onstarjs": "^2.3.30",
     "uuid": "^9.0.1",
