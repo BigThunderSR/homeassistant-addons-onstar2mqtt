@@ -42,6 +42,8 @@ class Measurement {
                 return 'V';
             case 'l':
                 return 'L';
+            case 'L':
+                return 'L';
             //case 'l':
             //return 'lit';
             //case 'L':
