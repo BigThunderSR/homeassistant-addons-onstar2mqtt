@@ -255,12 +255,11 @@ class MQTT {
                 return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'volume');
             case 'FUEL AMOUNT':
             case 'FUEL AMOUNT GAL':
-            case 'FUEL LEVEL IN GAL':
-            case 'FUEL LEVEL IN GAL GAL':
-                return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'volume_storage');
             case 'FUEL CAPACITY':
             case 'FUEL CAPACITY GAL':
-                return this.mapSensorConfigPayload(diag, diagEl, undefined, 'volume_storage');
+            case 'FUEL LEVEL IN GAL':
+            case 'FUEL LEVEL IN GAL GAL':
+                return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'volume_storage');    
             // no device class, camel case name
             case 'LAST TRIP ELECTRIC ECON':
             case 'LIFETIME MPGE':             
