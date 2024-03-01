@@ -151,14 +151,15 @@ class MQTT {
         return state;
     }
 
-    mapBaseConfigPayload(diag, diagEl, device_class, name, attr) {
+    mapBaseConfigPayload(diag, diagEl, state_class, device_class, name, attr) {
         name = name || MQTT.convertFriendlyName(diagEl.name);
         name = this.addNamePrefix(name);
         // Generate the unique id from the vin and name
         let unique_id = `${this.vehicle.vin}-${diagEl.name}`
         unique_id = unique_id.replace(/\s+/g, '-').toLowerCase();
         return {
-            device_class,
+            state_class,
+            device_class,            
             name,
             device: {
                 identifiers: [this.vehicle.vin],
@@ -177,17 +178,17 @@ class MQTT {
         };
     }
 
-    mapSensorConfigPayload(diag, diagEl, device_class, name, attr) {
+    mapSensorConfigPayload(diag, diagEl, state_class, device_class, name, attr) {
         name = name || MQTT.convertFriendlyName(diagEl.name);
         return _.extend(
-            this.mapBaseConfigPayload(diag, diagEl, device_class, name, attr),
+            this.mapBaseConfigPayload(diag, diagEl, state_class, device_class, name, attr),
             {unit_of_measurement: diagEl.unit});
     }
 
-    mapBinarySensorConfigPayload(diag, diagEl, device_class, name, attr) {
+    mapBinarySensorConfigPayload(diag, diagEl, state_class, device_class, name, attr) {
         name = name || MQTT.convertFriendlyName(diagEl.name);
         return _.extend(
-            this.mapBaseConfigPayload(diag, diagEl, device_class, name, attr),
+            this.mapBaseConfigPayload(diag, diagEl, state_class, device_class, name, attr),
             {payload_on: true, payload_off: false});
     }
 
@@ -202,52 +203,69 @@ class MQTT {
             case 'LIFETIME ENERGY USED':
             case 'LIFETIME EFFICIENCY':
             case 'ELECTRIC ECONOMY':
-                return this.mapSensorConfigPayload(diag, diagEl, 'energy');
+                return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'energy');
             case 'INTERM VOLT BATT VOLT':
             case 'EV PLUG VOLTAGE':
-                return this.mapSensorConfigPayload(diag, diagEl, 'voltage');
+                return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'voltage');
             case 'HYBRID BATTERY MINIMUM TEMPERATURE':
             case 'AMBIENT AIR TEMPERATURE':
             case 'AMBIENT AIR TEMPERATURE F':
             case 'ENGINE COOLANT TEMP':
             case 'ENGINE COOLANT TEMP F':
-                return this.mapSensorConfigPayload(diag, diagEl, 'temperature');
+                return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'temperature');
             case 'EV BATTERY LEVEL':
-                return this.mapSensorConfigPayload(diag, diagEl, 'battery');
+                return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'battery');
             case 'TIRE PRESSURE LF':
-                return this.mapSensorConfigPayload(diag, diagEl, 'pressure', 'Tire Pressure: Left Front', `{{ {'recommendation': value_json.${MQTT.convertName('TIRE_PRESSURE_PLACARD_FRONT')}} | tojson }}`);
+                return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'pressure', 'Tire Pressure: Left Front', `{{ {'recommendation': value_json.${MQTT.convertName('TIRE_PRESSURE_PLACARD_FRONT')}} | tojson }}`);
             case 'TIRE PRESSURE LF PSI':
-                return this.mapSensorConfigPayload(diag, diagEl, 'pressure', 'Tire Pressure: Left Front PSI', `{{ {'recommendation': value_json.${MQTT.convertName('TIRE_PRESSURE_PLACARD_FRONT_PSI')}} | tojson }}`);
+                return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'pressure', 'Tire Pressure: Left Front PSI', `{{ {'recommendation': value_json.${MQTT.convertName('TIRE_PRESSURE_PLACARD_FRONT_PSI')}} | tojson }}`);
             case 'TIRE PRESSURE LR':
-                return this.mapSensorConfigPayload(diag, diagEl, 'pressure', 'Tire Pressure: Left Rear', `{{ {'recommendation': value_json.${MQTT.convertName('TIRE_PRESSURE_PLACARD_REAR')}} | tojson }}`);
+                return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'pressure', 'Tire Pressure: Left Rear', `{{ {'recommendation': value_json.${MQTT.convertName('TIRE_PRESSURE_PLACARD_REAR')}} | tojson }}`);
             case 'TIRE PRESSURE LR PSI':
-                return this.mapSensorConfigPayload(diag, diagEl, 'pressure', 'Tire Pressure: Left Rear PSI', `{{ {'recommendation': value_json.${MQTT.convertName('TIRE_PRESSURE_PLACARD_REAR_PSI')}} | tojson }}`);
+                return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'pressure', 'Tire Pressure: Left Rear PSI', `{{ {'recommendation': value_json.${MQTT.convertName('TIRE_PRESSURE_PLACARD_REAR_PSI')}} | tojson }}`);
             case 'TIRE PRESSURE RF':
-                return this.mapSensorConfigPayload(diag, diagEl, 'pressure', 'Tire Pressure: Right Front', `{{ {'recommendation': value_json.${MQTT.convertName('TIRE_PRESSURE_PLACARD_FRONT')}} | tojson }}`);
+                return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'pressure', 'Tire Pressure: Right Front', `{{ {'recommendation': value_json.${MQTT.convertName('TIRE_PRESSURE_PLACARD_FRONT')}} | tojson }}`);
             case 'TIRE PRESSURE RF PSI':
-                return this.mapSensorConfigPayload(diag, diagEl, 'pressure', 'Tire Pressure: Right Front PSI', `{{ {'recommendation': value_json.${MQTT.convertName('TIRE_PRESSURE_PLACARD_FRONT_PSI')}} | tojson }}`);
+                return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'pressure', 'Tire Pressure: Right Front PSI', `{{ {'recommendation': value_json.${MQTT.convertName('TIRE_PRESSURE_PLACARD_FRONT_PSI')}} | tojson }}`);
             case 'TIRE PRESSURE RR':
-                return this.mapSensorConfigPayload(diag, diagEl, 'pressure', 'Tire Pressure: Right Rear', `{{ {'recommendation': value_json.${MQTT.convertName('TIRE_PRESSURE_PLACARD_REAR')}} | tojson }}`);
+                return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'pressure', 'Tire Pressure: Right Rear', `{{ {'recommendation': value_json.${MQTT.convertName('TIRE_PRESSURE_PLACARD_REAR')}} | tojson }}`);
             case 'TIRE PRESSURE RR PSI':
-                return this.mapSensorConfigPayload(diag, diagEl, 'pressure', 'Tire Pressure: Right Rear PSI', `{{ {'recommendation': value_json.${MQTT.convertName('TIRE_PRESSURE_PLACARD_REAR_PSI')}} | tojson }}`);
+                return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'pressure', 'Tire Pressure: Right Rear PSI', `{{ {'recommendation': value_json.${MQTT.convertName('TIRE_PRESSURE_PLACARD_REAR_PSI')}} | tojson }}`);
             // binary sensor
             case 'EV PLUG STATE': // unplugged/plugged
-                return this.mapBinarySensorConfigPayload(diag, diagEl, 'plug');
+                return this.mapBinarySensorConfigPayload(diag, diagEl, undefined, 'plug');
             case 'EV CHARGE STATE': // not_charging/charging
-                return this.mapBinarySensorConfigPayload(diag, diagEl, 'battery_charging');
+                return this.mapBinarySensorConfigPayload(diag, diagEl, undefined, 'battery_charging');
             // binary_sensor, but no applicable device_class
             case 'PRIORITY CHARGE INDICATOR': // FALSE/TRUE
             case 'PRIORITY CHARGE STATUS': // NOT_ACTIVE/ACTIVE
                 return this.mapBinarySensorConfigPayload(diag, diagEl);
-            // no device class, camel case name
+            // new device class, camel case name
+            case 'GAS RANGE':
+            case 'GAS RANGE MI':
             case 'EV RANGE':
+            case 'EV RANGE MI':
             case 'ODOMETER':
+            case 'ODOMETER MI':
             case 'LAST TRIP TOTAL DISTANCE':
+            case 'LAST TRIP TOTAL DISTANCE MI':
+                return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'distance');
+            case 'LIFETIME FUEL USED':
+            case 'LIFETIME FUEL USED GAL':
+                return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'volume');
+            case 'FUEL AMOUNT':
+            case 'FUEL AMOUNT GAL':
+            case 'FUEL CAPACITY':
+            case 'FUEL CAPACITY GAL':
+            case 'FUEL LEVEL IN GAL':
+            case 'FUEL LEVEL IN GAL GAL':
+                return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'volume_storage');    
+            // no device class, camel case name
             case 'LAST TRIP ELECTRIC ECON':
-            case 'LIFETIME MPGE':
-            case 'CHARGER POWER LEVEL':
+            case 'LIFETIME MPGE':             
+            case 'CHARGER POWER LEVEL':                
             default:
-                return this.mapSensorConfigPayload(diag, diagEl);
+                return this.mapSensorConfigPayload(diag, diagEl, 'measurement');
         }
     }
 }
