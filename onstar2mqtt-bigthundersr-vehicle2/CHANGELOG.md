@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.7.0
+
+- Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.7.0](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.7.0)
+- Add state_class of measurement to all non-binary sensors to enable long-term statistics saving in HA
+- Add device_class for several additional sensors
+- Change "lit" to "L" which is the correct unit for Liters in HA
+- Change occurrences of "l" to "L" which is the correct unit for Liters
+
 ## 1.6.3
 
 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.6.3](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.6.3)
