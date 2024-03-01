@@ -239,30 +239,13 @@ class MQTT {
             case 'PRIORITY CHARGE INDICATOR': // FALSE/TRUE
             case 'PRIORITY CHARGE STATUS': // NOT_ACTIVE/ACTIVE
                 return this.mapBinarySensorConfigPayload(diag, diagEl);
-            // new device class, camel case name
-            case 'GAS RANGE':
-            case 'GAS RANGE MI':
-            case 'EV RANGE':
-            case 'EV RANGE MI':
-            case 'ODOMETER':
-            case 'ODOMETER MI':
-            case 'LAST TRIP TOTAL DISTANCE':
-            case 'LAST TRIP TOTAL DISTANCE MI':
-                return this.mapSensorConfigPayload(diag, diagEl, 'distance');
-            case 'LIFETIME FUEL USED':
-            case 'LIFETIME FUEL USED GAL':
-                return this.mapSensorConfigPayload(diag, diagEl, 'volume');
-            case 'FUEL AMOUNT':
-            case 'FUEL AMOUNT GAL':
-            case 'FUEL CAPACITY':
-            case 'FUEL CAPACITY GAL':
-            case 'FUEL LEVEL IN GAL':
-            case 'FUEL LEVEL IN GAL GAL':
-                return this.mapSensorConfigPayload(diag, diagEl, 'volume_storage');    
             // no device class, camel case name
+            case 'EV RANGE':
+            case 'ODOMETER':
+            case 'LAST TRIP TOTAL DISTANCE':
             case 'LAST TRIP ELECTRIC ECON':
-            case 'LIFETIME MPGE':             
-            case 'CHARGER POWER LEVEL':                
+            case 'LIFETIME MPGE':
+            case 'CHARGER POWER LEVEL':
             default:
                 return this.mapSensorConfigPayload(diag, diagEl);
         }
