@@ -18,6 +18,7 @@ const _ = require('lodash');
  *      }
  * - homeassistant/sensor/VIN/TIRE_PRESSURE_LF/config -- Diagnostic Element
  *      - payload: {
+ *          state_class: "measurement",         ## New starting at v1.7.0
  *          device_class: "pressure",
  *          name: "Tire Pressure: Left Front",
  *          state_topic: "homeassistant/sensor/VIN/TIRE_PRESSURE/state",
@@ -27,6 +28,7 @@ const _ = require('lodash');
  *      }
  * - homeassistant/sensor/VIN/TIRE_PRESSURE_RR/config -- Diagnostic Element
  *      - payload: {
+ *          state_class: "measurement",         ## New starting at v1.7.0
  *          device_class: "pressure",
  *          name: "Tire Pressure: Right Rear",
  *          state_topic: "homeassistant/sensor/VIN/TIRE_PRESSURE/state",
