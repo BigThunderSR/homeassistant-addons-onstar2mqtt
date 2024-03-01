@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.8.0
+
+- Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.8.0](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.8.0)
+- Add diagnostic element messages as attributes to applicable sensors and update tests to account for the changes
+- Publish all diagnostic element messages to same MQTT topic as each sensor for easy retrieval when needed
+- Update example in mqtt.js to include changes in v1.7.0
+- Update example in mqtt.js to include changes in v1.8.0
+
 ## 1.7.0
 
 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.7.0](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.7.0)
