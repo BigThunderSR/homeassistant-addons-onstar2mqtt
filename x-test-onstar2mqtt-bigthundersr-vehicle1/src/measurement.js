@@ -41,13 +41,9 @@ class Measurement {
             case 'Volts':
                 return 'V';
             case 'l':
-                return 'L';
+                return 'lit';
             case 'L':
-                return 'L';
-            //case 'l':
-            //return 'lit';
-            //case 'L':
-            //    return 'lit';
+                return 'lit';
             // these are states
             case 'Stat':
             case 'N/A':
@@ -83,11 +79,8 @@ class Measurement {
                 // km/L =  (1.609344 / 3.785411784) * MPG
                 value = _.round(value / (1.609344 / 3.785411784), 1);
                 break;
-            case 'L':
+            case 'lit':
                 value = _.round(value / 3.785411784, 1);
-            //case 'lit':
-            //    value = _.round(value / 3.785411784, 1);
-    
                 break;
         }
         return value;
@@ -110,7 +103,7 @@ class Measurement {
                 return 'mpg(e)';
             case 'km/l':
                 return 'mpg';
-            case 'L':
+            case 'lit':
                 return 'gal';
             default:
                 return unit;
