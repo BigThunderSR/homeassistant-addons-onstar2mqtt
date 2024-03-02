@@ -59,6 +59,8 @@ Collect the following information:
 
 - **NEW - Sensor specific messages are now published to MQTT as sensor attributes which are visible in HA**
 
+- **NEW - Most non-binary sensors have a state_class assigned to allow collection of long-term statistics in HA**
+
 ## Helpful Usage Notes
 
 - The OnStar API has rate limiting, so they will block excessive requests over a short period of time.
