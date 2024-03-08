@@ -254,11 +254,12 @@ class MQTT {
             case 'GAS RANGE MI':
             case 'EV RANGE':
             case 'EV RANGE MI':
-            case 'ODOMETER':
-            case 'ODOMETER MI':
             case 'LAST TRIP TOTAL DISTANCE':
             case 'LAST TRIP TOTAL DISTANCE MI':
                 return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'distance');
+            case 'ODOMETER':
+            case 'ODOMETER MI':
+                return this.mapSensorConfigPayload(diag, diagEl, 'total_increasing', 'distance');
             case 'LIFETIME FUEL USED':
             case 'LIFETIME FUEL USED GAL':
                 return this.mapSensorConfigPayload(diag, diagEl, 'total_increasing', 'volume');

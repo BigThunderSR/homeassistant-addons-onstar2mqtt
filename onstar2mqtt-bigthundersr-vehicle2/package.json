@@ -1,6 +1,6 @@
 {
   "name": "onstar2mqtt",
-  "version": "1.8.0",
+  "version": "1.8.1",
   "description": "OnStarJS wrapper for MQTT",
   "main": "src/index.js",
   "scripts": {
@@ -30,7 +30,6 @@
   "homepage": "https://github.com/BigThunderSR/onstar2mqtt#readme",
   "dependencies": {
     "async-mqtt": "^2.6.3",
-    "circular-json": "^0.5.9",
     "convert-units": "^2.3.4",
     "dotenv": "^16.4.5",
     "lodash": "^4.17.21",

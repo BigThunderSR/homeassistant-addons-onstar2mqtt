@@ -10,11 +10,17 @@ const _ = require('lodash');
  * - homeassistant/sensor/VIN/TIRE_PRESSURE/state -- Diagnostic
  *      - payload: {
  *          TIRE_PRESSURE_LF: 244.0,
+ *          TIRE_PRESSURE_LF_MESSAGE: "GREEN",
  *          TIRE_PRESSURE_LR: 240.0,
+ *          TIRE_PRESSURE_LR_MESSAGE: "GREEN",
  *          TIRE_PRESSURE_PLACARD_FRONT: 262.0,
+ *          TIRE_PRESSURE_PLACARD_FRONT_MESSAGE: "na",
  *          TIRE_PRESSURE_PLACARD_REAR: 262.0,
+ *          TIRE_PRESSURE_PLACARD_REAR_MESSAGE: "na",
  *          TIRE_PRESSURE_RF: 240.0,
+ *          TIRE_PRESSURE_RF_MESSAGE: "GREEN",
  *          TIRE_PRESSURE_RR: 236.0,
+ *          TIRE_PRESSURE_LF_MESSAGE: "YELLOW"
  *      }
  * - homeassistant/sensor/VIN/TIRE_PRESSURE_LF/config -- Diagnostic Element
  *      - payload: {
@@ -24,7 +30,7 @@ const _ = require('lodash');
  *          state_topic: "homeassistant/sensor/VIN/TIRE_PRESSURE/state",
  *          unit_of_measurement: "kPa",
  *          value_template: "{{ value_json.TIRE_PRESSURE_LF }}",
- *          json_attributes_template: "{{ {'recommendation': value_json.TIRE_PRESSURE_PLACARD_FRONT} | tojson }}"
+ *          json_attributes_template: "{{ {'recommendation': value_json.TIRE_PRESSURE_PLACARD_FRONT, 'message': value_json.TIRE_PRESSURE_LF_MESSAGE} | tojson }}",
  *      }
  * - homeassistant/sensor/VIN/TIRE_PRESSURE_RR/config -- Diagnostic Element
  *      - payload: {
@@ -34,7 +40,7 @@ const _ = require('lodash');
  *          state_topic: "homeassistant/sensor/VIN/TIRE_PRESSURE/state",
  *          unit_of_measurement: "kPa",
  *          value_template: "{{ value_json.TIRE_PRESSURE_RR }}",
- *          json_attributes_template: "{{ {'recommendation': value_json.TIRE_PRESSURE_PLACARD_REAR} | tojson }}"
+ *          json_attributes_template: "{{ {'recommendation': value_json.TIRE_PRESSURE_PLACARD_REAR, 'message': value_json.TIRE_PRESSURE_RR_MESSAGE} | tojson }}"
  *      }
  */
 class MQTT {
@@ -248,11 +254,12 @@ class MQTT {
             case 'GAS RANGE MI':
             case 'EV RANGE':
             case 'EV RANGE MI':
-            case 'ODOMETER':
-            case 'ODOMETER MI':
             case 'LAST TRIP TOTAL DISTANCE':
             case 'LAST TRIP TOTAL DISTANCE MI':
                 return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'distance');
+            case 'ODOMETER':
+            case 'ODOMETER MI':
+                return this.mapSensorConfigPayload(diag, diagEl, 'total_increasing', 'distance');
             case 'LIFETIME FUEL USED':
             case 'LIFETIME FUEL USED GAL':
                 return this.mapSensorConfigPayload(diag, diagEl, 'total_increasing', 'volume');
