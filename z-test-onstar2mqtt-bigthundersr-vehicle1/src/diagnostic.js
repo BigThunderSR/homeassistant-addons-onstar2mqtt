@@ -12,7 +12,7 @@ class Diagnostic {
         this.diagnosticElements = _.map(validEle, e => new DiagnosticElement(e));
         const converted = _.map(_.filter(this.diagnosticElements, e => e.isConvertible),
             e => DiagnosticElement.convert(e));
-        this.diagnosticElements.push(... converted);
+        this.diagnosticElements.push(...converted);
     }
 
     hasElements() {
@@ -32,10 +32,11 @@ class DiagnosticElement {
      * @param {DiagnosticElement} element
      */
     static convert(element) {
-        const {name, unit, value} = element;
+        const { name, message, unit, value } = element;
         const convertedUnit = Measurement.convertUnit(unit);
         return new DiagnosticElement({
             name: DiagnosticElement.convertName(name, convertedUnit),
+            message: message,
             unit: convertedUnit,
             value: Measurement.convertValue(value, unit)
         })
@@ -52,11 +53,16 @@ class DiagnosticElement {
      */
     constructor(ele) {
         this._name = ele.name;
+        this._message = ele.message;
         this.measurement = new Measurement(ele.value, ele.unit);
     }
 
     get name() {
         return this._name;
+    }
+
+    get message() {
+        return this._message;
     }
 
     get value() {
@@ -76,4 +82,4 @@ class DiagnosticElement {
     }
 }
 
-module.exports = {Diagnostic, DiagnosticElement};
+module.exports = { Diagnostic, DiagnosticElement };

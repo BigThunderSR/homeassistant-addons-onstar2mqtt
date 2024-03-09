@@ -72,7 +72,7 @@ class Measurement {
             case 'km':
                 value = _.round(convert(value).from('km').to('mi'), 1);
                 break;
-            case 'kPa':                
+            case 'kPa':
                 value = _.round(convert(value).from('kPa').to('psi'), 1);
                 break;
             case 'km/L(e)':
@@ -85,9 +85,9 @@ class Measurement {
                 break;
             case 'L':
                 value = _.round(value / 3.785411784, 1);
-            //case 'lit':
-            //    value = _.round(value / 3.785411784, 1);
-    
+                //case 'lit':
+                //    value = _.round(value / 3.785411784, 1);
+
                 break;
         }
         return value;

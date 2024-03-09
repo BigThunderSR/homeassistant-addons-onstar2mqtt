@@ -26,31 +26,32 @@ class Commands {
             PEAK: 'PEAK'
         },
         DIAGNOSTICS: {
+            AMBIENT_AIR_TEMPERATURE: 'AMBIENT AIR TEMPERATURE',
+            ENGINE_AIR_FILTER_MONITOR_STATUS: 'ENGINE AIR FILTER MONITOR STATUS',
             ENGINE_COOLANT_TEMP: 'ENGINE COOLANT TEMP',
             ENGINE_RPM: 'ENGINE RPM',
-            LAST_TRIP_FUEL_ECONOMY: 'LAST TRIP FUEL ECONOMY',
-            EV_ESTIMATED_CHARGE_END: 'EV ESTIMATED CHARGE END',
+            ENERGY_EFFICIENCY: 'ENERGY EFFICIENCY',
             EV_BATTERY_LEVEL: 'EV BATTERY LEVEL',
-            OIL_LIFE: 'OIL LIFE',
-            EV_PLUG_VOLTAGE: 'EV PLUG VOLTAGE',
-            LIFETIME_FUEL_ECON: 'LIFETIME FUEL ECON',
-            HOTSPOT_CONFIG: 'HOTSPOT CONFIG',
-            LIFETIME_FUEL_USED: 'LIFETIME FUEL USED',
-            ODOMETER: 'ODOMETER',
-            HOTSPOT_STATUS: 'HOTSPOT STATUS',
-            LIFETIME_EV_ODOMETER: 'LIFETIME EV ODOMETER',
-            EV_PLUG_STATE: 'EV PLUG STATE',
             EV_CHARGE_STATE: 'EV CHARGE STATE',
-            TIRE_PRESSURE: 'TIRE PRESSURE',
-            AMBIENT_AIR_TEMPERATURE: 'AMBIENT AIR TEMPERATURE',
-            LAST_TRIP_DISTANCE: 'LAST TRIP DISTANCE',
-            INTERM_VOLT_BATT_VOLT: 'INTERM VOLT BATT VOLT',
-            GET_COMMUTE_SCHEDULE: 'GET COMMUTE SCHEDULE',
-            GET_CHARGE_MODE: 'GET CHARGE MODE',
+            EV_ESTIMATED_CHARGE_END: 'EV ESTIMATED CHARGE END',
+            EV_PLUG_STATE: 'EV PLUG STATE',
+            EV_PLUG_VOLTAGE: 'EV PLUG VOLTAGE',
             EV_SCHEDULED_CHARGE_START: 'EV SCHEDULED CHARGE START',
             FUEL_TANK_INFO: 'FUEL TANK INFO',
+            GET_CHARGE_MODE: 'GET CHARGE MODE',
+            GET_COMMUTE_SCHEDULE: 'GET COMMUTE SCHEDULE',
             HANDS_FREE_CALLING: 'HANDS FREE CALLING',
-            ENERGY_EFFICIENCY: 'ENERGY EFFICIENCY',
+            HOTSPOT_CONFIG: 'HOTSPOT CONFIG',
+            HOTSPOT_STATUS: 'HOTSPOT STATUS',
+            INTERM_VOLT_BATT_VOLT: 'INTERM VOLT BATT VOLT',
+            LAST_TRIP_DISTANCE: 'LAST TRIP DISTANCE',
+            LAST_TRIP_FUEL_ECONOMY: 'LAST TRIP FUEL ECONOMY',
+            LIFETIME_EV_ODOMETER: 'LIFETIME EV ODOMETER',
+            LIFETIME_FUEL_ECON: 'LIFETIME FUEL ECON',
+            LIFETIME_FUEL_USED: 'LIFETIME FUEL USED',
+            ODOMETER: 'ODOMETER',
+            OIL_LIFE: 'OIL LIFE',
+            TIRE_PRESSURE: 'TIRE PRESSURE',
             VEHICLE_RANGE: 'VEHICLE RANGE',
         }
     }
@@ -80,37 +81,37 @@ class Commands {
     //        override
     //    });
     //}
-    
+
     async alert() {
-        return this.onstar.alert();  
+        return this.onstar.alert();
     }
 
-    async alertFlash({action = [Commands.CONSTANTS.ALERT_ACTION.FLASH]}) {
-        return this.onstar.alert({action});  
+    async alertFlash({ action = [Commands.CONSTANTS.ALERT_ACTION.FLASH] }) {
+        return this.onstar.alert({ action });
     }
-    
-    async alertHonk({action = [Commands.CONSTANTS.ALERT_ACTION.HONK]}) {
-        return this.onstar.alert({action});  
+
+    async alertHonk({ action = [Commands.CONSTANTS.ALERT_ACTION.HONK] }) {
+        return this.onstar.alert({ action });
     }
-    
+
     async cancelAlert() {
         return this.onstar.cancelAlert();
     }
 
-    async lockDoor({delay = 0}) {
-        return this.onstar.lockDoor({delay});
+    async lockDoor({ delay = 0 }) {
+        return this.onstar.lockDoor({ delay });
     }
 
-    async unlockDoor({delay = 0}) {
-        return this.onstar.unlockDoor({delay});
+    async unlockDoor({ delay = 0 }) {
+        return this.onstar.unlockDoor({ delay });
     }
 
-    async chargeOverride({mode = Commands.CONSTANTS.CHARGE_OVERRIDE.CHARGE_NOW}) {
-        return this.onstar.chargeOverride({mode});
+    async chargeOverride({ mode = Commands.CONSTANTS.CHARGE_OVERRIDE.CHARGE_NOW }) {
+        return this.onstar.chargeOverride({ mode });
     }
 
-    async cancelChargeOverride({mode = Commands.CONSTANTS.CHARGE_OVERRIDE.CANCEL_OVERRIDE}) {
-        return this.onstar.chargeOverride({mode});
+    async cancelChargeOverride({ mode = Commands.CONSTANTS.CHARGE_OVERRIDE.CANCEL_OVERRIDE }) {
+        return this.onstar.chargeOverride({ mode });
     }
 
     async getChargingProfile() {
@@ -125,19 +126,20 @@ class Commands {
         return this.onstar.location();
     }
 
-    async diagnostics({diagnosticItem = [
+    async diagnostics({ diagnosticItem = [
+        Commands.CONSTANTS.DIAGNOSTICS.AMBIENT_AIR_TEMPERATURE,
+        Commands.CONSTANTS.DIAGNOSTICS.ENGINE_RPM,
+        Commands.CONSTANTS.DIAGNOSTICS.LAST_TRIP_DISTANCE,
         Commands.CONSTANTS.DIAGNOSTICS.ODOMETER,
         Commands.CONSTANTS.DIAGNOSTICS.TIRE_PRESSURE,
-        Commands.CONSTANTS.DIAGNOSTICS.AMBIENT_AIR_TEMPERATURE,
-        Commands.CONSTANTS.DIAGNOSTICS.LAST_TRIP_DISTANCE
-    ]}) {
-        return this.onstar.diagnostics({diagnosticItem});
+    ] }) {
+        return this.onstar.diagnostics({ diagnosticItem });
     }
 
-    async enginerpm({diagnosticItem = [
-        Commands.CONSTANTS.DIAGNOSTICS.ENGINE_RPM
-    ]}) {
-        return this.onstar.diagnostics({diagnosticItem});
+    async enginerpm({ diagnosticItem = [
+        Commands.CONSTANTS.DIAGNOSTICS.ENGINE_RPM,
+    ] }) {
+        return this.onstar.diagnostics({ diagnosticItem });
     }
 
 }
