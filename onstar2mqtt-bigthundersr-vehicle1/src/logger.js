@@ -11,7 +11,7 @@ const logger = winston.createLogger({
         winston.format.simple()
     ),
     // format: winston.format.json(),
-    transports: [new winston.transports.Console({stderrLevels: ['error']})]
+    transports: [new winston.transports.Console({ stderrLevels: ['error'] })]
     //transports: [new winston.transports.Console({ format: winston.format.colorize({all:true}), stderrLevels: ['error']})]
 })
 
