@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.9.0
+
+- Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.9.0](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.9.0)
+- Implement manual diagnostic command response handling
+- Update polling status message handling
+
 ## 1.8.1
 
 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.8.1](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.8.1)
