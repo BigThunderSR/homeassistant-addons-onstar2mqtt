@@ -61,6 +61,8 @@ Collect the following information:
 
 - **NEW - Most non-binary sensors have a state_class assigned to allow collection of long-term statistics in HA**
 
+* **NEW - Manual diagnostic refresh command and manual engine RPM refresh command are working**
+
 ## Helpful Usage Notes
 
 - The OnStar API has rate limiting, so they will block excessive requests over a short period of time.
