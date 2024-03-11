@@ -228,7 +228,7 @@ logger.info('Starting OnStar2MQTT Polling');
         const configurations = new Map();
         const run = async () => {
             const topicArray = _.concat(mqttConfig.pollingStatusTopic, '/', 'state');
-            const pollingStatusTopicState = topicArray.map(item => item.topic || item).join('');            
+            const pollingStatusTopicState = topicArray.map(item => item.topic || item).join('');
             client.publish(pollingStatusTopicState, JSON.stringify({ "error": { "message": "Pending Initialization of OnStar2MQTT", "response": { "status": -2000, "statusText": "Pending Initialization of OnStar2MQTT" } } }), { retain: false })
             const topicArrayTF = _.concat(mqttConfig.pollingStatusTopic, '/', 'lastpollsuccessful');
             const pollingStatusTopicTF = topicArrayTF.map(item => item.topic || item).join('');
@@ -281,7 +281,7 @@ logger.info('Starting OnStar2MQTT Polling');
             }
             await Promise.all(publishes);
             //client.publish(pollingStatusTopicState, JSON.stringify({"ok":{"message":"Data Polled Successfully"}}), {retain: false})
-            client.publish(pollingStatusTopicState, JSON.stringify({ "error": { "message": "N/A", "response": { "status": 0, "statusText": "N/A" } } }), { retain: true })            
+            client.publish(pollingStatusTopicState, JSON.stringify({ "error": { "message": "N/A", "response": { "status": 0, "statusText": "N/A" } } }), { retain: true })
             client.publish(pollingStatusTopicTF, "true", { retain: true });
         };
 
@@ -293,7 +293,6 @@ logger.info('Starting OnStar2MQTT Polling');
                 const pollingStatusTopicState = topicArray.map(item => item.topic || item).join('');
                 const topicArrayTF = _.concat(mqttConfig.pollingStatusTopic, '/', 'lastpollsuccessful');
                 const pollingStatusTopicTF = topicArrayTF.map(item => item.topic || item).join('');
-                client.publish(pollingStatusTopicTF, "false", { retain: true });                
                 if (e instanceof Error) {
                     const errorPayload = {
                         error: _.pick(e, [
@@ -311,7 +310,7 @@ logger.info('Starting OnStar2MQTT Polling');
                         ])
                     };
                     const errorJson = JSON.stringify(errorPayload);
-                    client.publish(pollingStatusTopicState, errorJson, { retain: false });
+                    client.publish(pollingStatusTopicState, errorJson, { retain: true });
                     logger.error('Error Polling Data:', { error: errorPayload });
                     client.publish(pollingStatusTopicTF, "false", { retain: true })
 
