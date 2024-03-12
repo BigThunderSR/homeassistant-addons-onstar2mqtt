@@ -4,6 +4,10 @@ configuration:
     name: Vehicle Name
     description: >-
       Name/Nickname/Personal Identifier for your vehicle
+  LOG_LEVEL:
+    name: Log Level
+    description: >-
+      The level of log output by the underlying OnStar2MQTT program. Options are: "info" (default - passwords masked) and "debug" (passwords unmasked in logs)
   ONSTAR_DEVICEID:
     name: OnStar Device ID
     description: >-

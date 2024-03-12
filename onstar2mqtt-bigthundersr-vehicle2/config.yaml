@@ -18,6 +18,7 @@ services:
 init: false
 options:
   VEHICLE_NAME: "Vehicle 2"
+  LOG_LEVEL: "info"
   ONSTAR_DEVICEID: ""
   ONSTAR_VIN: ""
   ONSTAR_USERNAME: ""
@@ -35,6 +36,7 @@ options:
   MQTT_ONSTAR_POLLING_STATUS_TOPIC: "homeassistant/onstar2mqtt/vehicle2/polling"
 schema:
   VEHICLE_NAME: str
+  LOG_LEVEL: str
   ONSTAR_DEVICEID: str
   ONSTAR_VIN: str
   ONSTAR_USERNAME: str

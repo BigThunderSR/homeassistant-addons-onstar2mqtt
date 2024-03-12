@@ -2,6 +2,7 @@
 set +u
 
 export VEHICLE_NAME=$(bashio::config 'VEHICLE_NAME')
+export LOG_LEVEL=$(bashio::config 'LOG_LEVEL')
 export ONSTAR_DEVICEID=$(bashio::config 'ONSTAR_DEVICEID')
 export ONSTAR_VIN=$(bashio::config 'ONSTAR_VIN')
 export ONSTAR_USERNAME=$(bashio::config 'ONSTAR_USERNAME')
