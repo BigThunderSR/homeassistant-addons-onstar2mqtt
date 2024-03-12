@@ -3,7 +3,7 @@
 ## 1.10.0
 
 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.10.0](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.10.0)
-  - Logs descriptive errors to console when required properties such as OnStar username/password/PIN and/or MQTT username/password/polling status topic are not provided at run time.
+  - Logs descriptive errors to console when required properties such as OnStar VIN/username/password/PIN and/or MQTT username/password/polling status topic are not provided at run time.
   - OnStar password/PIN and MQTT password are now masked in the console log output by default.
 
 ## 1.9.0
