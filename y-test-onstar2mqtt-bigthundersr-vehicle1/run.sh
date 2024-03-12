@@ -1,6 +1,7 @@
 #!/usr/bin/with-contenv bashio
 set +u
 
+export LOG_LEVEL=$(bashio::config 'LOG_LEVEL')
 export VEHICLE_NAME=$(bashio::config 'VEHICLE_NAME')
 export ONSTAR_DEVICEID=$(bashio::config 'ONSTAR_DEVICEID')
 export ONSTAR_VIN=$(bashio::config 'ONSTAR_VIN')

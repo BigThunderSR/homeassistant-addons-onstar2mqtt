@@ -10,7 +10,6 @@ const logger = require('./logger');
 //const CircularJSON = require('circular-json');
 
 
-
 const onstarConfig = {
     deviceId: process.env.ONSTAR_DEVICEID || uuidv4(),
     vin: process.env.ONSTAR_VIN,
@@ -23,7 +22,25 @@ const onstarConfig = {
     requestPollingTimeoutSeconds: parseInt(process.env.ONSTAR_POLL_TIMEOUT) || 90, // 60 sec default
     allowCommands: _.get(process.env, 'ONSTAR_ALLOW_COMMANDS', 'true') === 'true'
 };
-logger.info('OnStar Config', { onstarConfig });
+
+const onstarRequiredProperties = {
+    vin: 'ONSTAR_VIN',
+    username: 'ONSTAR_USERNAME',
+    password: 'ONSTAR_PASSWORD',
+    onStarPin: 'ONSTAR_PIN'
+};
+
+for (let prop in onstarRequiredProperties) {
+    if (!onstarConfig[prop]) {
+        throw new Error(`"${onstarRequiredProperties[prop]}" is not defined`);
+    }
+}
+
+if (process.env.LOG_LEVEL === 'debug') {
+    logger.debug('OnStar Config:', { onstarConfig });
+} else {
+    logger.info('OnStar Config:', { onstarConfig: { ...onstarConfig, password: '********', onStarPin: '####' } });
+}
 
 const mqttConfig = {
     host: process.env.MQTT_HOST || 'localhost',
@@ -35,14 +52,31 @@ const mqttConfig = {
     namePrefix: process.env.MQTT_NAME_PREFIX || '',
     pollingStatusTopic: process.env.MQTT_ONSTAR_POLLING_STATUS_TOPIC,
 };
-logger.info('MQTT Config', { mqttConfig });
+
+const mqttRequiredProperties = {
+    username: 'MQTT_USERNAME',
+    password: 'MQTT_PASSWORD',
+    pollingStatusTopic: 'MQTT_ONSTAR_POLLING_STATUS_TOPIC'
+};
+
+for (let prop in mqttRequiredProperties) {
+    if (!mqttConfig[prop]) {
+        throw new Error(`"${mqttRequiredProperties[prop]}" is not defined`);
+    }
+}
+
+if (process.env.LOG_LEVEL === 'debug') {
+    logger.debug('MQTT Config:', { mqttConfig });
+} else {
+    logger.info('MQTT Config:', { mqttConfig: { ...mqttConfig, password: '********' } });
+}
 
 const init = () => new Commands(OnStar.create(onstarConfig));
 
 const getVehicles = async commands => {
     logger.info('Requesting vehicles');
     const vehiclesRes = await commands.getAccountVehicles();
-    logger.info('Vehicle request status', { status: _.get(vehiclesRes, 'status') });
+    logger.info('Vehicle request status:', { status: _.get(vehiclesRes, 'status') });
     const vehicles = _.map(
         _.get(vehiclesRes, 'response.data.vehicles.vehicle'),
         v => new Vehicle(v)
@@ -67,7 +101,7 @@ const connectMQTT = async availabilityTopic => {
         password: mqttConfig.password,
         will: { topic: availabilityTopic, payload: 'false', retain: true }
     };
-    logger.info('Connecting to MQTT', { url, config: _.omit(config, 'password') });
+    logger.info('Connecting to MQTT:', { url, config: _.omit(config, 'password') });
     const client = await mqtt.connectAsync(url, config);
     logger.info('Connected to MQTT!');
     return client;
@@ -228,7 +262,7 @@ logger.info('Starting OnStar2MQTT Polling');
         const configurations = new Map();
         const run = async () => {
             const topicArray = _.concat(mqttConfig.pollingStatusTopic, '/', 'state');
-            const pollingStatusTopicState = topicArray.map(item => item.topic || item).join('');            
+            const pollingStatusTopicState = topicArray.map(item => item.topic || item).join('');
             client.publish(pollingStatusTopicState, JSON.stringify({ "error": { "message": "Pending Initialization of OnStar2MQTT", "response": { "status": -2000, "statusText": "Pending Initialization of OnStar2MQTT" } } }), { retain: false })
             const topicArrayTF = _.concat(mqttConfig.pollingStatusTopic, '/', 'lastpollsuccessful');
             const pollingStatusTopicTF = topicArrayTF.map(item => item.topic || item).join('');
@@ -281,7 +315,7 @@ logger.info('Starting OnStar2MQTT Polling');
             }
             await Promise.all(publishes);
             //client.publish(pollingStatusTopicState, JSON.stringify({"ok":{"message":"Data Polled Successfully"}}), {retain: false})
-            client.publish(pollingStatusTopicState, JSON.stringify({ "error": { "message": "N/A", "response": { "status": 0, "statusText": "N/A" } } }), { retain: true })            
+            client.publish(pollingStatusTopicState, JSON.stringify({ "error": { "message": "N/A", "response": { "status": 0, "statusText": "N/A" } } }), { retain: true })
             client.publish(pollingStatusTopicTF, "true", { retain: true });
         };
 
@@ -293,7 +327,6 @@ logger.info('Starting OnStar2MQTT Polling');
                 const pollingStatusTopicState = topicArray.map(item => item.topic || item).join('');
                 const topicArrayTF = _.concat(mqttConfig.pollingStatusTopic, '/', 'lastpollsuccessful');
                 const pollingStatusTopicTF = topicArrayTF.map(item => item.topic || item).join('');
-                client.publish(pollingStatusTopicTF, "false", { retain: true });                
                 if (e instanceof Error) {
                     const errorPayload = {
                         error: _.pick(e, [
@@ -311,7 +344,7 @@ logger.info('Starting OnStar2MQTT Polling');
                         ])
                     };
                     const errorJson = JSON.stringify(errorPayload);
-                    client.publish(pollingStatusTopicState, errorJson, { retain: false });
+                    client.publish(pollingStatusTopicState, errorJson, { retain: true });
                     logger.error('Error Polling Data:', { error: errorPayload });
                     client.publish(pollingStatusTopicTF, "false", { retain: true })
 

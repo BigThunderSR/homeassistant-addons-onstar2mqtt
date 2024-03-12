@@ -1,5 +1,9 @@
 ---
 configuration:
+  LOG_LEVEL:
+    name: Log Level
+    description: >-
+      The level of log output by the add-on and the underlying OnStar2MQTT program. Options are: info (default - passwords masked) and debug (passwords unmasked in logs)
   VEHICLE_NAME:
     name: Vehicle Name
     description: >-
