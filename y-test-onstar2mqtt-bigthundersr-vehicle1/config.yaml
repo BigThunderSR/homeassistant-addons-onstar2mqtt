@@ -21,6 +21,7 @@ services:
 init: false
 options:
   ssl: false
+  MQTT_TLS: false
   certfile: fullchain.pem
   keyfile: privkey.pem
   LOG_LEVEL: "info"
@@ -42,6 +43,7 @@ options:
   MQTT_ONSTAR_POLLING_STATUS_TOPIC: "homeassistant/onstar2mqtt/vehicle2/polling"
 schema:
   ssl: bool
+  MQTT_TLS: bool
   certfile: str
   keyfile: str
   LOG_LEVEL: str
