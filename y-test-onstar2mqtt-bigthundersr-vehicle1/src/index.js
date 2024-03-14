@@ -101,6 +101,13 @@ const getCurrentVehicle = async commands => {
 
 const connectMQTT = async availabilityTopic => {
     const url = `${mqttConfig.tls ? 'mqtts' : 'mqtt'}://${mqttConfig.host}:${mqttConfig.port}`;
+
+    if (!mqttConfig.tls) {
+        mqttConfig.ca = undefined;
+        mqttConfig.cert = undefined;
+        mqttConfig.key = undefined;
+    }
+
     const config = {
         username: mqttConfig.username,
         password: mqttConfig.password,
