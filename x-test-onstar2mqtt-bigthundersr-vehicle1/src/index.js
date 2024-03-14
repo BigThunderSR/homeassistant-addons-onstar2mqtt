@@ -48,7 +48,7 @@ const mqttConfig = {
     username: process.env.MQTT_USERNAME,
     password: process.env.MQTT_PASSWORD,
     port: parseInt(process.env.MQTT_PORT) >= 0 ? parseInt(process.env.MQTT_PORT) : 1883,
-    tls: process.env.MQTT_TLS || 'false',
+    tls: process.env.MQTT_TLS === 'true',
     rejectUnauthorized: process.env.MQTT_REJECT_UNAUTHORIZED !== 'false',
     prefix: process.env.MQTT_PREFIX || 'homeassistant',
     namePrefix: process.env.MQTT_NAME_PREFIX || '',

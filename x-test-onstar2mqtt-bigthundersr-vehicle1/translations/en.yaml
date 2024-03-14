@@ -82,16 +82,16 @@ configuration:
   MQTT_CA_FILE:
     name: CA File
     description: >-
-      CA file for MQTT broker/server. This can be located in /ssl or in /share directory of Home Assistant.
+      CA file for MQTT client certificates. This can be located in /ssl or in /share directory of Home Assistant.
       Please provide the full path to the file (e.g. "/ssl/cacert.pem" or "/share/cacert.pem").
   MQTT_CERT_FILE:
     name: Certificate File
     description: >-
-      Certificate file for MQTT broker/server. This can be located in /ssl or in /share directory of Home Assistant.
-      Please provide the full path to the file (e.g. "/ssl/clientcert.pem" or "/share/clientcert.pem").
+      Certificate file for MQTT client. This can be located in /ssl or in /share directory of Home Assistant.
+      Please provide the full path to the file (e.g. "/ssl/client-cert.pem" or "/share/client-cert.pem").
   MQTT_KEY_FILE:
     name: Key File
     description: >-
-      Key file for MQTT broker/server. This can be located in /ssl or in /share directory of Home Assistant.
-      Please provide the full path to the file (e.g. "/ssl/clientkey.pem" or "/share/clientkey.pem").
+      Key file for MQTT client. This can be located in /ssl or in /share directory of Home Assistant.
+      Please provide the full path to the file (e.g. "/ssl/client-key.pem" or "/share/client-key.pem").
       

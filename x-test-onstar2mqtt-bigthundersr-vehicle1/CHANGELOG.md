@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.9.6 - Test Build. DO NOT Install!!!
+## 1.9.7 - Test Build. DO NOT Install!!!
 
 - Testing
 
