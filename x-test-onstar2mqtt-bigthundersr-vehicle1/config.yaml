@@ -1,5 +1,5 @@
 name: X - Do NOT Install - Testing - OnStar2MQTT Home Assistant Add-on (BigThunderSR) for Vehicle 1
-version: 1.9.4
+version: 1.9.5
 slug: x_test_onstar2mqtt_bigthundersr_vehicle1
 description: Do NOT Install - Testing - Home Assistant Add On Version of BigThunderSR/onstar2mqtt for Vehicle 1
 codenotary: bigthundersr@outlook.com
@@ -12,7 +12,7 @@ arch:
   - armv7
   - i386
 map:
-  - share:rw
+  - share
   - ssl
 url: "https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt"
 image: "ghcr.io/bigthundersr/test-ha-addons-onstar2mqtt-btsr-test-veh1-{arch}"
@@ -40,8 +40,8 @@ options:
   MQTT_TLS: false
   MQTT_REJECT_UNAUTHORIZED: true
   MQTT_CA_FILE: ""
-  MQTT_CERT_FILE: /ssl/fullchain.pem
-  MQTT_KEY_FILE: /ssl/privkey.pem  
+  MQTT_CERT_FILE: ""
+  MQTT_KEY_FILE: ""
 schema:
   LOG_LEVEL: str
   VEHICLE_NAME: str

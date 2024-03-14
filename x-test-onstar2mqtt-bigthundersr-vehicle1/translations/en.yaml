@@ -7,7 +7,8 @@ configuration:
   LOG_LEVEL:
     name: Log Level
     description: >-
-      The level of log output by the add-on and the underlying OnStar2MQTT program. Options are: info (default - passwords masked) and debug (passwords unmasked in logs)
+      The level of log output by the add-on and the underlying OnStar2MQTT program. 
+      Options are: info (default - passwords masked) and debug (passwords unmasked in logs)
   ONSTAR_DEVICEID:
     name: OnStar Device ID
     description: >-
@@ -35,8 +36,8 @@ configuration:
   ONSTAR_REFRESH:
     name: OnStar Refresh Period
     description: >-
-      The refresh period for polling OnStar for data updates in milliseconds
-      Note: Reducing the polling timeout to less than the default set by the add-on (30 minutes/1800000 ms) is likely to get you rate limited (Error 429)   
+      The refresh period for polling OnStar for data updates in milliseconds.
+      Note: Reducing the polling timeout to less than the default set by the add-on (30 minutes/1800000 ms) is likely to get you rate limited (Error 429).   
   ONSTAR_POLL_INTERVAL:
     name: OnStar Poll Interval
     description: >-
@@ -76,17 +77,21 @@ configuration:
   MQTT_REJECT_UNAUTHORIZED:
     name: MQTT Reject Unauthorized
     description: >-
-      Reject unauthorized certificates for MQTT broker/server. Default is "true". For self-signed certificates, you may need to set this to false. Not recommended for production use.
+      Reject unauthorized certificates for MQTT broker/server. Default is "true". 
+      For self-signed certificates, you may need to set this to false. Not recommended for production use.
   MQTT_CA_FILE:
     name: CA File
     description: >-
-      CA file for MQTT broker/server (Optional)
+      CA file for MQTT broker/server. This can be located in /ssl or in /share directory of Home Assistant.
+      Please provide the full path to the file (e.g. "/ssl/cacert.pem" or "/share/cacert.pem").
   MQTT_CERT_FILE:
     name: Certificate File
     description: >-
-      Certificate file for MQTT broker/server
+      Certificate file for MQTT broker/server. This can be located in /ssl or in /share directory of Home Assistant.
+      Please provide the full path to the file (e.g. "/ssl/clientcert.pem" or "/share/clientcert.pem").
   MQTT_KEY_FILE:
     name: Key File
     description: >-
-      Key file for MQTT broker/server
+      Key file for MQTT broker/server. This can be located in /ssl or in /share directory of Home Assistant.
+      Please provide the full path to the file (e.g. "/ssl/clientkey.pem" or "/share/clientkey.pem").
       
