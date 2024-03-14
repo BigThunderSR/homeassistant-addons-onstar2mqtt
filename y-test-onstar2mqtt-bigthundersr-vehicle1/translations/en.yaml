@@ -1,13 +1,13 @@
 ---
 configuration:
-  LOG_LEVEL:
-    name: Log Level
-    description: >-
-      The level of log output by the add-on and the underlying OnStar2MQTT program. Options are: info (default - passwords masked) and debug (passwords unmasked in logs)
   VEHICLE_NAME:
     name: Vehicle Name
     description: >-
       Name/Nickname/Personal Identifier for your vehicle
+  LOG_LEVEL:
+    name: Log Level
+    description: >-
+      The level of log output by the add-on and the underlying OnStar2MQTT program. Options are: info (default - passwords masked) and debug (passwords unmasked in logs)
   ONSTAR_DEVICEID:
     name: OnStar Device ID
     description: >-
@@ -69,4 +69,24 @@ configuration:
     name: MQTT OnSTAR Polling Status Topic
     description: >-
       Topic for publishing OnStar data polling success/failure True/False status and detailed messages to broker/server
+  MQTT_TLS:
+    name: MQTT TLS
+    description: >-
+      Enable TLS for MQTT broker/server
+  MQTT_REJECT_UNAUTHORIZED:
+    name: MQTT Reject Unauthorized
+    description: >-
+      Reject unauthorized certificates for MQTT broker/server. Default is "true". For self-signed certificates, you may need to set this to false. Not recommended for production use.
+  MQTT_CA_FILE:
+    name: CA File
+    description: >-
+      CA file for MQTT broker/server
+  MQTT_CERT_FILE:
+    name: Certificate File
+    description: >-
+      Certificate file for MQTT broker/server
+  MQTT_KEY_FILE:
+    name: Key File
+    description: >-
+      Key file for MQTT broker/server
       

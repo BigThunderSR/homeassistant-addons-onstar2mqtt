@@ -7,6 +7,7 @@ const { Diagnostic } = require('./diagnostic');
 const MQTT = require('./mqtt');
 const Commands = require('./commands');
 const logger = require('./logger');
+const fs = require('fs');
 //const CircularJSON = require('circular-json');
 
 
@@ -46,11 +47,15 @@ const mqttConfig = {
     host: process.env.MQTT_HOST || 'localhost',
     username: process.env.MQTT_USERNAME,
     password: process.env.MQTT_PASSWORD,
-    port: parseInt(process.env.MQTT_PORT) || 1883,
-    tls: process.env.MQTT_TLS || false,
+    port: parseInt(process.env.MQTT_PORT) >= 0 ? parseInt(process.env.MQTT_PORT) : 1883,
+    tls: process.env.MQTT_TLS === 'true',
+    rejectUnauthorized: process.env.MQTT_REJECT_UNAUTHORIZED !== 'false',
     prefix: process.env.MQTT_PREFIX || 'homeassistant',
     namePrefix: process.env.MQTT_NAME_PREFIX || '',
     pollingStatusTopic: process.env.MQTT_ONSTAR_POLLING_STATUS_TOPIC,
+    ca: process.env.MQTT_CA_FILE ? [fs.readFileSync(process.env.MQTT_CA_FILE)] : undefined,
+    cert: process.env.MQTT_CERT_FILE ? fs.readFileSync(process.env.MQTT_CERT_FILE) : undefined,
+    key: process.env.MQTT_KEY_FILE ? fs.readFileSync(process.env.MQTT_KEY_FILE) : undefined,
 };
 
 const mqttRequiredProperties = {
@@ -99,12 +104,14 @@ const connectMQTT = async availabilityTopic => {
     const config = {
         username: mqttConfig.username,
         password: mqttConfig.password,
+        rejectUnauthorized: mqttConfig.rejectUnauthorized,
         will: { topic: availabilityTopic, payload: 'false', retain: true }
     };
     logger.info('Connecting to MQTT:', { url, config: _.omit(config, 'password') });
+
     const client = await mqtt.connectAsync(url, config);
     logger.info('Connected to MQTT!');
-    return client;
+    return client; 
 }
 
 const configureMQTT = async (commands, client, mqttHA) => {

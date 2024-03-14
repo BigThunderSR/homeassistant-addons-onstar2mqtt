@@ -20,10 +20,6 @@ services:
   - "mqtt:need"
 init: false
 options:
-  ssl: false
-  MQTT_TLS: false
-  certfile: fullchain.pem
-  keyfile: privkey.pem  
   LOG_LEVEL: "info"
   VEHICLE_NAME: "Vehicle 1"
   ONSTAR_DEVICEID: ""
@@ -41,11 +37,12 @@ options:
   MQTT_PORT: 1883
   MQTT_PREFIX: "homeassistant"
   MQTT_ONSTAR_POLLING_STATUS_TOPIC: "homeassistant/onstar2mqtt/vehicle1/polling"
+  MQTT_TLS: false
+  MQTT_REJECT_UNAUTHORIZED: true
+  MQTT_CA_FILE: cacert.pem
+  MQTT_CERT_FILE: fullchain.pem
+  MQTT_KEY_FILE: privkey.pem  
 schema:
-  ssl: bool
-  MQTT_TLS: bool
-  certfile: str
-  keyfile: str
   LOG_LEVEL: str
   VEHICLE_NAME: str
   ONSTAR_DEVICEID: str
@@ -63,3 +60,8 @@ schema:
   MQTT_PORT: port
   MQTT_PREFIX: str
   MQTT_ONSTAR_POLLING_STATUS_TOPIC: str
+  MQTT_TLS: bool
+  MQTT_REJECT_UNAUTHORIZED: bool 
+  MQTT_CA_FILE: str?
+  MQTT_CERT_FILE: str?
+  MQTT_KEY_FILE: str?
