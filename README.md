@@ -63,6 +63,8 @@ Collect the following information:
 
 * **NEW - Manual diagnostic refresh command and manual engine RPM refresh command are working**
 
+* **NEW - OnStar password/pin and MQTT password are masked by default in the console log output. To see these values in the console log output, set "LOG_LEVEL" to "debug"**
+
 ## Helpful Usage Notes
 
 - The OnStar API has rate limiting, so they will block excessive requests over a short period of time.
