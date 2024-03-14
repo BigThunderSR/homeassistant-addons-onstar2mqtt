@@ -73,7 +73,7 @@ for (let prop in mqttRequiredProperties) {
 if (process.env.LOG_LEVEL === 'debug') {
     logger.debug('MQTT Config:', { mqttConfig });
 } else {
-    logger.info('MQTT Config:', { mqttConfig: { ...mqttConfig, password: '********' } });
+    logger.info('MQTT Config:', { mqttConfig: { ...mqttConfig, password: '********', ca: undefined, cert: undefined, key: undefined } });
 }
 
 const init = () => new Commands(OnStar.create(onstarConfig));

@@ -80,7 +80,7 @@ configuration:
   MQTT_CA_FILE:
     name: CA File
     description: >-
-      CA file for MQTT broker/server
+      CA file for MQTT broker/server (Optional)
   MQTT_CERT_FILE:
     name: Certificate File
     description: >-
