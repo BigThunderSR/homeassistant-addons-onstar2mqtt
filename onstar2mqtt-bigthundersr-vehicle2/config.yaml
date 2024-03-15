@@ -58,7 +58,7 @@ schema:
   MQTT_USERNAME: str
   MQTT_PASSWORD: password
   MQTT_PORT: port
-  MQTT_PREFIX: str?
+  MQTT_PREFIX: str
   MQTT_ONSTAR_POLLING_STATUS_TOPIC: str?
   MQTT_TLS: bool
   MQTT_REJECT_UNAUTHORIZED: bool 
