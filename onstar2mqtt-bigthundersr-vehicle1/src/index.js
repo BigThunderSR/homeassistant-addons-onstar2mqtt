@@ -7,6 +7,7 @@ const { Diagnostic } = require('./diagnostic');
 const MQTT = require('./mqtt');
 const Commands = require('./commands');
 const logger = require('./logger');
+const fs = require('fs');
 //const CircularJSON = require('circular-json');
 
 
@@ -37,7 +38,7 @@ for (let prop in onstarRequiredProperties) {
 }
 
 if (process.env.LOG_LEVEL === 'debug') {
-    logger.debug('OnStar Config:', { onstarConfig });
+    logger.debug(`OnStar Config: ${onstarConfig}`);
 } else {
     logger.info('OnStar Config:', { onstarConfig: { ...onstarConfig, password: '********', onStarPin: '####' } });
 }
@@ -46,17 +47,21 @@ const mqttConfig = {
     host: process.env.MQTT_HOST || 'localhost',
     username: process.env.MQTT_USERNAME,
     password: process.env.MQTT_PASSWORD,
-    port: parseInt(process.env.MQTT_PORT) || 1883,
-    tls: process.env.MQTT_TLS || false,
+    port: parseInt(process.env.MQTT_PORT) >= 0 ? parseInt(process.env.MQTT_PORT) : 1883,
+    tls: process.env.MQTT_TLS === 'true',
+    rejectUnauthorized: process.env.MQTT_REJECT_UNAUTHORIZED !== 'false',
     prefix: process.env.MQTT_PREFIX || 'homeassistant',
     namePrefix: process.env.MQTT_NAME_PREFIX || '',
     pollingStatusTopic: process.env.MQTT_ONSTAR_POLLING_STATUS_TOPIC,
+    ca: process.env.MQTT_CA_FILE ? [fs.readFileSync(process.env.MQTT_CA_FILE)] : undefined,
+    cert: process.env.MQTT_CERT_FILE ? fs.readFileSync(process.env.MQTT_CERT_FILE) : undefined,
+    key: process.env.MQTT_KEY_FILE ? fs.readFileSync(process.env.MQTT_KEY_FILE) : undefined,
 };
 
 const mqttRequiredProperties = {
     username: 'MQTT_USERNAME',
     password: 'MQTT_PASSWORD',
-    pollingStatusTopic: 'MQTT_ONSTAR_POLLING_STATUS_TOPIC'
+    //pollingStatusTopic: 'MQTT_ONSTAR_POLLING_STATUS_TOPIC'
 };
 
 for (let prop in mqttRequiredProperties) {
@@ -66,9 +71,9 @@ for (let prop in mqttRequiredProperties) {
 }
 
 if (process.env.LOG_LEVEL === 'debug') {
-    logger.debug('MQTT Config:', { mqttConfig });
+    logger.debug(`MQTT Config: ${mqttConfig}`);
 } else {
-    logger.info('MQTT Config:', { mqttConfig: { ...mqttConfig, password: '********' } });
+    logger.info('MQTT Config:', { mqttConfig: { ...mqttConfig, password: '********', ca: undefined, cert: undefined, key: undefined } });
 }
 
 const init = () => new Commands(OnStar.create(onstarConfig));
@@ -96,12 +101,24 @@ const getCurrentVehicle = async commands => {
 
 const connectMQTT = async availabilityTopic => {
     const url = `${mqttConfig.tls ? 'mqtts' : 'mqtt'}://${mqttConfig.host}:${mqttConfig.port}`;
+
+    if (!mqttConfig.tls) {
+        mqttConfig.ca = undefined;
+        mqttConfig.cert = undefined;
+        mqttConfig.key = undefined;
+    }
+
     const config = {
         username: mqttConfig.username,
         password: mqttConfig.password,
+        rejectUnauthorized: mqttConfig.rejectUnauthorized,
+        ca: mqttConfig.ca,
+        cert: mqttConfig.cert,
+        key: mqttConfig.key,
         will: { topic: availabilityTopic, payload: 'false', retain: true }
     };
-    logger.info('Connecting to MQTT:', { url, config: _.omit(config, 'password') });
+    logger.info('Connecting to MQTT:', { url, config: _.omit(config, 'password', 'ca', 'cert', 'key') });
+
     const client = await mqtt.connectAsync(url, config);
     logger.info('Connected to MQTT!');
     return client;
@@ -112,20 +129,27 @@ const configureMQTT = async (commands, client, mqttHA) => {
         return;
 
     client.on('message', (topic, message) => {
-        logger.debug('Subscription message:', { topic, message });
+        logger.debug(`Subscription message: ${topic, message}`);
         const { command, options } = JSON.parse(message);
         const cmd = commands[command];
-        const topicArray = _.concat({ topic }, '/', { command }.command, '/', 'state');
-        const commandStatusTopic = topicArray.map(item => item.topic || item).join('');
         if (!cmd) {
+            if (topic === mqttHA.getRefreshIntervalTopic()) {
+                logger.info(`Processing refreshInterval`);
+                return;
+            }else{
             logger.error('Command not found', { command });
             return;
+            }
         }
+
+        const topicArray = _.concat({ topic }, '/', { command }.command, '/', 'state');
+        const commandStatusTopic = topicArray.map(item => item.topic || item).join('');
+
         const commandFn = cmd.bind(commands);
         logger.debug('List of const', { command, cmd, commandFn, options });
         if (command === 'diagnostics' || command === 'enginerpm') {
             logger.warn('Command sent:', { command });
-            logger.warn('Command Status Topic:', { commandStatusTopic });
+            logger.warn(`Command Status Topic: ${commandStatusTopic}`);
             client.publish(commandStatusTopic, JSON.stringify({ "Command": "Sent" }), { retain: true });
             (async () => {
                 const states = new Map();
@@ -183,20 +207,20 @@ const configureMQTT = async (commands, client, mqttHA) => {
                         };
                         //const errorJson = JSON.stringify(errorPayload);
                         logger.error('Command Error!', { command, error: errorPayload });
-                        logger.error('Command Status Topic for Errored Command:', { commandStatusTopic });
+                        logger.error(`Command Status Topic for Errored Command: ${commandStatusTopic}`);
                         client.publish(commandStatusTopic, JSON.stringify({ "Command": errorPayload }), { retain: true });
                     }
                 })
         }
         else {
             logger.warn('Command sent:', { command });
-            logger.warn('Command Status Topic:', { commandStatusTopic });
+            logger.warn(`Command Status Topic: ${commandStatusTopic}`);
             client.publish(commandStatusTopic, JSON.stringify({ "Command": "Sent" }), { retain: true });
             commandFn(options || {})
                 .then(data => {
                     // refactor the response handling for commands - Done!
                     logger.warn('Command completed:', { command });
-                    logger.warn('Command Status Topic:', { commandStatusTopic });
+                    logger.warn(`Command Status Topic: ${commandStatusTopic}`);
                     client.publish(commandStatusTopic, JSON.stringify({ "Command": { "error": { "message": "Completed Successfully", "response": { "status": 0, "statusText": "Completed Successfully" } } } }), { retain: true });
                     const responseData = _.get(data, 'response.data');
                     if (responseData) {
@@ -208,7 +232,7 @@ const configureMQTT = async (commands, client, mqttHA) => {
                             // doesn't have discovery
                             client.publish(topic,
                                 JSON.stringify({ latitude: location.lat, longitude: location.long }), { retain: true })
-                                .then(() => logger.warn('Published location to topic.', { topic }));
+                                .then(() => logger.warn('Published location to topic:', { topic }));
                         }
                     }
                 })
@@ -234,14 +258,14 @@ const configureMQTT = async (commands, client, mqttHA) => {
                         };
                         //const errorJson = JSON.stringify(errorPayload);
                         logger.error('Command Error!', { command, error: errorPayload });
-                        logger.error('Command Status Topic for Errored Command:', { commandStatusTopic });
+                        logger.error(`Command Status Topic for Errored Command: ${commandStatusTopic}`);
                         client.publish(commandStatusTopic, JSON.stringify({ "Command": errorPayload }), { retain: true });
                     }
                 });
         }
     });
     const topic = mqttHA.getCommandTopic();
-    logger.info('Subscribed to command topic:', { topic });
+    logger.info(`Subscribed to command topic: ${topic}`);
     await client.subscribe(topic);
 
 };
@@ -261,12 +285,26 @@ logger.info('Starting OnStar2MQTT Polling');
 
         const configurations = new Map();
         const run = async () => {
-            const topicArray = _.concat(mqttConfig.pollingStatusTopic, '/', 'state');
+            let topicArray;
+            if (!mqttConfig.pollingStatusTopic) {
+                topicArray = _.concat(mqttHA.getPollingStatusTopic(), '/', 'state');
+            } else {
+                topicArray = _.concat(mqttConfig.pollingStatusTopic, '/', 'state');
+            }
             const pollingStatusTopicState = topicArray.map(item => item.topic || item).join('');
+            logger.info(`pollingStatusTopicState: ${pollingStatusTopicState}`);
             client.publish(pollingStatusTopicState, JSON.stringify({ "error": { "message": "Pending Initialization of OnStar2MQTT", "response": { "status": -2000, "statusText": "Pending Initialization of OnStar2MQTT" } } }), { retain: false })
-            const topicArrayTF = _.concat(mqttConfig.pollingStatusTopic, '/', 'lastpollsuccessful');
+
+            let topicArrayTF;
+            if (!mqttConfig.pollingStatusTopic) {
+                topicArrayTF = _.concat(mqttHA.getPollingStatusTopic(), '/', 'lastpollsuccessful');
+            } else {
+                topicArrayTF = _.concat(mqttConfig.pollingStatusTopic, '/', 'lastpollsuccessful');
+            }
             const pollingStatusTopicTF = topicArrayTF.map(item => item.topic || item).join('');
+            logger.info(`pollingStatusTopicTF, ${pollingStatusTopicTF}`);
             client.publish(pollingStatusTopicTF, "false", { retain: true });
+
             const states = new Map();
             const v = vehicle;
             logger.info('Requesting diagnostics');
@@ -323,10 +361,24 @@ logger.info('Starting OnStar2MQTT Polling');
 
             .then(() => logger.info('Updates complete, sleeping.'))
             .catch((e) => {
-                const topicArray = _.concat(mqttConfig.pollingStatusTopic, '/', 'state');
+                let topicArray;
+                if (!mqttConfig.pollingStatusTopic) {
+                    topicArray = _.concat(mqttHA.getPollingStatusTopic(), '/', 'state');
+                } else {
+                    topicArray = _.concat(mqttConfig.pollingStatusTopic, '/', 'state');
+                }
                 const pollingStatusTopicState = topicArray.map(item => item.topic || item).join('');
-                const topicArrayTF = _.concat(mqttConfig.pollingStatusTopic, '/', 'lastpollsuccessful');
+                logger.debug('pollingStatusTopicState', { pollingStatusTopicState });
+
+                let topicArrayTF;
+                if (!mqttConfig.pollingStatusTopic) {
+                    topicArrayTF = _.concat(mqttHA.getPollingStatusTopic(), '/', 'lastpollsuccessful');
+                } else {
+                    topicArrayTF = _.concat(mqttConfig.pollingStatusTopic, '/', 'lastpollsuccessful');
+                }
                 const pollingStatusTopicTF = topicArrayTF.map(item => item.topic || item).join('');
+                logger.debug('pollingStatusTopicTF', { pollingStatusTopicTF });
+
                 if (e instanceof Error) {
                     const errorPayload = {
                         error: _.pick(e, [
@@ -357,7 +409,28 @@ logger.info('Starting OnStar2MQTT Polling');
             });
 
         await main();
-        setInterval(main, onstarConfig.refreshInterval);
+
+        let refreshInterval;
+        const refreshIntervalTopic = mqttHA.getRefreshIntervalTopic();
+        logger.info(`refreshIntervalTopic: ${refreshIntervalTopic}`);
+        // Subscribe to the topic
+        client.subscribe(refreshIntervalTopic);
+        // Set initial interval
+        refreshInterval = setInterval(main, onstarConfig.refreshInterval);
+        logger.info(`Initial refreshInterval: ${onstarConfig.refreshInterval}`);
+        //client.publish(refreshIntervalTopic, onstarConfig.refreshInterval.toString(), { retain: true });
+
+        client.on('message', async (topic, message) => {
+            if (topic === refreshIntervalTopic) {
+                const newRefreshInterval = parseInt(message.toString());
+                // Clear previous interval
+                clearInterval(refreshInterval);
+                // Start new interval with updated refresh interval
+                refreshInterval = setInterval(main, newRefreshInterval);
+                logger.info(`Updated refreshInterval to ${newRefreshInterval}`);
+            }
+        });
+
     } catch (e) {
         logger.error('Main function error:', { error: e });
     }
