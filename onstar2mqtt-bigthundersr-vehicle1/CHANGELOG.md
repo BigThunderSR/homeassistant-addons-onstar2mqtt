@@ -1,5 +1,25 @@
 # Changelog
 
+## 1.11.0
+
+- Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.11.0](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.11.0)
+- New env options for securing connectivity for MQTTS using TLS:
+  - MQTT_REJECT_UNAUTHORIZED (Default: "true", set to "false" only for testing.)
+  - MQTT_CA_FILE
+  - MQTT_CERT_FILE
+  - MQTT_KEY_FILE
+
+- Automatic creation of pollingStatusTopic
+  - No longer need to specify MQTT_ONSTAR_POLLING_STATUS_TOPIC as this is now created automatically
+    - Format is "homeassistant/(VIN)/polling_status/"
+  - If it is explicitly specified, will use the specified value, so does not break backwards compatibility
+
+- Ability to dynamically change polling frequency using MQTT
+  - Uses the value from "ONSTAR_REFRESH" on initial startup
+  - Change the value dynamically by publishing the new refresh value in milliseconds (ms) as an INT to: "homeassistant/(VIN)/refresh_interval"
+
+- Additional logging enhancements
+
 ## 1.10.0
 
 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.10.0](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.10.0)

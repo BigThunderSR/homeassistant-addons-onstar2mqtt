@@ -18,6 +18,12 @@ export MQTT_PASSWORD=$(bashio::config 'MQTT_PASSWORD')
 export MQTT_PORT=$(bashio::config 'MQTT_PORT')
 export MQTT_PREFIX=$(bashio::config 'MQTT_PREFIX')
 export MQTT_ONSTAR_POLLING_STATUS_TOPIC=$(bashio::config 'MQTT_ONSTAR_POLLING_STATUS_TOPIC')
+export MQTT_ONSTAR_POLLING_STATUS_TOPIC=$(bashio::config 'MQTT_ONSTAR_POLLING_STATUS_TOPIC')
+export MQTT_TLS=$(bashio::config 'MQTT_TLS')
+export MQTT_REJECT_UNAUTHORIZED=$(bashio::config 'MQTT_REJECT_UNAUTHORIZED')
+export MQTT_CA_FILE=$(bashio::config 'MQTT_CA_FILE')
+export MQTT_CERT_FILE=$(bashio::config 'MQTT_CERT_FILE')
+export MQTT_KEY_FILE=$(bashio::config 'MQTT_KEY_FILE')
 
 bashio::log.info "Starting OnStar2MQTT for $VEHICLE_NAME..."
 npm run start

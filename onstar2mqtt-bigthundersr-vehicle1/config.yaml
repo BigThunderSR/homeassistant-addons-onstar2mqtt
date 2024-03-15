@@ -1,5 +1,5 @@
 name: OnStar2MQTT Home Assistant Add-on (BigThunderSR) for Vehicle 1
-version: 1.10.0
+version: 1.11.0
 slug: onstar2mqtt_bigthundersr_vehicle1
 description: Home Assistant Add On Version of BigThunderSR/onstar2mqtt for Vehicle 1
 codenotary: bigthundersr@outlook.com
@@ -11,14 +11,17 @@ arch:
   - armhf
   - armv7
   - i386
+map:
+  - share
+  - ssl
 url: "https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt"
 image: "ghcr.io/bigthundersr/ha-addons-onstar2mqtt-bigthundersr-vehicle1-{arch}"
 services:
   - "mqtt:need"
 init: false
 options:
-  VEHICLE_NAME: "Vehicle 1"
   LOG_LEVEL: "info"
+  VEHICLE_NAME: "Vehicle 1"
   ONSTAR_DEVICEID: ""
   ONSTAR_VIN: ""
   ONSTAR_USERNAME: ""
@@ -33,10 +36,15 @@ options:
   MQTT_PASSWORD: ""
   MQTT_PORT: 1883
   MQTT_PREFIX: "homeassistant"
-  MQTT_ONSTAR_POLLING_STATUS_TOPIC: "homeassistant/onstar2mqtt/vehicle1/polling"
+  MQTT_ONSTAR_POLLING_STATUS_TOPIC: ""
+  MQTT_TLS: false
+  MQTT_REJECT_UNAUTHORIZED: true
+  MQTT_CA_FILE: ""
+  MQTT_CERT_FILE: ""
+  MQTT_KEY_FILE: ""
 schema:
-  VEHICLE_NAME: str
   LOG_LEVEL: str
+  VEHICLE_NAME: str
   ONSTAR_DEVICEID: str
   ONSTAR_VIN: str
   ONSTAR_USERNAME: str
@@ -50,5 +58,10 @@ schema:
   MQTT_USERNAME: str
   MQTT_PASSWORD: password
   MQTT_PORT: port
-  MQTT_PREFIX: str
-  MQTT_ONSTAR_POLLING_STATUS_TOPIC: str
+  MQTT_PREFIX: str?
+  MQTT_ONSTAR_POLLING_STATUS_TOPIC: str?
+  MQTT_TLS: bool
+  MQTT_REJECT_UNAUTHORIZED: bool 
+  MQTT_CA_FILE: str?
+  MQTT_CERT_FILE: str?
+  MQTT_KEY_FILE: str?
