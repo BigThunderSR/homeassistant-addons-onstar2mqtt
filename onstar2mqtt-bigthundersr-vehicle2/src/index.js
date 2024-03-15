@@ -412,12 +412,15 @@ logger.info('Starting OnStar2MQTT Polling');
 
         let refreshInterval;
         const refreshIntervalTopic = mqttHA.getRefreshIntervalTopic();
+        const refreshIntervalCurrentValTopic = mqttHA.getRefreshIntervalCurrentValTopic();
         logger.info(`refreshIntervalTopic: ${refreshIntervalTopic}`);
+        logger.info(`refreshIntervalCurrentValTopic: ${refreshIntervalCurrentValTopic}`);
         // Subscribe to the topic
         client.subscribe(refreshIntervalTopic);
         // Set initial interval
         refreshInterval = setInterval(main, onstarConfig.refreshInterval);
         logger.info(`Initial refreshInterval: ${onstarConfig.refreshInterval}`);
+        client.publish(refreshIntervalCurrentValTopic, onstarConfig.refreshInterval.toString(), { retain: true });
         //client.publish(refreshIntervalTopic, onstarConfig.refreshInterval.toString(), { retain: true });
 
         client.on('message', async (topic, message) => {
@@ -428,6 +431,7 @@ logger.info('Starting OnStar2MQTT Polling');
                 // Start new interval with updated refresh interval
                 refreshInterval = setInterval(main, newRefreshInterval);
                 logger.info(`Updated refreshInterval to ${newRefreshInterval}`);
+                client.publish(refreshIntervalCurrentValTopic, newRefreshInterval.toString(), { retain: true });
             }
         });
 

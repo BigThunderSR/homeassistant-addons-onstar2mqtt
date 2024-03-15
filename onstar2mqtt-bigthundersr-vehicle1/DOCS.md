@@ -66,7 +66,7 @@ mode: single
 icon: 'mdi:map-marker'
 ```
 
-#### MQTT Polling Status Success Monitor
+#### MQTT Polling Status Success Monitor (T/F)
 
 Create a MQTT binary sensor in Home Assistant
 
@@ -76,12 +76,30 @@ mqtt:
     - name: "<Vehicle_Name> OnStar Polling Status Successful"
       unique_id: <vehicle_name>_onstar_polling_status_successful
       availability_topic: homeassistant/<vehicle_vin>/available
-      payload_available: "true"
-      payload_not_available: "false"
+      payload_available: "false"
+      payload_not_available: "true"
       state_topic: "homeassistant/onstar2mqtt/vehicle1/polling/lastpollsuccessful"
       payload_on: "false"
       payload_off: "true"
       device_class: problem
+```
+
+#### MQTT Polling Status Success Timestamp Monitor
+
+Create a MQTT sensor in Home Assistant
+
+```yaml
+mqtt:
+  sensor:
+    - name: "<Vehicle_Name> OnStar Last Polling Status Timestamp"
+      unique_id: <vehicle_name>_last_polling_status_timestamp
+      availability_topic: homeassistant/<vehicle_vin>/available
+      payload_available: "false"
+      payload_not_available: "true"
+      state_topic: "homeassistant/onstar2mqtt/vehicle1/polling/state"
+      value_template: "{{ as_timestamp(strptime(value_json.error.response.headers.date.replace(' GMT','+0000'), '%a, %d %b %Y %H:%M:%S%z')) | timestamp_local  }}"  
+      icon: mdi:calendar-clock  
+      device_class: timestamp
 ```
 
 ### Automation

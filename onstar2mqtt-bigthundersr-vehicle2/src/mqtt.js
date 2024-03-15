@@ -106,6 +106,10 @@ class MQTT {
         return `${this.prefix}/${this.instance}/refresh_interval`;
     }
 
+    getRefreshIntervalCurrentValTopic() {
+        return `${this.prefix}/${this.instance}/refresh_interval_current_val`;
+    }
+
     /**
      *
      * @param {DiagnosticElement} diag
