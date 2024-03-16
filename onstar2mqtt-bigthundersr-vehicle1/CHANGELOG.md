@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.12.1
+
+- Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.12.1](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.12.1)
+- Add completionTimestamp JSON field to pollingStatusTopicState per BigThunderSR/homeassistant-addons-onstar2mqtt#410
+
 ## 1.12.0
 
 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.12.0](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.12.0)
