@@ -102,7 +102,7 @@ mqtt:
       payload_available: "false"
       payload_not_available: "true"
       state_topic: "homeassistant/onstar2mqtt/vehicle1/polling/state"
-      value_template: "{{ as_timestamp(strptime(value_json.error.response.headers.date.replace(' GMT','+0000'), '%a, %d %b %Y %H:%M:%S%z')) | timestamp_local  }}"  
+      value_template: "{{ value_json.completionTimestamp }}"  
       icon: mdi:calendar-clock  
       device_class: timestamp
 ```
