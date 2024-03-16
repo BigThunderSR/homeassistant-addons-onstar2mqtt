@@ -236,8 +236,10 @@ const configureMQTT = async (commands, client, mqttHA) => {
                             // Now has discovery
                             logger.debug(vehicle)
                             client.publish(topic,
-                                JSON.stringify({ latitude: parseFloat(location.lat), longitude: parseFloat(location.long), 
-                                    speed: parseFloat(speed.value), direction: parseFloat(direction.value) }), { retain: true })
+                                JSON.stringify({
+                                    latitude: parseFloat(location.lat), longitude: parseFloat(location.long),
+                                    speed: parseFloat(speed.value), direction: parseFloat(direction.value)
+                                }), { retain: true })
                             client.publish(deviceTrackerConfigTopic,
                                 JSON.stringify({ "json_attributes_topic": topic, "name": vehicle }), { retain: true })
                                 .then(() => {
@@ -364,7 +366,13 @@ logger.info('Starting OnStar2MQTT Polling');
             }
             await Promise.all(publishes);
             //client.publish(pollingStatusTopicState, JSON.stringify({"ok":{"message":"Data Polled Successfully"}}), {retain: false})
-            client.publish(pollingStatusTopicState, JSON.stringify({ "error": { "message": "N/A", "response": { "status": 0, "statusText": "N/A" } } }), { retain: true })
+            const completionTimestamp = new Date().toISOString();
+            logger.debug(`Completion Timestamp: ${completionTimestamp}`);
+            client.publish(pollingStatusTopicState,
+                JSON.stringify({
+                    "error": { "message": "N/A", "response": { "status": 0, "statusText": "N/A" } },
+                    "completionTimestamp": completionTimestamp
+                }), { retain: true })
             client.publish(pollingStatusTopicTF, "true", { retain: true });
         };
 
@@ -406,14 +414,25 @@ logger.info('Starting OnStar2MQTT Polling');
                             'stack'
                         ])
                     };
-                    const errorJson = JSON.stringify(errorPayload);
-                    client.publish(pollingStatusTopicState, errorJson, { retain: true });
+                    //const errorJson = JSON.stringify(errorPayload);
+                    const completionTimestamp = new Date().toISOString();
+                    logger.debug(`Completion Timestamp: ${completionTimestamp}`);
+                    client.publish(pollingStatusTopicState,
+                        JSON.stringify({
+                            errorPayload,
+                            "completionTimestamp": completionTimestamp
+                        }), { retain: true })
                     logger.error('Error Polling Data:', { error: errorPayload });
                     client.publish(pollingStatusTopicTF, "false", { retain: true })
 
                 } else {
-                    const errorJson = JSON.stringify({ error: e })
-                    client.publish(pollingStatusTopicState, errorJson, { retain: true });
+                    //const errorJson = JSON.stringify({ error: e })
+                    const completionTimestamp = new Date().toISOString();
+                    client.publish(pollingStatusTopicState,
+                        JSON.stringify({
+                            error: e,
+                            "completionTimestamp": completionTimestamp
+                        }), { retain: true })
                     logger.error('Error Polling Data:', { error: e });
                     client.publish(pollingStatusTopicTF, "false", { retain: true })
                 }
