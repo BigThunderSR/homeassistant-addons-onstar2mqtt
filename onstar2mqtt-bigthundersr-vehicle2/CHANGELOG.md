@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.12.0
+
+- Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.12.0](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.12.0)
+
+- Added device_tracker auto discovery by @BigThunderSR in https://github.com/BigThunderSR/onstar2mqtt/pull/143
+  - The device_tracker auto discovery config is published to: "homeassistant/device_tracker/(VIN)/config" and the GPS coordinates are still read from the original topic automatically at: "homeassistant/device_tracker/(VIN)/getlocation/state".
+  - Also added GPS based speed and direction to the device_tracker attributes
+
+- Added new retained topic of "homeassistant/(VIN)/refresh_interval_current_val" to monitor current refresh value set via MQTT
+
 ## 1.11.0
 
 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.11.0](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.11.0)
