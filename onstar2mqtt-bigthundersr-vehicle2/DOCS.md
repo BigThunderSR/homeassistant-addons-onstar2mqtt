@@ -41,12 +41,17 @@ mode: single
 
 ### Location
 
-Unfortunately, the MQTT Device tracker uses a home/not_home state and the MQTT Json device tracker does not support
-the discovery schema so a manual entity configuration is required.
+MQTT device_tracker auto discovery capability is enabled starting at v1.12.0
 
-Device Tracker YAML:
+The device_tracker auto discovery config is published to: "homeassistant/device_tracker/(VIN)/config" and the GPS coordinates are still read from the original topic automatically at: "homeassistant/device_tracker/(VIN)/getlocation/state".
+
+~~Unfortunately, the MQTT Device tracker uses a home/not_home state and the MQTT Json device tracker does not support
+the discovery schema so a manual entity configuration is required.~~
+
+~~Device Tracker YAML:~~
 
 ```yaml
+<!-- The following YAML configuration is no longer required starting at v1.12.0-->
 device_tracker:
   - platform: mqtt_json
     devices:
@@ -225,7 +230,7 @@ views:
         name: Last Trip
         hours_to_show: 672
         group_by: date
-        agreggate_func: null
+        aggregate_func: null
         show:
           graph: bar
           icon: false

@@ -136,9 +136,9 @@ const configureMQTT = async (commands, client, mqttHA) => {
             if (topic === mqttHA.getRefreshIntervalTopic()) {
                 logger.info(`Processing refreshInterval`);
                 return;
-            }else{
-            logger.error('Command not found', { command });
-            return;
+            } else {
+                logger.error('Command not found', { command });
+                return;
             }
         }
 
@@ -226,13 +226,24 @@ const configureMQTT = async (commands, client, mqttHA) => {
                     if (responseData) {
                         logger.warn('Command response data:', { responseData });
                         const location = _.get(data, 'response.data.commandResponse.body.location');
+                        const speed = _.get(data, 'response.data.commandResponse.body.speed');
+                        const direction = _.get(data, 'response.data.commandResponse.body.direction');
                         if (location) {
                             const topic = mqttHA.getStateTopic({ name: command });
-                            // TODO create device_tracker entity. MQTT device tracker doesn't support lat/lon and mqtt_json
-                            // doesn't have discovery
+                            const deviceTrackerConfigTopic = mqttHA.getDeviceTrackerConfigTopic();
+                            const vehicle = mqttHA.vehicle.toString();
+                            // Done - create device_tracker entity. (Was - MQTT device tracker doesn't support lat/lon and mqtt_json)
+                            // Now has discovery
+                            logger.debug(vehicle)
                             client.publish(topic,
-                                JSON.stringify({ latitude: location.lat, longitude: location.long }), { retain: true })
-                                .then(() => logger.warn('Published location to topic:', { topic }));
+                                JSON.stringify({ latitude: parseFloat(location.lat), longitude: parseFloat(location.long), 
+                                    speed: parseFloat(speed.value), direction: parseFloat(direction.value) }), { retain: true })
+                            client.publish(deviceTrackerConfigTopic,
+                                JSON.stringify({ "json_attributes_topic": topic, "name": vehicle }), { retain: true })
+                                .then(() => {
+                                    logger.warn(`Published location to topic: ${topic}`);
+                                    logger.warn(`Published device_tracker config to topic: ${deviceTrackerConfigTopic}`);
+                                })
                         }
                     }
                 })

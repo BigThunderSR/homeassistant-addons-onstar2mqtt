@@ -110,6 +110,10 @@ class MQTT {
         return `${this.prefix}/${this.instance}/refresh_interval_current_val`;
     }
 
+    getDeviceTrackerConfigTopic() {
+        return `${this.prefix}/device_tracker/${this.instance}/config`;
+    }
+
     /**
      *
      * @param {DiagnosticElement} diag
