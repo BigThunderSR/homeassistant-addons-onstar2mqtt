@@ -140,6 +140,9 @@ mode: single
 10. `getLocation`
 11. `alertFlash`
 12. `alertHonk`
+13. `diagnostics`
+14. `enginerpm`
+
 
 ### Lovelace Dashboard
 
