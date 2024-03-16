@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.11.0 - Test Build. DO NOT Install!!!
+## 1.12.0 - Test Build. DO NOT Install!!!
 
 - Testing
 
