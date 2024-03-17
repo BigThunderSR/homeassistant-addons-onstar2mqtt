@@ -146,11 +146,14 @@ const configureMQTT = async (commands, client, mqttHA) => {
         const commandStatusTopic = topicArray.map(item => item.topic || item).join('');
 
         const commandFn = cmd.bind(commands);
-        logger.debug('List of const', { command, cmd, commandFn, options });
-        if (command === 'diagnostics' || command === 'enginerpm') {
+        logger.debug(`List of const: ${command}, ${cmd}, ${commandFn.toString()}, ${options}`);
+        if (command === 'diagnosticsPreset' || command === 'enginerpm') {
             logger.warn('Command sent:', { command });
             logger.warn(`Command Status Topic: ${commandStatusTopic}`);
-            client.publish(commandStatusTopic, JSON.stringify({ "Command": "Sent" }), { retain: true });
+            client.publish(commandStatusTopic,
+                JSON.stringify({
+                    "Command": "Sent"
+                }), { retain: true });
             (async () => {
                 const states = new Map();
                 const statsRes = await commands[command]({ command });
@@ -190,6 +193,8 @@ const configureMQTT = async (commands, client, mqttHA) => {
             })()
                 .catch((e) => {
                     if (e instanceof Error) {
+                        const completionTimestamp = new Date().toISOString();
+                        logger.debug(`Completion Timestamp: ${completionTimestamp}`);
                         const errorPayload = {
                             error: _.pick(e, [
                                 'message',
@@ -208,20 +213,43 @@ const configureMQTT = async (commands, client, mqttHA) => {
                         //const errorJson = JSON.stringify(errorPayload);
                         logger.error('Command Error!', { command, error: errorPayload });
                         logger.error(`Command Status Topic for Errored Command: ${commandStatusTopic}`);
-                        client.publish(commandStatusTopic, JSON.stringify({ "Command": errorPayload }), { retain: true });
+                        client.publish(commandStatusTopic,
+                            JSON.stringify({
+                                "Command": errorPayload,
+                                "completionTimestamp": completionTimestamp
+                            }), { retain: true });
                     }
                 })
         }
         else {
             logger.warn('Command sent:', { command });
             logger.warn(`Command Status Topic: ${commandStatusTopic}`);
-            client.publish(commandStatusTopic, JSON.stringify({ "Command": "Sent" }), { retain: true });
+            client.publish(commandStatusTopic,
+                JSON.stringify({
+                    "Command": "Sent"
+                }), { retain: true });
             commandFn(options || {})
                 .then(data => {
                     // refactor the response handling for commands - Done!
+                    const completionTimestamp = new Date().toISOString();
+                    logger.debug(`Completion Timestamp: ${completionTimestamp}`);
                     logger.warn('Command completed:', { command });
                     logger.warn(`Command Status Topic: ${commandStatusTopic}`);
-                    client.publish(commandStatusTopic, JSON.stringify({ "Command": { "error": { "message": "Completed Successfully", "response": { "status": 0, "statusText": "Completed Successfully" } } } }), { retain: true });
+                    client.publish(
+                        commandStatusTopic,
+                        JSON.stringify({
+                            "Command": {
+                                "error": {
+                                    "message": "Completed Successfully",
+                                    "response": {
+                                        "status": 0,
+                                        "statusText": "Completed Successfully"
+                                    }
+                                }
+                            },
+                            "completionTimestamp": completionTimestamp
+                        }), { retain: true }
+                    );
                     const responseData = _.get(data, 'response.data');
                     if (responseData) {
                         logger.warn('Command response data:', { responseData });
@@ -237,14 +265,19 @@ const configureMQTT = async (commands, client, mqttHA) => {
                             logger.debug(vehicle)
                             client.publish(topic,
                                 JSON.stringify({
-                                    latitude: parseFloat(location.lat), longitude: parseFloat(location.long),
-                                    speed: parseFloat(speed.value), direction: parseFloat(direction.value)
+                                    latitude: parseFloat(location.lat),
+                                    longitude: parseFloat(location.long),
+                                    speed: parseFloat(speed.value),
+                                    direction: parseFloat(direction.value)
                                 }), { retain: true })
                             client.publish(deviceTrackerConfigTopic,
-                                JSON.stringify({ "json_attributes_topic": topic, "name": vehicle }), { retain: true })
+                                JSON.stringify({
+                                    "json_attributes_topic": topic,
+                                    "name": vehicle
+                                }), { retain: true })
                                 .then(() => {
-                                    logger.warn(`Published location to topic: ${topic}`);
                                     logger.warn(`Published device_tracker config to topic: ${deviceTrackerConfigTopic}`);
+                                    logger.warn(`Published location to topic: ${topic}`);
                                 })
                         }
                     }
@@ -254,6 +287,8 @@ const configureMQTT = async (commands, client, mqttHA) => {
                 //client.publish(commandStatusTopic, CircularJSON.stringify({"Command": err}), {retain: true})});
                 .catch((e) => {
                     if (e instanceof Error) {
+                        const completionTimestamp = new Date().toISOString();
+                        logger.debug(`Completion Timestamp: ${completionTimestamp}`);
                         const errorPayload = {
                             error: _.pick(e, [
                                 'message',
@@ -272,7 +307,11 @@ const configureMQTT = async (commands, client, mqttHA) => {
                         //const errorJson = JSON.stringify(errorPayload);
                         logger.error('Command Error!', { command, error: errorPayload });
                         logger.error(`Command Status Topic for Errored Command: ${commandStatusTopic}`);
-                        client.publish(commandStatusTopic, JSON.stringify({ "Command": errorPayload }), { retain: true });
+                        client.publish(commandStatusTopic,
+                            JSON.stringify({
+                                "Command": errorPayload,
+                                "completionTimestamp": completionTimestamp
+                            }), { retain: true });
                     }
                 });
         }
@@ -306,7 +345,17 @@ logger.info('Starting OnStar2MQTT Polling');
             }
             const pollingStatusTopicState = topicArray.map(item => item.topic || item).join('');
             logger.info(`pollingStatusTopicState: ${pollingStatusTopicState}`);
-            client.publish(pollingStatusTopicState, JSON.stringify({ "error": { "message": "Pending Initialization of OnStar2MQTT", "response": { "status": -2000, "statusText": "Pending Initialization of OnStar2MQTT" } } }), { retain: false })
+            client.publish(pollingStatusTopicState,
+                JSON.stringify({
+                    "error": {
+                        "message": "N/A",
+                        "response": {
+                            "status": 0,
+                            "statusText": "N/A"
+                        }
+                    },
+                    "completionTimestamp": new Date().toISOString()
+                }), { retain: false })
 
             let topicArrayTF;
             if (!mqttConfig.pollingStatusTopic) {
@@ -370,7 +419,13 @@ logger.info('Starting OnStar2MQTT Polling');
             logger.debug(`Completion Timestamp: ${completionTimestamp}`);
             client.publish(pollingStatusTopicState,
                 JSON.stringify({
-                    "error": { "message": "N/A", "response": { "status": 0, "statusText": "N/A" } },
+                    "error": {
+                        "message": "N/A",
+                        "response": {
+                            "status": 0,
+                            "statusText": "N/A"
+                        }
+                    },
                     "completionTimestamp": completionTimestamp
                 }), { retain: true })
             client.publish(pollingStatusTopicTF, "true", { retain: true });
@@ -430,7 +485,7 @@ logger.info('Starting OnStar2MQTT Polling');
                     const completionTimestamp = new Date().toISOString();
                     client.publish(pollingStatusTopicState,
                         JSON.stringify({
-                            ...{error: e},
+                            ...{ error: e },
                             "completionTimestamp": completionTimestamp
                         }), { retain: true })
                     logger.error('Error Polling Data:', { error: e });
