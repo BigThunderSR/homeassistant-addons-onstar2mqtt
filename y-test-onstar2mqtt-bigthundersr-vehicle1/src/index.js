@@ -147,7 +147,7 @@ const configureMQTT = async (commands, client, mqttHA) => {
 
         const commandFn = cmd.bind(commands);
         logger.debug(`List of const: ${command}, ${cmd}, ${commandFn.toString()}, ${options}`);
-        if (command === 'diagnosticsPreset' || command === 'enginerpm') {
+        if (command === 'diagnostics' || command === 'enginerpm') {
             logger.warn('Command sent:', { command });
             logger.warn(`Command Status Topic: ${commandStatusTopic}`);
             client.publish(commandStatusTopic,
