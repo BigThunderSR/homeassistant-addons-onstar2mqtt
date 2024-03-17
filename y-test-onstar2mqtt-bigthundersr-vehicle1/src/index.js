@@ -419,7 +419,7 @@ logger.info('Starting OnStar2MQTT Polling');
                     logger.debug(`Completion Timestamp: ${completionTimestamp}`);
                     client.publish(pollingStatusTopicState,
                         JSON.stringify({
-                            errorPayload,
+                            ...errorPayload,
                             "completionTimestamp": completionTimestamp
                         }), { retain: true })
                     logger.error('Error Polling Data:', { error: errorPayload });
@@ -430,7 +430,7 @@ logger.info('Starting OnStar2MQTT Polling');
                     const completionTimestamp = new Date().toISOString();
                     client.publish(pollingStatusTopicState,
                         JSON.stringify({
-                            error: e,
+                            ...{error: e},
                             "completionTimestamp": completionTimestamp
                         }), { retain: true })
                     logger.error('Error Polling Data:', { error: e });
