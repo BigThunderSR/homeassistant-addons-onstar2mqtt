@@ -143,7 +143,6 @@ mode: single
 13. `diagnostics`
 14. `enginerpm`
 
-
 ### Lovelace Dashboard
 
 Create a new dashboard, or use the cards in your own view. The `mdi:car-electric` icon works well here.
