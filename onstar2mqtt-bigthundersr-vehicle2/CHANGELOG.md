@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.12.3
+
+- Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.12.3](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.12.3)
+- Fix minor regression from v1.12.0
+- Add "completionTimestamp" field for uniformity to every MQTT topic that publishes a command or polling status
+
 ## 1.12.2
 
 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.12.2](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.12.2)
