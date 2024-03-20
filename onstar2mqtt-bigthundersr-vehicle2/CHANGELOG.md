@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.12.5
+
+- Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.12.5](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.12.5)
+- Improve diagnostic response handling for manually run command
+- Minor updates to command state message
+
 ## 1.12.4
 
 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.12.4](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.12.4)
