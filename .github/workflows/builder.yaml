@@ -117,6 +117,6 @@ jobs:
             --image "${{ steps.check.outputs.image }}" \
             --docker-hub "ghcr.io/${{ github.repository_owner }}" \
             --addon
-            --no-cache
+            #--no-cache
         #env:
         #  CAS_API_KEY: ${{ secrets.CAS_API_KEY }}
