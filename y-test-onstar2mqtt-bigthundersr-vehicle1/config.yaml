@@ -65,3 +65,5 @@ schema:
   MQTT_CA_FILE: str?
   MQTT_CERT_FILE: str?
   MQTT_KEY_FILE: str?
+
+  
