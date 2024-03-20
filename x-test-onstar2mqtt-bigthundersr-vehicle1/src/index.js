@@ -146,18 +146,35 @@ const configureMQTT = async (commands, client, mqttHA) => {
         const commandStatusTopic = topicArray.map(item => item.topic || item).join('');
 
         const commandFn = cmd.bind(commands);
-        logger.debug(`List of const: ${command}, ${cmd}, ${commandFn.toString()}, ${options}`);
+        logger.debug(`List of const: Command: ${command}, cmd: ${cmd}, commandFn: ${commandFn.toString()}, options: ${options}`);
         if (command === 'diagnostics' || command === 'enginerpm') {
             logger.warn('Command sent:', { command });
             logger.warn(`Command Status Topic: ${commandStatusTopic}`);
             client.publish(commandStatusTopic,
                 JSON.stringify({
-                    "Command": "Sent"
+                    "Command": {
+                        "error": {
+                            "message": "Sent",
+                            "response": {
+                                "status": 0,
+                                "statusText": "Sent"
+                            }
+                        }
+                    },
+                    "completionTimestamp": new Date().toISOString()
                 }), { retain: true });
             (async () => {
                 const states = new Map();
-                const statsRes = await commands[command]({ command });
-                logger.debug({ statsRes });
+                logger.debug(`Options in command async block: ${options}`)
+                let diagnosticItem;
+                if (options) {
+                    diagnosticItem = options.split(',');
+                } else {
+                    diagnosticItem = undefined;
+                }
+                logger.debug("Diagnostic Item:", diagnosticItem)
+                const statsRes = await commands[command]({ diagnosticItem });
+                //logger.debug({ statsRes });
                 logger.info('Diagnostic request status', { status: _.get(statsRes, 'status') });
                 logger.debug('Diagnostic Response Body from Command', statsRes.response.data.commandResponse.body.diagnosticResponse);
                 // Make sure the response is always an array
@@ -226,7 +243,16 @@ const configureMQTT = async (commands, client, mqttHA) => {
             logger.warn(`Command Status Topic: ${commandStatusTopic}`);
             client.publish(commandStatusTopic,
                 JSON.stringify({
-                    "Command": "Sent"
+                    "Command": {
+                        "error": {
+                            "message": "Sent",
+                            "response": {
+                                "status": 0,
+                                "statusText": "Sent"
+                            }
+                        }
+                    },
+                    "completionTimestamp": new Date().toISOString()
                 }), { retain: true });
             commandFn(options || {})
                 .then(data => {
@@ -370,6 +396,7 @@ logger.info('Starting OnStar2MQTT Polling');
             const states = new Map();
             const v = vehicle;
             logger.info('Requesting diagnostics');
+            logger.debug(`GetSupported: ${v.getSupported()}`);
             const statsRes = await commands.diagnostics({ diagnosticItem: v.getSupported() });
             logger.info('Diagnostic request status', { status: _.get(statsRes, 'status') });
             const stats = _.map(
