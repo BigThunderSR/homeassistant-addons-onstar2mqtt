@@ -1,4 +1,5 @@
-const OnStar = require('onstarjs');
+const OnStar = require('./deps/index.cjs');
+//const OnStar = require('onstarjs');
 const mqtt = require('async-mqtt');
 const uuidv4 = require('uuid').v4;
 const _ = require('lodash');
@@ -238,8 +239,126 @@ const configureMQTT = async (commands, client, mqttHA) => {
                     }
                 })
         }
-        else {
+        else if (command === 'alert') {
+            //const modifiedOptions = {
+            //    action: 'action: ["' + options.action + '"]',
+            //    delay: parseInt(options.delay) || 0, // handle invalid or missing delay
+            //    duration: parseInt(options.duration) || 0, // handle invalid or missing duration
+            //    override: 'override: ["' + options.override + '"]'
+            //};
+
+            let action = options.action;
+            logger.debug(`Action: ${action}`);
+            let actionArray = undefined;
+            let delay = options.delay;
+            logger.debug(`Delay: ${delay}`);
+            let duration = options.duration;
+            logger.debug(`Duration: ${duration}`);
+            let override = options.override;
+            logger.debug(`Override: ${override}`);
+            let overrideArray = undefined;
+
+            if (action === '' || action === undefined) {
+                actionArray = undefined;
+            } else {
+                actionArray = action.split(',');
+            }
+            logger.debug(`Action Array: ${actionArray}`);
+            if (override === '' || override === undefined) {
+                overrideArray = undefined;
+            } else {
+                overrideArray = override.split(',');
+            }
+            logger.debug(`Override Array: ${overrideArray}`);
+
+            let request = {
+                action: actionArray || ["Flash", "Honk"],
+                delay: delay || 0,
+                duration: duration || 1,
+                override: overrideArray || ["DoorOpen", "IgnitionOn"]
+            }
+
             logger.warn('Command sent:', { command });
+            //logger.debug(`Command sent: Command: ${ command }, ModifiedOptions: ${ modifiedOptions }`);
+
+            logger.warn(`Command Status Topic: ${commandStatusTopic}`);
+            client.publish(commandStatusTopic,
+                JSON.stringify({
+                    "Command": {
+                        "error": {
+                            "message": "Sent",
+                            "response": {
+                                "status": 0,
+                                "statusText": "Sent"
+                            }
+                        }
+                    },
+                    "completionTimestamp": new Date().toISOString()
+                }), { retain: true });
+            //commandFn(modifiedOptions || {})
+            logger.debug(`Command sent: Command: ${command}, Request: ${JSON.stringify(request)}`);
+            commands[command](request)            
+                .then(data => {
+                    // refactor the response handling for commands - Done!
+                    const completionTimestamp = new Date().toISOString();
+                    logger.debug(`Completion Timestamp: ${completionTimestamp}`);
+                    logger.warn('Command completed:', { command });
+                    logger.warn(`Command Status Topic: ${commandStatusTopic}`);
+                    client.publish(
+                        commandStatusTopic,
+                        JSON.stringify({
+                            "Command": {
+                                "error": {
+                                    "message": "Completed Successfully",
+                                    "response": {
+                                        "status": 0,
+                                        "statusText": "Completed Successfully"
+                                    }
+                                }
+                            },
+                            "completionTimestamp": completionTimestamp
+                        }), { retain: true }
+                    );
+                    const responseData = _.get(data, 'response.data');
+                    if (responseData) {
+                        logger.warn('Command response data:', { responseData });
+                    }
+                })
+                //.catch((err)=> {logger.error('Command error', {command, err})            
+                //logger.info(commandStatusTopic);
+                //client.publish(commandStatusTopic, CircularJSON.stringify({"Command": err}), {retain: true})});
+                .catch((e) => {
+                    if (e instanceof Error) {
+                        const completionTimestamp = new Date().toISOString();
+                        logger.debug(`Completion Timestamp: ${completionTimestamp}`);
+                        const errorPayload = {
+                            error: _.pick(e, [
+                                'message',
+                                'response.status',
+                                'response.statusText',
+                                'response.headers',
+                                'response.data',
+                                'request.method',
+                                'request.body',
+                                'request.contentType',
+                                'request.headers',
+                                'request.url',
+                                'stack'
+                            ])
+                        };
+                        //const errorJson = JSON.stringify(errorPayload);
+                        logger.error('Command Error!', { command, error: errorPayload });
+                        logger.error(`Command Status Topic for Errored Command: ${commandStatusTopic}`);
+                        client.publish(commandStatusTopic,
+                            JSON.stringify({
+                                "Command": errorPayload,
+                                "completionTimestamp": completionTimestamp
+                            }), { retain: true });
+                    }
+                });
+        }
+        else {
+            logger.warn('Command sent:', { command }, { options });
             logger.warn(`Command Status Topic: ${commandStatusTopic}`);
             client.publish(commandStatusTopic,
                 JSON.stringify({

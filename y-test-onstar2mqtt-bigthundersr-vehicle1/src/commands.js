@@ -82,8 +82,8 @@ class Commands {
     //    });
     //}
 
-    async alert() {
-        return this.onstar.alert();
+    async alert(request) {
+        return this.onstar.alert(request);
     }
 
     async alertFlash({ action = [Commands.CONSTANTS.ALERT_ACTION.FLASH] }) {
@@ -106,6 +106,14 @@ class Commands {
         return this.onstar.unlockDoor({ delay });
     }
 
+    async lockTrunk({ delay = 0 }) {
+        return this.onstar.lockTrunk({ delay });
+    }
+
+    async unlockTrunk({ delay = 0 }) {
+        return this.onstar.unlockTrunk({ delay });
+    }
+
     async chargeOverride({ mode = Commands.CONSTANTS.CHARGE_OVERRIDE.CHARGE_NOW }) {
         return this.onstar.chargeOverride({ mode });
     }
@@ -118,8 +126,8 @@ class Commands {
         return this.onstar.getChargingProfile();
     }
 
-    async setChargingProfile() {
-        return this.onstar.setChargingProfile();
+    async setChargingProfile(request) {
+        return this.onstar.setChargingProfile(request);
     }
 
     async getLocation() {
