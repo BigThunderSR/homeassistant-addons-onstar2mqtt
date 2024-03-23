@@ -74,10 +74,16 @@ Collect the following information:
 - **NEW - OnStar password/pin and MQTT password are masked by default in the console log output. To see these values in the console log output, set "LOG_LEVEL" to "debug"**
 
 - **NEW - New options for securing connectivity for MQTTS using TLS**
-    - MQTT_REJECT_UNAUTHORIZED (Default: "true", set to "false" only for testing.)
-    - MQTT_CA_FILE
-    - MQTT_CERT_FILE
-    - MQTT_KEY_FILE
+  - MQTT_REJECT_UNAUTHORIZED (Default: "true", set to "false" only for testing.)
+  - MQTT_CA_FILE
+  - MQTT_CERT_FILE
+  - MQTT_KEY_FILE
+
+- **NEW - Ability to send commands with options using MQTT now works**
+  - Send commands to the command topic in the format:
+    - {"command": "diagnostics","options": "OIL LIFE,VEHICLE RANGE"}
+    - {"command": "setChargingProfile","options": {"chargeMode": "RATE_BASED","rateType": "OFFPEAK"}}
+    - {"command": "alert","options": {"action": "Flash"}}
 
 ## Helpful Usage Notes
 
