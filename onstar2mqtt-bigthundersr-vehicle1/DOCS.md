@@ -15,6 +15,16 @@ mode: single
 icon: 'mdi:car-electric'
 ```
 
+```text
+Format for sending command options in the payload:
+  * Diagnostics:
+    * {"command": "diagnostics","options": "OIL LIFE,VEHICLE RANGE"}
+  * Set Charging Profile
+    * {"command": "setChargingProfile","options": {"chargeMode": "RATE_BASED","rateType": "OFFPEAK"}}
+  * Alert
+    * {"command": "alert","options": {"action": "Flash"}}
+```
+
 ### Trigger Precondition via Calendar
 
 ````yaml
@@ -135,13 +145,15 @@ mode: single
 5. `cancelAlert`
 6. `lockDoor`
 7. `unlockDoor`
-8. `chargeOverride`
-9. `cancelChargeOverride`
-10. `getLocation`
-11. `alertFlash`
-12. `alertHonk`
-13. `diagnostics`
-14. `enginerpm`
+8. `lockTrunk`
+9. `unlockTrunk`
+10. `chargeOverride`
+11. `cancelChargeOverride`
+12. `getLocation`
+13. `alertFlash`
+14. `alertHonk`
+15. `diagnostics`
+16. `enginerpm`
 
 ### Lovelace Dashboard
 
