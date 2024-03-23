@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.13.0
+
+- Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.13.0](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.13.0)
+- Changed the dependency on OnStarJS to embedded to enable easier key rotation updates
+- Added Trunk Open/Close commands based on PR 248 in [OnStarJS ](https://github.com/samrum/OnStarJS)and added delay option
+- Added additional packages to base install due to change of embedded dependency
+- Modifications to allow sending all commands with options using MQTT
+
 ## 1.12.5
 
 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.12.5](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.12.5)
