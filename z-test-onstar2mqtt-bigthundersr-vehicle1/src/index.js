@@ -493,10 +493,10 @@ logger.info('Starting OnStar2MQTT Polling');
             client.publish(pollingStatusTopicState,
                 JSON.stringify({
                     "error": {
-                        "message": "N/A",
+                        "message": "Pending Initialization of OnStar2MQTT",
                         "response": {
-                            "status": 0,
-                            "statusText": "N/A"
+                            "status": -2000,
+                            "statusText": "Pending Initialization of OnStar2MQTT"
                         }
                     },
                     "completionTimestamp": new Date().toISOString()
