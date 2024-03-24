@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.13.1
+
+- Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.13.1](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.13.1)
+- Fix minor regression from v1.12.0
+
 ## 1.13.0
 
 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.13.0](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.13.0)
