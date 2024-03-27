@@ -32,7 +32,7 @@ This repository contains the following add-ons
   - `alertFlash`
   - `alertHonk`
 
-  As well as many new additional customizations such as log colorization which are also not available in the OG build.
+  As well as many new additional customizations such as log colorization which are also not available in the OG build. Please see detailed list of differences/enhancements below.
 
 If you prefer to use the OG build of onstar2mqtt 😎
 
