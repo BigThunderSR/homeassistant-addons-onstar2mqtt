@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.14.0
+
+- Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.14.0](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.14.0)
+- Buttons are added disabled by default because it's easy to accidentally press the wrong button and trigger an action at an inopportune time. 
+Enable at your own risk and you assume all responsibility for your actions.
+- All available buttons for all vehicles are included for now, so only enable the buttons you need and/or work for your vehicle.
+- Changed the model displayed in the MQTT device in HA from "Model Year" to "Model Year + Model Name".
+
 ## 1.13.1
 
 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.13.1](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.13.1)
