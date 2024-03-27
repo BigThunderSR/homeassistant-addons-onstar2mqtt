@@ -9,6 +9,7 @@ const MQTT = require('./mqtt');
 const Commands = require('./commands');
 const logger = require('./logger');
 const fs = require('fs');
+//const Buttons = require('./buttons');
 //const CircularJSON = require('circular-json');
 
 
@@ -516,6 +517,21 @@ logger.info('Starting OnStar2MQTT Polling');
             const v = vehicle;
             logger.info('Requesting diagnostics');
             logger.debug(`GetSupported: ${v.getSupported()}`);
+
+            // Get supported commands            
+            logger.info(`GetSupportedCommands: ${v.getSupportedCommands()}`);
+            // Get button configs and payloads
+            const { buttonConfigs, configPayloads } = mqttHA.createButtonConfigPayload(v);
+            // Publish button config and payload for each button
+            buttonConfigs.forEach((buttonConfig, index) => {
+                const configPayload = configPayloads[index];
+                logger.warn(`Button Config Topic: ${JSON.stringify(buttonConfig)}`);
+                logger.debug(`Button Config Payload: ${JSON.stringify(configPayload)}`);
+                // Publish configPayload as the payload to the respective MQTT topic
+                logger.debug(`Publishing Button Config: ${buttonConfig} Payload: ${JSON.stringify(configPayload)}`);
+                client.publish(buttonConfig, JSON.stringify(configPayload), { retain: true });
+            });
+
             const statsRes = await commands.diagnostics({ diagnosticItem: v.getSupported() });
             logger.info('Diagnostic request status', { status: _.get(statsRes, 'status') });
             const stats = _.map(
@@ -559,10 +575,12 @@ logger.info('Starting OnStar2MQTT Polling');
                     client.publish(topic, JSON.stringify(state), { retain: true })
                 );
             }
+
             await Promise.all(publishes);
-            //client.publish(pollingStatusTopicState, JSON.stringify({"ok":{"message":"Data Polled Successfully"}}), {retain: false})
+
             const completionTimestamp = new Date().toISOString();
             logger.debug(`Completion Timestamp: ${completionTimestamp}`);
+            client.publish(pollingStatusTopicState, JSON.stringify({"ok":{"message":"Data Polled Successfully"}}), {retain: false});
             client.publish(pollingStatusTopicState,
                 JSON.stringify({
                     "error": {

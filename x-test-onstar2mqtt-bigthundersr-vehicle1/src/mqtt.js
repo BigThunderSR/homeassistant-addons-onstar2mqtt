@@ -1,4 +1,5 @@
 const _ = require('lodash');
+//const Buttons = require('./buttons');
 
 /**
  * Supports Home Assistant MQTT Discovery (https://www.home-assistant.io/docs/mqtt/discovery/)
@@ -44,6 +45,28 @@ const _ = require('lodash');
  *      }
  */
 class MQTT {
+    static CONSTANTS = {
+        BUTTONS: {
+            Alert: 'alert',
+            AlertFlash: 'alertFlash',
+            AlertHonk: 'alertHonk',
+            CancelAlert: 'cancelAlert',
+            LockDoor: 'lockDoor',
+            UnlockDoor: 'unlockDoor',
+            LockTrunk: 'lockTrunk',
+            UnlockTrunk: 'unlockTrunk',          
+            Start: 'start',
+            CancelStart: 'cancelStart',       
+            GetLocation: 'getLocation',
+            Diagnostics: 'diagnostics',
+            EngineRPM: 'enginerpm',
+            ChargeOverride: 'chargeOverride',
+            CancelChargeOverride: 'cancelChargeOverride',
+            GetChargingProfile: 'getChargingProfile',
+            SetChargingProfile: 'setChargingProfile',
+        }
+    };
+
     constructor(vehicle, prefix = 'homeassistant', namePrefix) {
         this.prefix = prefix;
         this.vehicle = vehicle;
@@ -112,6 +135,54 @@ class MQTT {
 
     getDeviceTrackerConfigTopic() {
         return `${this.prefix}/device_tracker/${this.instance}/config`;
+    }
+
+    //getButtonConfigTopic() {
+    //    return `${this.prefix}/button/${this.instance}/${this.buttonName}/config`;
+    //}
+
+    createButtonConfigPayload(vehicle) {
+        const buttonInstances = [];
+        const buttonConfigs = [];
+        const configPayloads = [];
+
+        for (const buttonName in MQTT.CONSTANTS.BUTTONS) {
+            const buttonConfig = `${this.prefix}/button/${this.instance}/${MQTT.convertName(buttonName)}/config`;
+            const button = {
+                name: buttonName,
+                config: buttonConfig
+            };
+
+            button.vehicle = vehicle;
+            buttonInstances.push(button);
+
+            let unique_id = `${vehicle.vin}_Command_${button.name}`;
+            unique_id = unique_id.replace(/\s+/g, '-').toLowerCase();
+
+            configPayloads.push({
+                "device": {
+                    "identifiers": [vehicle.vin],
+                    "manufacturer": vehicle.make,
+                    "model": vehicle.year + ' ' + vehicle.model,
+                    "name": vehicle.toString()
+                },
+                "availability": {
+                    "topic": this.getAvailabilityTopic(),
+                    "payload_available": 'true',
+                    "payload_not_available": 'false',
+                },
+                "unique_id": unique_id,
+                "name": `Command ${button.name}`,                
+                "command_topic": this.getCommandTopic(),
+                "payload_press": JSON.stringify({ "command": MQTT.CONSTANTS.BUTTONS[button.name] }),
+                "qos": 2,
+                "enabled_by_default": false,
+            });
+
+            buttonConfigs.push(buttonConfig);
+        }
+
+        return { buttonInstances, buttonConfigs, configPayloads };
     }
 
     /**
@@ -189,7 +260,7 @@ class MQTT {
             device: {
                 identifiers: [this.vehicle.vin],
                 manufacturer: this.vehicle.make,
-                model: this.vehicle.year,
+                model: this.vehicle.year + ' ' + this.vehicle.model,
                 name: this.vehicle.toString()
             },
             availability_topic: this.getAvailabilityTopic(),
