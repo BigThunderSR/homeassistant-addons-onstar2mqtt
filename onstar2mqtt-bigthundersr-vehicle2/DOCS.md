@@ -53,7 +53,7 @@ mode: single
 
 MQTT device_tracker auto discovery capability is enabled starting at v1.12.0
 
-The device_tracker auto discovery config is published to: "homeassistant/device_tracker/(VIN)/config" and the GPS coordinates are still read from the original topic automatically at: "homeassistant/device_tracker/(VIN)/getlocation/state".
+The device_tracker auto discovery config is published to: "homeassistant/device_tracker/YOUR_CAR_VIN/config" and the GPS coordinates are still read from the original topic automatically at: "homeassistant/device_tracker/YOUR_CAR_VIN/getlocation/state".
 
 ~~Unfortunately, the MQTT Device tracker uses a home/not_home state and the MQTT Json device tracker does not support
 the discovery schema so a manual entity configuration is required.~~
@@ -90,10 +90,13 @@ mqtt:
   binary_sensor:
     - name: "<Vehicle_Name> OnStar Polling Status Successful"
       unique_id: <vehicle_name>_onstar_polling_status_successful
-      availability_topic: homeassistant/<vehicle_vin>/available
+      availability_topic: homeassistant/YOUR_CAR_VIN/available
       payload_available: "false"
       payload_not_available: "true"
-      state_topic: "homeassistant/onstar2mqtt/vehicle1/polling/lastpollsuccessful"
+      state_topic: "YOUR_POLLLING_STATUS_TOPIC/lastpollsuccessful"
+      # NOTE: If "MQTT_ONSTAR_POLLING_STATUS_TOPIC" is not explicitly set,
+      #       "YOUR_POLLLING_STATUS_TOPIC" defaults to "homeassistant/YOUR_CAR_VIN/polling_status/".
+      #       If set, provide whatever value you set it to in this field.
       payload_on: "false"
       payload_off: "true"
       device_class: problem
@@ -108,10 +111,13 @@ mqtt:
   sensor:
     - name: "<Vehicle_Name> OnStar Last Polling Status Timestamp"
       unique_id: <vehicle_name>_last_polling_status_timestamp
-      availability_topic: homeassistant/<vehicle_vin>/available
+      availability_topic: homeassistant/YOUR_CAR_VIN/available
       payload_available: "false"
       payload_not_available: "true"
-      state_topic: "homeassistant/onstar2mqtt/vehicle1/polling/state"
+      state_topic: "YOUR_POLLLING_STATUS_TOPIC/state"
+      # NOTE: If "MQTT_ONSTAR_POLLING_STATUS_TOPIC" is not explicitly set,
+      #       "YOUR_POLLLING_STATUS_TOPIC" defaults to "homeassistant/YOUR_CAR_VIN/polling_status/".
+      #       If set, provide whatever value you set it to in this field.
       value_template: "{{ value_json.completionTimestamp }}"  
       icon: mdi:calendar-clock  
       device_class: timestamp
@@ -138,6 +144,8 @@ mode: single
 
 [OnStarJS Command Docs](https://github.com/samrum/OnStarJS#commands)
 
+Commands Implemented in this Program:
+
 1. `getAccountVehicles`
 2. `startVehicle`
 3. `cancelStartVehicle`
@@ -147,13 +155,15 @@ mode: single
 7. `unlockDoor`
 8. `lockTrunk`
 9. `unlockTrunk`
-10. `chargeOverride`
-11. `cancelChargeOverride`
-12. `getLocation`
-13. `alertFlash`
-14. `alertHonk`
-15. `diagnostics`
-16. `enginerpm`
+10. `getChargingProfile`
+11. `setChargingProfile`
+12. `chargeOverride`
+13. `cancelChargeOverride`
+14. `getLocation`
+15. `alertFlash`
+16. `alertHonk`
+17. `diagnostics`
+18. `enginerpm`
 
 ### Lovelace Dashboard
 
