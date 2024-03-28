@@ -1,5 +1,15 @@
 # Changelog
 
+## 1.14.1
+
+- Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.14.1](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.14.1)
+- Improve logic for button publish
+- Fix some sensor state_class/device_class mappings based on discussion in PR #158
+- Standardize case for command topic payload fields
+- Minor logging change
+- Fix minor logging issue
+- Code formatting updates
+
 ## 1.14.0
 
 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.14.0](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.14.0)
