@@ -54,9 +54,9 @@ class MQTT {
             LockDoor: 'lockDoor',
             UnlockDoor: 'unlockDoor',
             LockTrunk: 'lockTrunk',
-            UnlockTrunk: 'unlockTrunk',          
+            UnlockTrunk: 'unlockTrunk',
             Start: 'start',
-            CancelStart: 'cancelStart',       
+            CancelStart: 'cancelStart',
             GetLocation: 'getLocation',
             Diagnostics: 'diagnostics',
             EngineRPM: 'enginerpm',
@@ -172,7 +172,7 @@ class MQTT {
                     "payload_not_available": 'false',
                 },
                 "unique_id": unique_id,
-                "name": `Command ${button.name}`,                
+                "name": `Command ${button.name}`,
                 "command_topic": this.getCommandTopic(),
                 "payload_press": JSON.stringify({ "command": MQTT.CONSTANTS.BUTTONS[button.name] }),
                 "qos": 2,
@@ -296,10 +296,9 @@ class MQTT {
     getConfigMapping(diag, diagEl) {
         // TODO: this sucks, find a better way to map these diagnostics and their elements for discovery.
         switch (diagEl.name) {
+            // Format: diagnostic, diagnosticElement1, state_class, device_class, attributes
             case 'LIFETIME ENERGY USED':
-            case 'LIFETIME EFFICIENCY':
-            case 'ELECTRIC ECONOMY':
-                return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'energy');
+                return this.mapSensorConfigPayload(diag, diagEl, 'total_increasing', 'energy');
             case 'INTERM VOLT BATT VOLT':
             case 'EV PLUG VOLTAGE':
                 return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'voltage');
@@ -327,16 +326,19 @@ class MQTT {
                 return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'pressure', 'Tire Pressure: Right Rear', `{{ {'recommendation': value_json.${MQTT.convertName('TIRE_PRESSURE_PLACARD_REAR')}, 'message': value_json.${MQTT.convertName('TIRE_PRESSURE_RR_MESSAGE')}} | tojson }}`);
             case 'TIRE PRESSURE RR PSI':
                 return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'pressure', 'Tire Pressure: Right Rear PSI', `{{ {'recommendation': value_json.${MQTT.convertName('TIRE_PRESSURE_PLACARD_REAR_PSI')}, 'message': value_json.${MQTT.convertName('TIRE_PRESSURE_RR_PSI_MESSAGE')}} | tojson }}`);
-            // binary sensor
+            // binary_sensor, no state_class, has device_class
             case 'EV PLUG STATE': // unplugged/plugged
                 return this.mapBinarySensorConfigPayload(diag, diagEl, undefined, 'plug');
             case 'EV CHARGE STATE': // not_charging/charging
                 return this.mapBinarySensorConfigPayload(diag, diagEl, undefined, 'battery_charging');
-            // binary_sensor, but no applicable device_class
+            // binary_sensor, no state_class and no applicable device_class
             case 'PRIORITY CHARGE INDICATOR': // FALSE/TRUE
             case 'PRIORITY CHARGE STATUS': // NOT_ACTIVE/ACTIVE
                 return this.mapBinarySensorConfigPayload(diag, diagEl);
-            // new device class, camel case name
+            // non-numeric sensor, no state_class or device_class
+            case 'CHARGER POWER LEVEL':
+                return this.mapSensorConfigPayload(diag, diagEl);
+            // has state_class, new device class, camel case name
             case 'GAS RANGE':
             case 'GAS RANGE MI':
             case 'EV RANGE':
@@ -357,13 +359,14 @@ class MQTT {
             case 'FUEL LEVEL IN GAL':
             case 'FUEL LEVEL IN GAL GAL':
                 return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'volume_storage');
-            // no device class, has message
+            // has state_class, no device_class, has message
             case 'OIL LIFE':
                 return this.mapSensorConfigPayload(diag, diagEl, 'measurement', undefined, 'Oil Life', `{{ {'message': value_json.${MQTT.convertName('OIL_LIFE_MESSAGE')}} | tojson }}`);
-            // no device class, camel case name
+            // has state_class, no device class
             case 'LAST TRIP ELECTRIC ECON':
             case 'LIFETIME MPGE':
-            case 'CHARGER POWER LEVEL':
+            case 'LIFETIME EFFICIENCY':
+            case 'ELECTRIC ECONOMY':
             default:
                 return this.mapSensorConfigPayload(diag, diagEl, 'measurement');
         }
