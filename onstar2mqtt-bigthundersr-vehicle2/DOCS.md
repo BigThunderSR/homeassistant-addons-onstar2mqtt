@@ -4,6 +4,8 @@
 
 ### Example Script YAML
 
+MQTT button auto discovery is enabled starting at v1.14.0 which sends/triggers the defaults of each command. The following isn't strictly necessary, but still available if needed or for sending customized commands.
+
 ```yaml
 alias: Car - Start Vehicle
 sequence:
@@ -51,7 +53,7 @@ mode: single
 
 ### Location
 
-MQTT device_tracker auto discovery capability is enabled starting at v1.12.0
+MQTT device_tracker auto discovery capability is enabled starting at v1.12.0. Requires running the getLocation command for initial setup of the device_tracker entity via auto discovery.
 
 The device_tracker auto discovery config is published to: "homeassistant/device_tracker/YOUR_CAR_VIN/config" and the GPS coordinates are still read from the original topic automatically at: "homeassistant/device_tracker/YOUR_CAR_VIN/getlocation/state".
 
@@ -61,14 +63,16 @@ the discovery schema so a manual entity configuration is required.~~
 ~~Device Tracker YAML:~~
 
 ```yaml
-<!-- The following YAML configuration is no longer required starting at v1.12.0-->
-device_tracker:
-  - platform: mqtt_json
-    devices:
-      your_car_name: homeassistant/device_tracker/YOUR_CAR_VIN/getlocation/state
+<!-- The following YAML configuration is no longer required starting at v1.12.0 -->
+#device_tracker:
+#  - platform: mqtt_json
+#    devices:
+#      your_car_name: homeassistant/device_tracker/YOUR_CAR_VIN/getlocation/state
 ```
 
 #### Script YAML
+
+MQTT button auto discovery is enabled starting at v1.14.0, so the following isn't strictly necessary, but still available if needed.
 
 ```yaml
 alias: Car - Location
@@ -93,9 +97,9 @@ mqtt:
       availability_topic: homeassistant/YOUR_CAR_VIN/available
       payload_available: "false"
       payload_not_available: "true"
-      state_topic: "YOUR_POLLLING_STATUS_TOPIC/lastpollsuccessful"
+      state_topic: "YOUR_POLLING_STATUS_TOPIC/lastpollsuccessful"
       # NOTE: If "MQTT_ONSTAR_POLLING_STATUS_TOPIC" is not explicitly set,
-      #       "YOUR_POLLLING_STATUS_TOPIC" defaults to "homeassistant/YOUR_CAR_VIN/polling_status/".
+      #       "YOUR_POLLING_STATUS_TOPIC" defaults to "homeassistant/YOUR_CAR_VIN/polling_status/".
       #       If set, provide whatever value you set it to in this field.
       payload_on: "false"
       payload_off: "true"
@@ -114,11 +118,46 @@ mqtt:
       availability_topic: homeassistant/YOUR_CAR_VIN/available
       payload_available: "false"
       payload_not_available: "true"
-      state_topic: "YOUR_POLLLING_STATUS_TOPIC/state"
+      state_topic: "YOUR_POLLING_STATUS_TOPIC/state"
       # NOTE: If "MQTT_ONSTAR_POLLING_STATUS_TOPIC" is not explicitly set,
-      #       "YOUR_POLLLING_STATUS_TOPIC" defaults to "homeassistant/YOUR_CAR_VIN/polling_status/".
+      #       "YOUR_POLLING_STATUS_TOPIC" defaults to "homeassistant/YOUR_CAR_VIN/polling_status/".
       #       If set, provide whatever value you set it to in this field.
       value_template: "{{ value_json.completionTimestamp }}"  
+      icon: mdi:calendar-clock  
+      device_class: timestamp
+```
+
+### MQTT Command Status Monitor
+
+Create a MQTT sensor in Home Assistant for each command status you want to monitor. Below is an example for the getLocation command and other commands follow a similar format.
+
+```yaml
+mqtt:
+  sensor:
+    - name: "Vehicle1 Location Command Status Message"
+      unique_id: vehicle1_location_command_status_message
+      availability_topic: homeassistant/YOUR_CAR_VIN/available
+      payload_available: "false"
+      payload_not_available: "true"
+      state_topic: "homeassistant/YOUR_VEHICLE_VIN/command/getLocation/state"
+      value_template: "{{ value_json.command.error.message }}"  
+      icon: mdi:message-alert
+```
+
+### MQTT Command Status Timestamp Monitor
+
+Create a MQTT sensor in Home Assistant for each command timestamp you want to monitor. Below is an example for the getLocation command and other commands follow a similar format.
+
+```yaml
+mqtt:
+  sensor:
+    - name: "Vehicle1 Location Command Status Timestamp"
+      unique_id: vehicle1_location_command_status_timestamp
+      availability_topic: homeassistant/YOUR_CAR_VIN/available
+      payload_available: "false"
+      payload_not_available: "true"
+      state_topic: "homeassistant/YOUR_VEHICLE_VIN/command/getLocation/state"
+      value_template: "{{ value_json.completionTimestamp}}"  
       icon: mdi:calendar-clock  
       device_class: timestamp
 ```
@@ -153,8 +192,8 @@ Commands Implemented in this Program:
 5. `cancelAlert`
 6. `lockDoor`
 7. `unlockDoor`
-8. `lockTrunk`
-9. `unlockTrunk`
+8. `lockTrunk` (only available on some vehicles)
+9. `unlockTrunk` (only available on some vehicles)
 10. `getChargingProfile`
 11. `setChargingProfile`
 12. `chargeOverride`
