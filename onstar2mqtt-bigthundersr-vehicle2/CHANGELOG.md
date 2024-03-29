@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.15.0
+
+- Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.15.0](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.15.0)
+- Command Status and Timestamp from last command run are published to MQTT auto-discovery topics and are grouped in a MQTT device grouping for all 
+command status sensors for the same vehicle
+- Fix a bug in the alert function command handling
+- Add suggested area for sensor groupings
+
 ## 1.14.1
 
 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.14.1](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.14.1)
