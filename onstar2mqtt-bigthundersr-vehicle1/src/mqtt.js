@@ -137,6 +137,10 @@ class MQTT {
         return `${this.prefix}/device_tracker/${this.instance}/config`;
     }
 
+    getCommandStatusSensorConfigTopic() {
+        return `${this.prefix}/sensor/${this.instance}`;
+    }
+
     //getButtonConfigTopic() {
     //    return `${this.prefix}/button/${this.instance}/${this.buttonName}/config`;
     //}
@@ -261,7 +265,8 @@ class MQTT {
                 identifiers: [this.vehicle.vin],
                 manufacturer: this.vehicle.make,
                 model: this.vehicle.year + ' ' + this.vehicle.model,
-                name: this.vehicle.toString()
+                name: this.vehicle.toString(),
+                suggested_area: this.vehicle.toString() + ' Sensors',
             },
             availability_topic: this.getAvailabilityTopic(),
             payload_available: 'true',
@@ -270,7 +275,7 @@ class MQTT {
             value_template: `{{ value_json.${MQTT.convertName(diagEl.name)} }}`,
             json_attributes_topic: _.isUndefined(attr) ? undefined : this.getStateTopic(diag),
             json_attributes_template: attr,
-            unique_id: unique_id
+            unique_id: unique_id,
         };
     }
 

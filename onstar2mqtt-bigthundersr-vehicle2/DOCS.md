@@ -129,6 +129,10 @@ mqtt:
 
 ### MQTT Command Status Monitor
 
+* MQTT Auto-Discovery for Command Status Sensors for HA Added Starting at v1.15.0
+  * Command Status and Timestamp from last command run are published to MQTT auto-discovery topics and are grouped in a MQTT device grouping for all command status sensors for the same vehicle.
+
+To add manually if wanted:
 Create a MQTT sensor in Home Assistant for each command status you want to monitor. Below is an example for the getLocation command and other commands follow a similar format.
 
 ```yaml
@@ -146,6 +150,10 @@ mqtt:
 
 ### MQTT Command Status Timestamp Monitor
 
+* MQTT Auto-Discovery for Command Status Sensors for HA Added Starting at v1.15.0
+  * Command Status and Timestamp from last command run are published to MQTT auto-discovery topics and are grouped in a MQTT device grouping for all command status sensors for the same vehicle.
+
+To add manually if wanted:
 Create a MQTT sensor in Home Assistant for each command timestamp you want to monitor. Below is an example for the getLocation command and other commands follow a similar format.
 
 ```yaml
