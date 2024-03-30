@@ -1,5 +1,5 @@
 name: OnStar2MQTT Home Assistant Add-on (BigThunderSR) for Vehicle 2
-version: 1.16.0
+version: 1.16.1
 slug: onstar2mqtt_bigthundersr_vehicle2
 description: Home Assistant Add On Version of BigThunderSR/onstar2mqtt for Vehicle 2
 codenotary: bigthundersr@outlook.com

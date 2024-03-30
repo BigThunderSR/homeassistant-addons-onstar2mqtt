@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.16.1
+
+- Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.16.1](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.16.1)
+- Fixed a regression from the previous release which caused some failed functionality
+
 ## 1.16.0
 
 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.16.0](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.16.0)
