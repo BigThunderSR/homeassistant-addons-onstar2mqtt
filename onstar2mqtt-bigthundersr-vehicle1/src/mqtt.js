@@ -143,7 +143,7 @@ class MQTT {
 
     createCommandStatusSensorConfigPayload(command) {
         let topic = `${this.prefix}/sensor/${this.instance}/${command}_status_monitor/config`;
-        let commandStatusTopic = `${this.prefix}/sensor/${this.instance}/${MQTT.convertName(command)}/state`;
+        let commandStatusTopic = `${this.prefix}/${this.instance}/command/${command}/state`;
         let payload = {
             "device": {
                 "identifiers": [this.vehicle.vin + "_Command_Status_Monitor"],
@@ -168,7 +168,7 @@ class MQTT {
 
     createCommandStatusSensorTimestampConfigPayload(command) {
         let topic = `${this.prefix}/sensor/${this.instance}/${command}_status_timestamp/config`;
-        let commandStatusTopic = `${this.prefix}/sensor/${this.instance}/${MQTT.convertName(command)}/state`;
+        let commandStatusTopic = `${this.prefix}/${this.instance}/command/${command}/state`;
         let payload = {
             "device": {
                 "identifiers": [this.vehicle.vin + "_Command_Status_Monitor"],
