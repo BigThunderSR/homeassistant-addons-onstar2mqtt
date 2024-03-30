@@ -137,8 +137,60 @@ class MQTT {
         return `${this.prefix}/device_tracker/${this.instance}/config`;
     }
 
-    getCommandStatusSensorConfigTopic() {
-        return `${this.prefix}/sensor/${this.instance}`;
+    //    getCommandStatusSensorConfigTopic() {
+    //        return `${this.prefix}/sensor/${this.instance}`;
+    //    }
+
+    createCommandStatusSensorConfigPayload(command) {
+        let topic = `${this.prefix}/sensor/${this.instance}/${command}_status_monitor/config`;
+        let commandStatusTopic = `${this.prefix}/sensor/${this.instance}/${MQTT.convertName(command)}/state`;
+        let payload = {
+            "device": {
+                "identifiers": [this.vehicle.vin + "_Command_Status_Monitor"],
+                "manufacturer": this.vehicle.make,
+                "model": this.vehicle.year + ' ' + this.vehicle.model,
+                "name": this.vehicle.toString() + ' Command Status Monitor Sensors',
+                "suggested_area": this.vehicle.toString() + ' Command Status Monitor Sensors',
+            },
+            "availability": {
+                "topic": this.getAvailabilityTopic(),
+                "payload_available": 'true',
+                "payload_not_available": 'false',
+            },
+            "unique_id": (MQTT.convertName(this.vehicle.vin)) + "_" + (MQTT.convertName(command)) + "_command_status_monitor",
+            "name": 'Command ' + command + ' Status Monitor',
+            "state_topic": commandStatusTopic,
+            "value_template": "{{ value_json.command.error.message }}",
+            "icon": "mdi:message-alert",
+        };
+        return { topic, payload };
+    }
+
+    createCommandStatusSensorTimestampConfigPayload(command) {
+        let topic = `${this.prefix}/sensor/${this.instance}/${command}_status_timestamp/config`;
+        let commandStatusTopic = `${this.prefix}/sensor/${this.instance}/${MQTT.convertName(command)}/state`;
+        let payload = {
+            "device": {
+                "identifiers": [this.vehicle.vin + "_Command_Status_Monitor"],
+                "manufacturer": this.vehicle.make,
+                "model": this.vehicle.year + ' ' + this.vehicle.model,
+                "name": this.vehicle.toString() + ' Command Status Monitor Sensors',
+                "suggested_area": this.vehicle.toString() + ' Command Status Monitor Sensors',
+            },
+            "availability": {
+                "topic": this.getAvailabilityTopic(),
+                "payload_available": 'true',
+                "payload_not_available": 'false',
+            },
+            "unique_id": (MQTT.convertName(this.vehicle.vin)) + "_" + (MQTT.convertName(command)) + "_command_status_timestamp_monitor",
+            "name": 'Command ' + command + ' Status Monitor Timestamp',
+            "state_topic": commandStatusTopic,
+            "value_template": "{{ value_json.completionTimestamp }}",
+            "device_class": "timestamp",
+            "icon": "mdi:calendar-clock",
+        }
+
+        return { topic, payload };
     }
 
     //getButtonConfigTopic() {
@@ -168,7 +220,8 @@ class MQTT {
                     "identifiers": [vehicle.vin],
                     "manufacturer": vehicle.make,
                     "model": vehicle.year + ' ' + vehicle.model,
-                    "name": vehicle.toString()
+                    "name": vehicle.toString(),
+                    "suggested_area": vehicle.toString(),
                 },
                 "availability": {
                     "topic": this.getAvailabilityTopic(),
@@ -188,6 +241,178 @@ class MQTT {
 
         return { buttonInstances, buttonConfigs, configPayloads };
     }
+
+    createButtonConfigPayloadCSMG(vehicle) {
+        const buttonInstances = [];
+        const buttonConfigs = [];
+        const configPayloads = [];
+
+        for (const buttonName in MQTT.CONSTANTS.BUTTONS) {
+            const buttonConfig = `${this.prefix}/button/${this.instance}/${MQTT.convertName(buttonName)}_monitor/config`;
+            const button = {
+                name: buttonName,
+                config: buttonConfig
+            };
+
+            button.vehicle = vehicle;
+            buttonInstances.push(button);
+
+            let unique_id = `${vehicle.vin}_Command_${button.name}_Monitor`;
+            unique_id = unique_id.replace(/\s+/g, '-').toLowerCase();
+
+            configPayloads.push({
+                "device": {
+                    "identifiers": [vehicle.vin + "_Command_Status_Monitor"],
+                    "manufacturer": vehicle.make,
+                    "model": vehicle.year + ' ' + vehicle.model,
+                    "name": vehicle.toString() + ' Command Status Monitor Sensors',
+                    "suggested_area": this.vehicle.toString() + ' Command Status Monitor Sensors',
+                },
+                "availability": {
+                    "topic": this.getAvailabilityTopic(),
+                    "payload_available": 'true',
+                    "payload_not_available": 'false',
+                },
+                "unique_id": unique_id,
+                "name": `Command ${button.name}`,
+                "command_topic": this.getCommandTopic(),
+                "payload_press": JSON.stringify({ "command": MQTT.CONSTANTS.BUTTONS[button.name] }),
+                "qos": 2,
+                "enabled_by_default": false,
+            });
+
+            buttonConfigs.push(buttonConfig);
+        }
+
+        return { buttonInstances, buttonConfigs, configPayloads };
+    }
+
+    createPollingStatusMessageSensorConfigPayload(pollingStatusTopicState) {
+        let topic = `${this.prefix}/sensor/${this.instance}/polling_status_message/config`;
+        let payload = {
+            "device": {
+                "identifiers": [this.vehicle.vin + "_Command_Status_Monitor"],
+                "manufacturer": this.vehicle.make,
+                "model": this.vehicle.year + ' ' + this.vehicle.model,
+                "name": this.vehicle.toString() + ' Command Status Monitor Sensors',
+                "suggested_area": this.vehicle.toString() + ' Command Status Monitor Sensors',
+            },
+            "availability": {
+                "topic": this.getAvailabilityTopic(),
+                "payload_available": 'true',
+                "payload_not_available": 'false',
+            },
+            "unique_id": (MQTT.convertName(this.vehicle.vin)) + "_polling_status_message",
+            "name": 'Polling Status Message',
+            "state_topic": pollingStatusTopicState,
+            "value_template": "{{ value_json.error.message }}",
+            "icon": "mdi:message-alert",
+        };
+        return { topic, payload };
+    }
+
+    createPollingStatusCodeSensorConfigPayload(pollingStatusTopicState) {
+        let topic = `${this.prefix}/sensor/${this.instance}/polling_status_code/config`;
+        let payload = {
+            "device": {
+                "identifiers": [this.vehicle.vin + "_Command_Status_Monitor"],
+                "manufacturer": this.vehicle.make,
+                "model": this.vehicle.year + ' ' + this.vehicle.model,
+                "name": this.vehicle.toString() + ' Command Status Monitor Sensors',
+                "suggested_area": this.vehicle.toString() + ' Command Status Monitor Sensors',
+            },
+            "availability": {
+                "topic": this.getAvailabilityTopic(),
+                "payload_available": 'true',
+                "payload_not_available": 'false',
+            },
+            "unique_id": (MQTT.convertName(this.vehicle.vin)) + "_polling_status_code",
+            "name": 'Polling Status Code',
+            "state_topic": pollingStatusTopicState,
+            "value_template": "{{ value_json.error.response.status | int(0) }}",
+            "icon": "mdi:sync-alert",
+        };
+        return { topic, payload };
+    }
+
+    createPollingStatusTimestampSensorConfigPayload(pollingStatusTopicState) {
+        let topic = `${this.prefix}/sensor/${this.instance}/polling_status_timestamp/config`;
+        let payload = {
+            "device": {
+                "identifiers": [this.vehicle.vin + "_Command_Status_Monitor"],
+                "manufacturer": this.vehicle.make,
+                "model": this.vehicle.year + ' ' + this.vehicle.model,
+                "name": this.vehicle.toString() + ' Command Status Monitor Sensors',
+                "suggested_area": this.vehicle.toString() + ' Command Status Monitor Sensors',
+            },
+            "availability": {
+                "topic": this.getAvailabilityTopic(),
+                "payload_available": 'true',
+                "payload_not_available": 'false',
+            },
+            "unique_id": (MQTT.convertName(this.vehicle.vin)) + "_polling_status_timestamp",
+            "name": 'Polling Status Timestamp',
+            "state_topic": pollingStatusTopicState,
+            "value_template": "{{ value_json.completionTimestamp }}",
+            "device_class": "timestamp",
+            "icon": "mdi:calendar-clock",
+        };
+        return { topic, payload };
+    }
+
+    createPollingRefreshIntervalSensorConfigPayload(refreshIntervalCurrentValTopic) {
+        let topic = `${this.prefix}/sensor/${this.instance}/polling_refresh_interval/config`;
+        let payload = {
+            "device": {
+                "identifiers": [this.vehicle.vin + "_Command_Status_Monitor"],
+                "manufacturer": this.vehicle.make,
+                "model": this.vehicle.year + ' ' + this.vehicle.model,
+                "name": this.vehicle.toString() + ' Command Status Monitor Sensors',
+                "suggested_area": this.vehicle.toString() + ' Command Status Monitor Sensors',
+            },
+            "availability": {
+                "topic": this.getAvailabilityTopic(),
+                "payload_available": 'true',
+                "payload_not_available": 'false',
+            },
+            "unique_id": (MQTT.convertName(this.vehicle.vin)) + "_polling_refresh_interval",
+            "name": 'Polling Refresh Interval',
+            "state_topic": refreshIntervalCurrentValTopic,
+            "value_template": "{{ value | int(0) }}",
+            "icon": "mdi:timer-check-outline",
+            "unit_of_measurement": "ms",
+            "state_class": "measurement",
+            "device_class": "duration",
+        };
+        return { topic, payload };
+    }
+
+    createPollingStatusTFSensorConfigPayload(pollingStatusTopicTF) {
+        let topic = `${this.prefix}/binary_sensor/${this.instance}/polling_status_tf/config`;
+        let payload = {
+            "device": {
+                "identifiers": [this.vehicle.vin + "_Command_Status_Monitor"],
+                "manufacturer": this.vehicle.make,
+                "model": this.vehicle.year + ' ' + this.vehicle.model,
+                "name": this.vehicle.toString() + ' Command Status Monitor Sensors',
+                "suggested_area": this.vehicle.toString() + ' Command Status Monitor Sensors',
+            },
+            "availability": {
+                "topic": this.getAvailabilityTopic(),
+                "payload_available": 'true',
+                "payload_not_available": 'false',
+            },
+            "unique_id": (MQTT.convertName(this.vehicle.vin)) + "_onstar_polling_status_successful",
+            "name": 'Polling Status Successful',
+            "state_topic": pollingStatusTopicTF,
+            "payload_on": "false",
+            "payload_off": "true",
+            "device_class": "problem",
+            "icon": "mdi:sync-alert",
+        };
+        return { topic, payload };
+    }
+
 
     /**
      *

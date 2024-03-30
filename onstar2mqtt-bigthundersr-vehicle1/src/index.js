@@ -10,7 +10,7 @@ const Commands = require('./commands');
 const logger = require('./logger');
 const fs = require('fs');
 //const CircularJSON = require('circular-json');
-
+let buttonConfigsPublished = ''
 
 const onstarConfig = {
     deviceId: process.env.ONSTAR_DEVICEID || uuidv4(),
@@ -146,70 +146,18 @@ const configureMQTT = async (commands, client, mqttHA) => {
         const topicArray = _.concat({ topic }, '/', { command }.command, '/', 'state');
         const commandStatusTopic = topicArray.map(item => item.topic || item).join('');
 
-        function createCommandStatusSensorConfigPayload() {
-            return {
-                "device": {
-                    "identifiers": [mqttHA.vehicle.vin + "_Command_Status_Monitor"],
-                    "manufacturer": mqttHA.vehicle.make,
-                    "model": mqttHA.vehicle.year + ' ' + mqttHA.vehicle.model,
-                    "name": mqttHA.vehicle.toString() + ' Command Status Monitor Sensors',
-                    "suggested_area": mqttHA.vehicle.toString() + ' Command Status Monitor Sensors',
-                },
-                "availability": {
-                    "topic": mqttHA.getAvailabilityTopic(),
-                    "payload_available": 'true',
-                    "payload_not_available": 'false',
-                },
-                "unique_id": (MQTT.convertName(mqttHA.vehicle.vin)) + "_" + (MQTT.convertName(command)) + "_command_status_monitor",
-                "name": 'Command ' + command + ' Status Monitor',
-                "state_topic": commandStatusTopic,
-                "value_template": "{{ value_json.command.error.message }}",
-                "icon": "mdi:message-alert",
-                "suggested_area": mqttHA.vehicle.toString() + ' Command Status Monitor Sensors',
-
-            };
-        }
-
-        function createCommandStatusSensorTimestampConfigPayload() {
-            return {
-                "device": {
-                    "identifiers": [mqttHA.vehicle.vin + "_Command_Status_Monitor"],
-                    "manufacturer": mqttHA.vehicle.make,
-                    "model": mqttHA.vehicle.year + ' ' + mqttHA.vehicle.model,
-                    "name": mqttHA.vehicle.toString() + ' Command Status Monitor Sensors',
-                    "suggested_area": mqttHA.vehicle.toString() + ' Sensors',
-                },
-                "availability": {
-                    "topic": mqttHA.getAvailabilityTopic(),
-                    "payload_available": 'true',
-                    "payload_not_available": 'false',
-                },
-                "unique_id": (MQTT.convertName(mqttHA.vehicle.vin)) + "_" + (MQTT.convertName(command)) + "_command_status_timestamp_monitor",
-                "name": 'Command ' + command + ' Status Monitor Timestamp',
-                "state_topic": commandStatusTopic,
-                "value_template": "{{ value_json.completionTimestamp }}",
-                "device_class": "timestamp",
-                "icon": "mdi:calendar-clock",
-            };
-        }
-
-        const commandStatusSensorConfigTopic = mqttHA.getCommandStatusSensorConfigTopic() + '/' + command + '_status_monitor' + '/' + 'config';
-        logger.debug(`Command Status Sensor Config Topic: ${commandStatusSensorConfigTopic}`);
-        const commandStatusSensorConfigPayload = createCommandStatusSensorConfigPayload({ command });
-        logger.debug("Command Status Sensor Config Payload:", commandStatusSensorConfigPayload);
-
-        const commandStatusSensorTimestampConfigTopic = mqttHA.getCommandStatusSensorConfigTopic() + '/' + command + '_status_timestamp' + '/' + 'config';
-        logger.debug(`Command Status Sensor Timestamp Config Topic: ${commandStatusSensorTimestampConfigTopic}`);
-        const commandStatusSensorTimestampConfigPayload = createCommandStatusSensorTimestampConfigPayload({ command });
-        logger.debug("Command Status Sensor Timestamp Config Payload:", commandStatusSensorTimestampConfigPayload);
+        const commandStatusSensorConfig = mqttHA.createCommandStatusSensorConfigPayload(command);
+        logger.debug("Command Status Sensor Config:", commandStatusSensorConfig);
+        const commandStatusSensorTimestampConfig = mqttHA.createCommandStatusSensorTimestampConfigPayload(command);
+        logger.debug("Command Status Sensor Timestamp Config:", commandStatusSensorTimestampConfig);
 
         const commandFn = cmd.bind(commands);
         logger.debug(`List of const: Command: ${command}, cmd: ${cmd}, commandFn: ${commandFn.toString()}, options: ${options}`);
         if (command === 'diagnostics' || command === 'enginerpm') {
             logger.warn('Command sent:', { command });
             logger.warn(`Command Status Topic: ${commandStatusTopic}`);
-            client.publish(commandStatusSensorConfigTopic, JSON.stringify(commandStatusSensorConfigPayload), { retain: true });
-            client.publish(commandStatusSensorTimestampConfigTopic, JSON.stringify(commandStatusSensorTimestampConfigPayload), { retain: true });
+            client.publish(commandStatusSensorConfig.topic, JSON.stringify(commandStatusSensorConfig.payload), { retain: true });
+            client.publish(commandStatusSensorTimestampConfig.topic, JSON.stringify(commandStatusSensorTimestampConfig.payload), { retain: true });
             client.publish(commandStatusTopic,
                 JSON.stringify({
                     "command": {
@@ -354,8 +302,8 @@ const configureMQTT = async (commands, client, mqttHA) => {
             //logger.debug(`Command sent: Command: ${ command }, ModifiedOptions: ${ modifiedOptions }`);
 
             logger.warn(`Command Status Topic: ${commandStatusTopic}`);
-            client.publish(commandStatusSensorConfigTopic, JSON.stringify(commandStatusSensorConfigPayload), { retain: true });
-            client.publish(commandStatusSensorTimestampConfigTopic, JSON.stringify(commandStatusSensorTimestampConfigPayload), { retain: true });
+            client.publish(commandStatusSensorConfig.topic, JSON.stringify(commandStatusSensorConfig.payload), { retain: true });
+            client.publish(commandStatusSensorTimestampConfig.topic, JSON.stringify(commandStatusSensorTimestampConfig.payload), { retain: true });
             client.publish(commandStatusTopic,
                 JSON.stringify({
                     "command": {
@@ -432,12 +380,11 @@ const configureMQTT = async (commands, client, mqttHA) => {
                 });
         }
 
-
         else {
             logger.warn('Command sent:', { command }, { options });
             logger.warn(`Command Status Topic: ${commandStatusTopic}`);
-            client.publish(commandStatusSensorConfigTopic, JSON.stringify(commandStatusSensorConfigPayload), { retain: true });
-            client.publish(commandStatusSensorTimestampConfigTopic, JSON.stringify(commandStatusSensorTimestampConfigPayload), { retain: true });
+            client.publish(commandStatusSensorConfig.topic, JSON.stringify(commandStatusSensorConfig.payload), { retain: true });
+            client.publish(commandStatusSensorTimestampConfig.topic, JSON.stringify(commandStatusSensorTimestampConfig.payload), { retain: true });
             client.publish(commandStatusTopic,
                 JSON.stringify({
                     "command": {
@@ -568,6 +515,14 @@ logger.info('!-- Starting OnStar2MQTT Polling --!');
             }
             const pollingStatusTopicState = topicArray.map(item => item.topic || item).join('');
             logger.info(`pollingStatusTopicState: ${pollingStatusTopicState}`);
+
+            const pollingStatusMessagePayload = mqttHA.createPollingStatusMessageSensorConfigPayload(pollingStatusTopicState);
+            logger.debug("pollingStatusMessagePayload:", pollingStatusMessagePayload);
+            const pollingStatusCodePayload = mqttHA.createPollingStatusCodeSensorConfigPayload(pollingStatusTopicState);
+            logger.debug("pollingStatusCodePayload:", pollingStatusCodePayload);
+            const pollingStatusMessageTimestampPayload = mqttHA.createPollingStatusTimestampSensorConfigPayload(pollingStatusTopicState);
+            logger.debug("pollingStatusMessageTimestampPayload:", pollingStatusMessageTimestampPayload);
+
             client.publish(pollingStatusTopicState,
                 JSON.stringify({
                     "error": {
@@ -580,6 +535,13 @@ logger.info('!-- Starting OnStar2MQTT Polling --!');
                     "completionTimestamp": new Date().toISOString()
                 }), { retain: false })
 
+            if (!buttonConfigsPublished) {
+                client.publish(pollingStatusMessagePayload.topic, JSON.stringify(pollingStatusMessagePayload.payload), { retain: true });
+                client.publish(pollingStatusCodePayload.topic, JSON.stringify(pollingStatusCodePayload.payload), { retain: true });
+                client.publish(pollingStatusMessageTimestampPayload.topic, JSON.stringify(pollingStatusMessageTimestampPayload.payload), { retain: true });
+                logger.info(`Polling Status Message Sensors Published!`);
+            }
+
             let topicArrayTF;
             if (!mqttConfig.pollingStatusTopic) {
                 topicArrayTF = _.concat(mqttHA.getPollingStatusTopic(), '/', 'lastpollsuccessful');
@@ -588,6 +550,14 @@ logger.info('!-- Starting OnStar2MQTT Polling --!');
             }
             const pollingStatusTopicTF = topicArrayTF.map(item => item.topic || item).join('');
             logger.info(`pollingStatusTopicTF, ${pollingStatusTopicTF}`);
+
+            if (!buttonConfigsPublished) {
+                const pollingStatusTFPayload = mqttHA.createPollingStatusTFSensorConfigPayload(pollingStatusTopicTF);
+                logger.debug("pollingStatusTFPayload:", pollingStatusTFPayload);
+                client.publish(pollingStatusTFPayload.topic, JSON.stringify(pollingStatusTFPayload.payload), { retain: true });
+                logger.info(`Polling Status TF Sensor Published!`);
+            }
+
             client.publish(pollingStatusTopicTF, "false", { retain: true });
 
             const states = new Map();
@@ -595,24 +565,32 @@ logger.info('!-- Starting OnStar2MQTT Polling --!');
             logger.info('Requesting diagnostics');
             logger.debug(`GetSupported: ${v.getSupported()}`);
 
-            let buttonConfigsPublished = ''
-
             function publishButtonConfigs() {
                 // Only run on initial startup
                 if (!buttonConfigsPublished) {
                     // Get supported commands            
                     logger.debug(`Supported Commands: ${v.getSupportedCommands()}`);
+
                     // Get button configs and payloads
-                    const { buttonConfigs, configPayloads } = mqttHA.createButtonConfigPayload(v);
-                    // Publish button config and payload for each button
-                    buttonConfigs.forEach((buttonConfig, index) => {
-                        const configPayload = configPayloads[index];
-                        logger.warn(`Button Config Topic: ${JSON.stringify(buttonConfig)}`);
-                        logger.debug(`Button Config Payload: ${JSON.stringify(configPayload)}`);
-                        // Publish configPayload as the payload to the respective MQTT topic
-                        logger.debug(`Publishing Button Config: ${buttonConfig} Payload: ${JSON.stringify(configPayload)}`);
-                        client.publish(buttonConfig, JSON.stringify(configPayload), { retain: true });
+                    const tasks = [
+                        mqttHA.createButtonConfigPayload(v),
+                        mqttHA.createButtonConfigPayloadCSMG(v)
+                    ];
+
+                    tasks.forEach(({ buttonConfigs, configPayloads }, taskIndex) => {
+                        // Publish button config and payload for each button in first set
+                        buttonConfigs.forEach((buttonConfig, index) => {
+                            const configPayload = configPayloads[index];
+                            const buttonType = taskIndex === 0 ? "Button" : "Button for Command Status";
+                            logger.warn(`${buttonType} Config Topic: ${JSON.stringify(buttonConfig)}`);
+                            logger.debug(`${buttonType} Config Payload: ${JSON.stringify(configPayload)}`);
+
+                            // Publish configPayload as the payload to the respective MQTT topic
+                            logger.debug(`Publishing ${buttonType} Config: ${buttonConfig} Payload: ${JSON.stringify(configPayload)}`);
+                            client.publish(buttonConfig, JSON.stringify(configPayload), { retain: true });
+                        });
                     });
+
                     buttonConfigsPublished = 'true';
                     logger.info(`Button Configs Published!`);
                 }
@@ -752,6 +730,14 @@ logger.info('!-- Starting OnStar2MQTT Polling --!');
         const refreshIntervalCurrentValTopic = mqttHA.getRefreshIntervalCurrentValTopic();
         logger.info(`refreshIntervalTopic: ${refreshIntervalTopic}`);
         logger.info(`refreshIntervalCurrentValTopic: ${refreshIntervalCurrentValTopic}`);
+
+        if (!buttonConfigsPublished) {
+            const pollingRefreshIntervalPayload = mqttHA.createPollingRefreshIntervalSensorConfigPayload(refreshIntervalCurrentValTopic);
+            logger.debug("pollingRefreshIntervalSensorConfigPayload:", pollingRefreshIntervalPayload);
+            client.publish(pollingRefreshIntervalPayload.topic, pollingRefreshIntervalPayload.payload, { retain: true });
+            logger.info(`Polling Refresh Interval Sensor Published!`);
+        }
+
         // Subscribe to the topic
         client.subscribe(refreshIntervalTopic);
         // Set initial interval
