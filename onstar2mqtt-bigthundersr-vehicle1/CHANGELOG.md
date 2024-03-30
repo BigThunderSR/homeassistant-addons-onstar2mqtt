@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.16.0
+
+- Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.16.0](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.16.0)
+- Add OnStar polling status sensors to MQTT auto-discovery
+  - At this point, pretty much every available sensor, button and status is published to MQTT auto-discovery topics
+- Add additional tests
+- Add command buttons to Command Status Monitors Sensors section in addition to the main vehicle sensors MQTT device
+- Fix regression from previous release
+- Move some code out of index
+- Logging updates
+
 ## 1.15.0
 
 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.15.0](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.15.0)
