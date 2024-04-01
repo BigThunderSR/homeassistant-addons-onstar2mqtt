@@ -88,7 +88,9 @@ icon: 'mdi:map-marker'
 #### MQTT Polling Status Success Monitor (T/F)
 
 * MQTT Auto-Discovery for Polling Status Sensors for HA Added Starting at v1.16.0
-  * Polling Status Message, Timestamp and True/False Sensor from last command run are published to MQTT auto-discovery topics and are grouped in a MQTT device grouping for all command status sensors for the same vehicle.  
+  * Polling Status Message, Timestamp and True/False Sensor from last command run are published to MQTT auto-discovery topics and are grouped in a MQTT device grouping for all command status sensors for the same vehicle.
+  * Set 'MQTT_LIST_ALL_SENSORS_TOGETHER="true"' to group all the sensors under one MQTT device starting at v1.17.0. Default is "false".
+  
 
 To add manually if wanted:
 Create a MQTT binary sensor in Home Assistant
@@ -114,6 +116,7 @@ mqtt:
 
 * MQTT Auto-Discovery for Polling Status Sensors for HA Added Starting at v1.16.0
   * Polling Status Message, Timestamp and True/False Sensor from last command run are published to MQTT auto-discovery topics and are grouped in a MQTT device grouping for all command status sensors for the same vehicle.
+  * Set 'MQTT_LIST_ALL_SENSORS_TOGETHER="true"' to group all the sensors under one MQTT device starting at v1.17.0. Default is "false".
 
 To add manually if wanted:
 Create a MQTT sensor in Home Assistant
@@ -140,6 +143,7 @@ mqtt:
 * MQTT Auto-Discovery for Command Status Sensors for HA Added Starting at v1.15.0
   * Command Status and Timestamp from last command run are published to MQTT auto-discovery topics and are grouped in a MQTT device grouping for all command status sensors for the same vehicle.
   * Command needs to be run at least once before the sensor is visible in HA.
+  * Set 'MQTT_LIST_ALL_SENSORS_TOGETHER="true"' to group all the sensors under one MQTT device starting at v1.17.0. Default is "false".
 
 To add manually if wanted:
 Create a MQTT sensor in Home Assistant for each command status you want to monitor. Below is an example for the getLocation command and other commands follow a similar format.
@@ -162,6 +166,7 @@ mqtt:
 * MQTT Auto-Discovery for Command Status Sensors for HA Added Starting at v1.15.0
   * Command Status and Timestamp from last command run are published to MQTT auto-discovery topics and are grouped in a MQTT device grouping for all command status sensors for the same vehicle.
   * Command needs to be run at least once before the sensor is visible in HA.
+  * Set 'MQTT_LIST_ALL_SENSORS_TOGETHER="true"' to group all the sensors under one MQTT device starting at v1.17.0. Default is "false".
 
 To add manually if wanted:
 Create a MQTT sensor in Home Assistant for each command timestamp you want to monitor. Below is an example for the getLocation command and other commands follow a similar format.

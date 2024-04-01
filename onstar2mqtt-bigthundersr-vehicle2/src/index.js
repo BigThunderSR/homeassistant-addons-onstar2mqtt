@@ -54,6 +54,7 @@ const mqttConfig = {
     prefix: process.env.MQTT_PREFIX || 'homeassistant',
     namePrefix: process.env.MQTT_NAME_PREFIX || '',
     pollingStatusTopic: process.env.MQTT_ONSTAR_POLLING_STATUS_TOPIC,
+    listAllSensorsTogether: process.env.MQTT_LIST_ALL_SENSORS_TOGETHER === 'true',
     ca: process.env.MQTT_CA_FILE ? [fs.readFileSync(process.env.MQTT_CA_FILE)] : undefined,
     cert: process.env.MQTT_CERT_FILE ? fs.readFileSync(process.env.MQTT_CERT_FILE) : undefined,
     key: process.env.MQTT_KEY_FILE ? fs.readFileSync(process.env.MQTT_KEY_FILE) : undefined,
@@ -146,9 +147,9 @@ const configureMQTT = async (commands, client, mqttHA) => {
         const topicArray = _.concat({ topic }, '/', { command }.command, '/', 'state');
         const commandStatusTopic = topicArray.map(item => item.topic || item).join('');
 
-        const commandStatusSensorConfig = mqttHA.createCommandStatusSensorConfigPayload(command);
+        const commandStatusSensorConfig = mqttHA.createCommandStatusSensorConfigPayload(command, mqttConfig.listAllSensorsTogether);
         logger.debug("Command Status Sensor Config:", commandStatusSensorConfig);
-        const commandStatusSensorTimestampConfig = mqttHA.createCommandStatusSensorTimestampConfigPayload(command);
+        const commandStatusSensorTimestampConfig = mqttHA.createCommandStatusSensorTimestampConfigPayload(command, mqttConfig.listAllSensorsTogether);
         logger.debug("Command Status Sensor Timestamp Config:", commandStatusSensorTimestampConfig);
 
         const commandFn = cmd.bind(commands);
@@ -516,11 +517,11 @@ logger.info('!-- Starting OnStar2MQTT Polling --!');
             const pollingStatusTopicState = topicArray.map(item => item.topic || item).join('');
             logger.info(`pollingStatusTopicState: ${pollingStatusTopicState}`);
 
-            const pollingStatusMessagePayload = mqttHA.createPollingStatusMessageSensorConfigPayload(pollingStatusTopicState);
+            const pollingStatusMessagePayload = mqttHA.createPollingStatusMessageSensorConfigPayload(pollingStatusTopicState, mqttConfig.listAllSensorsTogether);
             logger.debug("pollingStatusMessagePayload:", pollingStatusMessagePayload);
-            const pollingStatusCodePayload = mqttHA.createPollingStatusCodeSensorConfigPayload(pollingStatusTopicState);
+            const pollingStatusCodePayload = mqttHA.createPollingStatusCodeSensorConfigPayload(pollingStatusTopicState, mqttConfig.listAllSensorsTogether);
             logger.debug("pollingStatusCodePayload:", pollingStatusCodePayload);
-            const pollingStatusMessageTimestampPayload = mqttHA.createPollingStatusTimestampSensorConfigPayload(pollingStatusTopicState);
+            const pollingStatusMessageTimestampPayload = mqttHA.createPollingStatusTimestampSensorConfigPayload(pollingStatusTopicState, mqttConfig.listAllSensorsTogether);
             logger.debug("pollingStatusMessageTimestampPayload:", pollingStatusMessageTimestampPayload);
 
             client.publish(pollingStatusTopicState,
@@ -552,7 +553,7 @@ logger.info('!-- Starting OnStar2MQTT Polling --!');
             logger.info(`pollingStatusTopicTF, ${pollingStatusTopicTF}`);
 
             if (!buttonConfigsPublished) {
-                const pollingStatusTFPayload = mqttHA.createPollingStatusTFSensorConfigPayload(pollingStatusTopicTF);
+                const pollingStatusTFPayload = mqttHA.createPollingStatusTFSensorConfigPayload(pollingStatusTopicTF, mqttConfig.listAllSensorsTogether);
                 logger.debug("pollingStatusTFPayload:", pollingStatusTFPayload);
                 client.publish(pollingStatusTFPayload.topic, JSON.stringify(pollingStatusTFPayload.payload), { retain: true });
                 logger.info(`Polling Status TF Sensor Published!`);
@@ -572,10 +573,17 @@ logger.info('!-- Starting OnStar2MQTT Polling --!');
                     logger.debug(`Supported Commands: ${v.getSupportedCommands()}`);
 
                     // Get button configs and payloads
-                    const tasks = [
-                        mqttHA.createButtonConfigPayload(v),
-                        mqttHA.createButtonConfigPayloadCSMG(v)
-                    ];
+                    let tasks;
+                    if (mqttConfig.listAllSensorsTogether === true) {
+                        tasks = [
+                            mqttHA.createButtonConfigPayload(v),
+                        ];
+                    } else {
+                        tasks = [
+                            mqttHA.createButtonConfigPayload(v),
+                            mqttHA.createButtonConfigPayloadCSMG(v),
+                        ];
+                    }
 
                     tasks.forEach(({ buttonConfigs, configPayloads }, taskIndex) => {
                         // Publish button config and payload for each button in first set
@@ -590,9 +598,23 @@ logger.info('!-- Starting OnStar2MQTT Polling --!');
                             client.publish(buttonConfig, JSON.stringify(configPayload), { retain: true });
                         });
                     });
-
-                    buttonConfigsPublished = 'true';
                     logger.info(`Button Configs Published!`);
+
+                    const sensors = [
+                        { name: 'oil_life', component: null, icon: 'mdi:oil-level' },
+                        { name: 'tire_pressure', component: 'tire_pressure_lf_message', icon: 'mdi:car-tire-alert' },
+                        { name: 'tire_pressure', component: 'tire_pressure_lr_message', icon: 'mdi:car-tire-alert' },
+                        { name: 'tire_pressure', component: 'tire_pressure_rf_message', icon: 'mdi:car-tire-alert' },
+                        { name: 'tire_pressure', component: 'tire_pressure_rr_message', icon: 'mdi:car-tire-alert' },
+                    ];
+
+                    for (let sensor of sensors) {
+                        const sensorMessagePayload = mqttHA.createSensorMessageConfigPayload(sensor.name, sensor.component, sensor.icon);
+                        logger.debug('Sensor Message Payload:', sensorMessagePayload);
+                        client.publish(sensorMessagePayload.topic, JSON.stringify(sensorMessagePayload.payload), { retain: true });
+                    }
+                    logger.info(`Sensor Message Configs Published!`);
+                    buttonConfigsPublished = 'true';
                 }
             }
 
@@ -732,7 +754,7 @@ logger.info('!-- Starting OnStar2MQTT Polling --!');
         logger.info(`refreshIntervalCurrentValTopic: ${refreshIntervalCurrentValTopic}`);
 
         if (!buttonConfigsPublished) {
-            const pollingRefreshIntervalPayload = mqttHA.createPollingRefreshIntervalSensorConfigPayload(refreshIntervalCurrentValTopic);
+            const pollingRefreshIntervalPayload = mqttHA.createPollingRefreshIntervalSensorConfigPayload(refreshIntervalCurrentValTopic, mqttConfig.listAllSensorsTogether);
             logger.debug("pollingRefreshIntervalSensorConfigPayload:", pollingRefreshIntervalPayload);
             client.publish(pollingRefreshIntervalPayload.topic, pollingRefreshIntervalPayload.payload, { retain: true });
             logger.info(`Polling Refresh Interval Sensor Published!`);
