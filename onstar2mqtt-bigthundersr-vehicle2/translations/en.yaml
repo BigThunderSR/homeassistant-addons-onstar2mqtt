@@ -69,7 +69,13 @@ configuration:
   MQTT_ONSTAR_POLLING_STATUS_TOPIC:
     name: MQTT OnSTAR Polling Status Topic
     description: >-
-      Topic for publishing OnStar data polling success/failure True/False status and detailed messages to broker/server. Optional.      
+      Topic for publishing OnStar data polling success/failure True/False status and detailed messages to broker/server. Optional.
+  MQTT_LIST_ALL_SENSORS_TOGETHER:
+    name: MQTT List All Sensors Together
+    description: >-
+      List all numeric/component and command status sensors together in a single MQTT device group instead of the default which groups numeric/component 
+      sensors in one MQTT device and command status sensors in a separate MQTT device. 
+      Default is "false".     
   MQTT_TLS:
     name: MQTT TLS
     description: >-

@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.17.0
+
+- Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.17.0](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.17.0)
+- Added an option to group all numeric/component sensors and command status sensors in the same MQTT device if desired. The default which carries over from the previous version is to group them separately.
+- Added Oil Life and Tire Pressure status messages to MQTT auto-discovery topics.
+- Added additional tests
+
 ## 1.16.1
 
 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.16.1](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.16.1)

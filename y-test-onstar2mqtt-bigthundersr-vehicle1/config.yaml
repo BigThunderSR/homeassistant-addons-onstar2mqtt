@@ -37,6 +37,7 @@ options:
   MQTT_PORT: 1883
   MQTT_PREFIX: "homeassistant"
   MQTT_ONSTAR_POLLING_STATUS_TOPIC: "homeassistant/onstar2mqtt/vehicle2/polling"
+  MQTT_LIST_ALL_SENSORS_TOGETHER: false
   MQTT_TLS: false
   MQTT_REJECT_UNAUTHORIZED: true
   MQTT_CA_FILE: ""
@@ -60,6 +61,7 @@ schema:
   MQTT_PORT: port
   MQTT_PREFIX: str
   MQTT_ONSTAR_POLLING_STATUS_TOPIC: str
+  MQTT_LIST_ALL_SENSORS_TOGETHER: bool
   MQTT_TLS: bool
   MQTT_REJECT_UNAUTHORIZED: bool 
   MQTT_CA_FILE: str?
