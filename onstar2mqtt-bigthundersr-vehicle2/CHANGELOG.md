@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.17.1
+
+- Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.17.1](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.17.1)
+- Add unique_id to device_tracker auto-discovery config
+- Fix polling refresh interval sensor not publishing
+- Tweak tire pressure message sensor names
+- Logging update
+- Add tests
+
 ## 1.17.0
 
 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.17.0](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.17.0)
