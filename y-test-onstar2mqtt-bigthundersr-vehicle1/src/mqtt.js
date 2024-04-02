@@ -513,26 +513,29 @@ class MQTT {
     }
 
     createSensorMessageConfigPayload(sensor, component, icon) {
-        //let topic = `${this.prefix}/sensor/${this.instance}/${sensor}_message/config`;
-
         let topic, unique_id, sensor_name, value_template;
         if (!component) {
             topic = `${this.prefix}/sensor/${this.instance}/${sensor}_message/config`;
-            unique_id = MQTT.convertName(this.vehicle.vin) + '_' + sensor;
+            unique_id = MQTT.convertName(this.vehicle.vin) + '_' + sensor + '_message';
             sensor_name = `${sensor.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ')} Message`;
             value_template = `{{ value_json.${sensor}_message }}`;
         } else {
-            topic = `${this.prefix}/sensor/${this.instance}/${sensor}_${component}_message/config`;
-            unique_id = MQTT.convertName(this.vehicle.vin) + '_' + sensor + '_' + component;
-            let component_words = component.split('_');
-            component_words = component_words.map(component_word => {
-                if (component_word === 'lf' || component_word === 'rf' || component_word === 'lr' || component_word === 'rr') {
-                    return component_word.toUpperCase();
-                } else {
-                    return component_word.charAt(0).toUpperCase() + component_word.slice(1);
-                }
-            });
-            sensor_name = component_words.join(' ');
+            let transformedComponent;
+            if (component === 'tire_pressure_rf_message') {
+                transformedComponent = 'Tire Pressure: Right Front Message';
+            } else if (component === 'tire_pressure_lf_message') {
+                transformedComponent = 'Tire Pressure: Left Front Message';
+            } else if (component === 'tire_pressure_lr_message') {
+                transformedComponent = 'Tire Pressure: Left Rear Message';
+            } else if (component === 'tire_pressure_rr_message') {
+                transformedComponent = 'Tire Pressure: Right Rear Message';
+            } else {
+                transformedComponent = component.split('_').map(word => word.charAt(0).toUpperCase() + word.slice(1)).join(' ');
+            }
+            topic = `${this.prefix}/sensor/${this.instance}/${component}/config`;
+            //unique_id = MQTT.convertName(this.vehicle.vin) + '_' + sensor + '_' + component;
+            unique_id = MQTT.convertName(this.vehicle.vin) + '_' + component;
+            sensor_name = `${transformedComponent}`;
             value_template = `{{ value_json.${component} }}`;
         }
 
@@ -557,6 +560,7 @@ class MQTT {
         };
         return { topic, payload };
     }
+
 
     /**
      *
