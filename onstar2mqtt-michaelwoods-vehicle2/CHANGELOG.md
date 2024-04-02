@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.5.11
+
+- Pickup latest upstream updates in [michaelwoods/onstar2mqtt v1.5.11](https://github.com/michaelwoods/onstar2mqtt/releases/tag/v1.5.11)
+
 ## 1.2.16
 
 - Pickup latest upstream updates in [michaelwoods/onstar2mqtt v1.5.8](https://github.com/michaelwoods/onstar2mqtt/releases/tag/v1.5.8)
