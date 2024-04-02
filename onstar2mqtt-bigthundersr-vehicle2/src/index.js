@@ -10,7 +10,8 @@ const Commands = require('./commands');
 const logger = require('./logger');
 const fs = require('fs');
 //const CircularJSON = require('circular-json');
-let buttonConfigsPublished = ''
+let buttonConfigsPublished = '';
+let refreshIntervalConfigPublished = '';
 
 const onstarConfig = {
     deviceId: process.env.ONSTAR_DEVICEID || uuidv4(),
@@ -431,24 +432,29 @@ const configureMQTT = async (commands, client, mqttHA) => {
                             const topic = mqttHA.getStateTopic({ name: command });
                             const deviceTrackerConfigTopic = mqttHA.getDeviceTrackerConfigTopic();
                             const vehicle = mqttHA.vehicle.toString();
-                            // Done - create device_tracker entity. (Was - MQTT device tracker doesn't support lat/lon and mqtt_json)
-                            // Now has discovery
+
+                            const locationData = {
+                                latitude: parseFloat(location.lat),
+                                longitude: parseFloat(location.long),
+                                speed: parseFloat(speed.value),
+                                direction: parseFloat(direction.value)
+                            };
+
+                            const deviceTrackerConfig = {
+                                "json_attributes_topic": topic,
+                                "name": vehicle,
+                                "unique_id": MQTT.convertName(vehicle) + '_device_tracker',
+                            };
+
                             logger.debug(vehicle)
-                            client.publish(topic,
-                                JSON.stringify({
-                                    latitude: parseFloat(location.lat),
-                                    longitude: parseFloat(location.long),
-                                    speed: parseFloat(speed.value),
-                                    direction: parseFloat(direction.value)
-                                }), { retain: true })
-                            client.publish(deviceTrackerConfigTopic,
-                                JSON.stringify({
-                                    "json_attributes_topic": topic,
-                                    "name": vehicle
-                                }), { retain: true })
+
+                            client.publish(topic, JSON.stringify(locationData), { retain: true })
+
+                            client.publish(deviceTrackerConfigTopic, JSON.stringify(deviceTrackerConfig), { retain: true })
                                 .then(() => {
                                     logger.warn(`Published device_tracker config to topic: ${deviceTrackerConfigTopic}`);
                                     logger.warn(`Published location to topic: ${topic}`);
+                                    logger.debug("Device Tracker Config:", deviceTrackerConfig);
                                 })
                         }
                     }
@@ -610,7 +616,7 @@ logger.info('!-- Starting OnStar2MQTT Polling --!');
 
                     for (let sensor of sensors) {
                         const sensorMessagePayload = mqttHA.createSensorMessageConfigPayload(sensor.name, sensor.component, sensor.icon);
-                        logger.debug('Sensor Message Payload:', sensorMessagePayload);
+                        logger.debug(`Sensor Message Payload: ${sensor.name}, ${sensor.component}`, sensorMessagePayload);
                         client.publish(sensorMessagePayload.topic, JSON.stringify(sensorMessagePayload.payload), { retain: true });
                     }
                     logger.info(`Sensor Message Configs Published!`);
@@ -753,10 +759,11 @@ logger.info('!-- Starting OnStar2MQTT Polling --!');
         logger.info(`refreshIntervalTopic: ${refreshIntervalTopic}`);
         logger.info(`refreshIntervalCurrentValTopic: ${refreshIntervalCurrentValTopic}`);
 
-        if (!buttonConfigsPublished) {
+        if (!refreshIntervalConfigPublished) {
             const pollingRefreshIntervalPayload = mqttHA.createPollingRefreshIntervalSensorConfigPayload(refreshIntervalCurrentValTopic, mqttConfig.listAllSensorsTogether);
             logger.debug("pollingRefreshIntervalSensorConfigPayload:", pollingRefreshIntervalPayload);
-            client.publish(pollingRefreshIntervalPayload.topic, pollingRefreshIntervalPayload.payload, { retain: true });
+            client.publish(pollingRefreshIntervalPayload.topic, JSON.stringify(pollingRefreshIntervalPayload.payload), { retain: true });
+            refreshIntervalConfigPublished = 'true';
             logger.info(`Polling Refresh Interval Sensor Published!`);
         }
 
