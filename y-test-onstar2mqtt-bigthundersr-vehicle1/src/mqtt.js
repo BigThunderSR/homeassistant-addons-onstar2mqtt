@@ -1,5 +1,5 @@
 const _ = require('lodash');
-//const Buttons = require('./buttons');
+const commands = require('./commands');
 
 /**
  * Supports Home Assistant MQTT Discovery (https://www.home-assistant.io/docs/mqtt/discovery/)
@@ -80,11 +80,11 @@ class MQTT {
                 Icon: 'mdi:archive-lock-open',
             },
             Start: {
-                Name: 'start',
+                Name: 'startVehicle',
                 Icon: 'mdi:car-key',
             },
             CancelStart: {
-                Name: 'cancelStart',
+                Name: 'cancelStartVehicle',
                 Icon: 'mdi:car-off',
             },
             GetLocation: {
@@ -117,6 +117,18 @@ class MQTT {
             },
         }
     };
+
+    static validateButtonNames() {
+        const buttonNames = Object.values(MQTT.CONSTANTS.BUTTONS).map(button => button.Name);
+        const commandNames = commands.getFunctionNames();
+
+        buttonNames.forEach(buttonName => {
+            if (!commandNames.includes(buttonName)) {
+                //console.log(`Button name "${buttonName}" does not match any command in commands.js`);
+                throw new Error(`Button name "${buttonName}" does not match any command in commands.js`);
+            }
+        });
+    }
 
     constructor(vehicle, prefix = 'homeassistant', namePrefix) {
         this.prefix = prefix;
@@ -803,5 +815,7 @@ class MQTT {
         }
     }
 }
+
+MQTT.validateButtonNames();
 
 module.exports = MQTT;
