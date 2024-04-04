@@ -572,6 +572,23 @@ logger.info('!-- Starting OnStar2MQTT Polling --!');
             logger.info('Requesting diagnostics');
             logger.debug(`GetSupported: ${v.getSupported()}`);
 
+            if (!buttonConfigsPublished) {
+                const sensors = [
+                    { name: 'oil_life', component: null, icon: 'mdi:oil-level' },
+                    { name: 'tire_pressure', component: 'tire_pressure_lf_message', icon: 'mdi:car-tire-alert' },
+                    { name: 'tire_pressure', component: 'tire_pressure_lr_message', icon: 'mdi:car-tire-alert' },
+                    { name: 'tire_pressure', component: 'tire_pressure_rf_message', icon: 'mdi:car-tire-alert' },
+                    { name: 'tire_pressure', component: 'tire_pressure_rr_message', icon: 'mdi:car-tire-alert' },
+                ];
+
+                for (let sensor of sensors) {
+                    const sensorMessagePayload = mqttHA.createSensorMessageConfigPayload(sensor.name, sensor.component, sensor.icon);
+                    logger.debug(`Sensor Message Payload: ${sensor.name}, ${sensor.component}`, sensorMessagePayload);
+                    client.publish(sensorMessagePayload.topic, JSON.stringify(sensorMessagePayload.payload), { retain: true });
+                }
+                logger.info(`Sensor Message Configs Published!`);
+            }
+
             function publishButtonConfigs() {
                 // Only run on initial startup
                 if (!buttonConfigsPublished) {
@@ -604,27 +621,11 @@ logger.info('!-- Starting OnStar2MQTT Polling --!');
                             client.publish(buttonConfig, JSON.stringify(configPayload), { retain: true });
                         });
                     });
-                    logger.info(`Button Configs Published!`);
-
-                    const sensors = [
-                        { name: 'oil_life', component: null, icon: 'mdi:oil-level' },
-                        { name: 'tire_pressure', component: 'tire_pressure_lf_message', icon: 'mdi:car-tire-alert' },
-                        { name: 'tire_pressure', component: 'tire_pressure_lr_message', icon: 'mdi:car-tire-alert' },
-                        { name: 'tire_pressure', component: 'tire_pressure_rf_message', icon: 'mdi:car-tire-alert' },
-                        { name: 'tire_pressure', component: 'tire_pressure_rr_message', icon: 'mdi:car-tire-alert' },
-                    ];
-
-                    for (let sensor of sensors) {
-                        const sensorMessagePayload = mqttHA.createSensorMessageConfigPayload(sensor.name, sensor.component, sensor.icon);
-                        logger.debug(`Sensor Message Payload: ${sensor.name}, ${sensor.component}`, sensorMessagePayload);
-                        client.publish(sensorMessagePayload.topic, JSON.stringify(sensorMessagePayload.payload), { retain: true });
-                    }
-                    logger.info(`Sensor Message Configs Published!`);
                     buttonConfigsPublished = 'true';
+                    logger.info(`Button Configs Published!`);
                 }
             }
-
-            publishButtonConfigs();
+            publishButtonConfigs();            
 
             const statsRes = await commands.diagnostics({ diagnosticItem: v.getSupported() });
             logger.info('Diagnostic request status', { status: _.get(statsRes, 'status') });
