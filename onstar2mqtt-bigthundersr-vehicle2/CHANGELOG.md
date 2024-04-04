@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.18.1
+
+- Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.18.1](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.18.1)
+- Fixes button name to command mismatch and adds checks for this condition to avoid recurrence in the future
+- Also addresses issue Start vehicle button issue #166
+
 ## 1.18.0
 
 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.18.0](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.18.0)
