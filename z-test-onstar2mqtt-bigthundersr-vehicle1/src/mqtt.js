@@ -47,23 +47,74 @@ const _ = require('lodash');
 class MQTT {
     static CONSTANTS = {
         BUTTONS: {
-            Alert: 'alert',
-            AlertFlash: 'alertFlash',
-            AlertHonk: 'alertHonk',
-            CancelAlert: 'cancelAlert',
-            LockDoor: 'lockDoor',
-            UnlockDoor: 'unlockDoor',
-            LockTrunk: 'lockTrunk',
-            UnlockTrunk: 'unlockTrunk',
-            Start: 'start',
-            CancelStart: 'cancelStart',
-            GetLocation: 'getLocation',
-            Diagnostics: 'diagnostics',
-            EngineRPM: 'enginerpm',
-            ChargeOverride: 'chargeOverride',
-            CancelChargeOverride: 'cancelChargeOverride',
-            GetChargingProfile: 'getChargingProfile',
-            SetChargingProfile: 'setChargingProfile',
+            Alert: {
+                Name: 'alert',
+                Icon: 'mdi:alert',
+            },
+            AlertFlash: {
+                Name: 'alertFlash',
+                Icon: 'mdi:car-light-alert',
+            },
+            AlertHonk: {
+                Name: 'alertHonk',
+                Icon: 'mdi:bugle',
+            },
+            CancelAlert: {
+                Name: 'cancelAlert',
+                Icon: 'mdi:alert-minus',
+            },
+            LockDoor: {
+                Name: 'lockDoor',
+                Icon: 'mdi:car-door-lock',
+            },
+            UnlockDoor: {
+                Name: 'unlockDoor',
+                Icon: 'mdi:car-door-lock-open',
+            },
+            LockTrunk: { 
+                Name: 'lockTrunk',
+                Icon: 'mdi:archive-lock',
+            },
+            UnlockTrunk: {
+                Name: 'unlockTrunk',
+                Icon: 'mdi:archive-lock-open',
+            },
+            Start: {
+                Name: 'start',
+                Icon: 'mdi:car-key',
+            },
+            CancelStart: {
+                Name: 'cancelStart',
+                Icon: 'mdi:car-off',
+            },
+            GetLocation: {
+                Name: 'getLocation',
+                Icon: 'mdi:map-marker-radius',
+            },
+            Diagnostics: {
+                Name: 'diagnostics',
+                Icon: 'mdi:car-info',
+            },
+            EngineRPM: {
+                Name: 'enginerpm',
+                Icon: 'mdi:speedometer',
+            },
+            ChargeOverride: {
+                Name: 'chargeOverride',
+                Icon: 'mdi:ev-station',
+            },
+            CancelChargeOverride: {
+                Name: 'cancelChargeOverride',
+                Icon: 'mdi:battery-charging-wireless-alert',
+            },
+            GetChargingProfile: {
+                Name: 'getChargingProfile',
+                Icon: 'mdi:battery-charging-wireless',
+            },
+            SetChargingProfile: {
+                Name: 'setChargingProfile',
+                Icon: 'mdi:battery-sync',
+            },
         }
     };
 
@@ -259,8 +310,9 @@ class MQTT {
                 },
                 "unique_id": unique_id,
                 "name": `Command ${button.name}`,
+                "icon": MQTT.CONSTANTS.BUTTONS[button.name].Icon,
                 "command_topic": this.getCommandTopic(),
-                "payload_press": JSON.stringify({ "command": MQTT.CONSTANTS.BUTTONS[button.name] }),
+                "payload_press": JSON.stringify({ "command": MQTT.CONSTANTS.BUTTONS[button.name].Name }),
                 "qos": 2,
                 "enabled_by_default": false,
             });
@@ -304,8 +356,9 @@ class MQTT {
                 },
                 "unique_id": unique_id,
                 "name": `Command ${button.name}`,
+                "icon": MQTT.CONSTANTS.BUTTONS[button.name].Icon,
                 "command_topic": this.getCommandTopic(),
-                "payload_press": JSON.stringify({ "command": MQTT.CONSTANTS.BUTTONS[button.name] }),
+                "payload_press": JSON.stringify({ "command": MQTT.CONSTANTS.BUTTONS[button.name].Name }),
                 "qos": 2,
                 "enabled_by_default": false,
             });
