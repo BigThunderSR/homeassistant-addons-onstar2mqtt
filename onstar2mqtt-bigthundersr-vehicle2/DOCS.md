@@ -6,6 +6,18 @@
 * Change the value dynamically by publishing the new refresh value in milliseconds (ms) as an INT to: "homeassistant/YOUR_CAR_VIN/refresh_interval"
 * Retained topic of "homeassistant/YOUR_CAR_VIN/refresh_interval_current_val" can be used to monitor current refresh value set via MQTT
 
+### Example Script YAML
+```yaml
+alias: Set MyCar Data Refresh to 1 Hour
+sequence:
+  - service: mqtt.publish
+    data:
+      qos: "0"
+      payload: "3600000"
+      topic: homeassistant/MY_CAR_VIN/refresh_interval
+mode: single
+```
+
 ## Commands
 
 ### Example Script YAML
