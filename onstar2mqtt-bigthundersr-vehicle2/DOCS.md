@@ -7,6 +7,7 @@
 * Retained topic of "homeassistant/YOUR_CAR_VIN/refresh_interval_current_val" can be used to monitor current refresh value set via MQTT
 
 ### Example Script YAML
+
 ```yaml
 alias: Set MyCar Data Refresh to 1 Hour
 sequence:
@@ -20,7 +21,7 @@ mode: single
 
 ## Commands
 
-### Example Script YAML
+### Example Script YAML for Running Commands
 
 **MQTT button auto discovery is enabled starting at v1.14.0 which sends/triggers the defaults of each command. The following isn't strictly necessary, but still available if needed or for sending customized commands.**
 
