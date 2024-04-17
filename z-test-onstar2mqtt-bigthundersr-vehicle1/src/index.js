@@ -39,6 +39,16 @@ for (let prop in onstarRequiredProperties) {
     }
 }
 
+// Validate VIN
+if (!/^[A-HJ-NPR-Z0-9]{17}$/i.test(onstarConfig.vin)) {
+    throw new Error('Invalid VIN. Please check the value entered for VIN in ONSTAR_VIN.');
+}
+
+// Validate PIN
+if (!/^\d{4}$/.test(onstarConfig.onStarPin)) {
+    throw new Error('ONSTAR_PIN must be a 4-digit number');
+}
+
 if (process.env.LOG_LEVEL === 'debug') {
     logger.debug('OnStar Config:', { onstarConfig });
 } else {
