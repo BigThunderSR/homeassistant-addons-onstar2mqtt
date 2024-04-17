@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.18.2
+
+- Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.18.2](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.18.2)
+- Update embedded OnStarJS version
+- Throw errors when invalid VIN format and/or invalid PIN (not 4 digits) are provided
+
 ## 1.18.1
 
 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.18.1](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.18.1)
