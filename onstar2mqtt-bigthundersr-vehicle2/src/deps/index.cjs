@@ -37,8 +37,8 @@ typeof SuppressedError === "function" ? SuppressedError : function (error, suppr
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 };
 
-var appId = "OMB_CVY_iOS_6X1";
-var appSecret = "HZ7xQfoHWhTWLj2gyHBMFzohCcZmnx4kmp2N";
+var appId = "OMB_CVY_iOS_6Y0";
+var appSecret = "mzLiswGw9NReBtmWQQH9V5TPYm6i8tSHxjyD";
 var optionalClientScope = "";
 var requiredClientScope = "onstar gmoc user_trailer user priv";
 var serviceUrl = "https://api.gm.com";
@@ -353,40 +353,40 @@ class RequestService {
             return this.sendRequest(request);
         });
     }
-    lockDoor(options = {}) {
-        return __awaiter(this, void 0, void 0, function* () {
+    lockDoor() {
+        return __awaiter(this, arguments, void 0, function* (options = {}) {
             const request = this.getCommandRequest(OnStarApiCommand.LockDoor).setBody({
                 lockDoorRequest: Object.assign({ delay: 0 }, options),
             });
             return this.sendRequest(request);
         });
     }
-    unlockDoor(options = {}) {
-        return __awaiter(this, void 0, void 0, function* () {
+    unlockDoor() {
+        return __awaiter(this, arguments, void 0, function* (options = {}) {
             const request = this.getCommandRequest(OnStarApiCommand.UnlockDoor).setBody({
                 unlockDoorRequest: Object.assign({ delay: 0 }, options),
             });
             return this.sendRequest(request);
         });
     }
-    lockTrunk(options = {}) {
-        return __awaiter(this, void 0, void 0, function* () {
+    lockTrunk() {
+        return __awaiter(this, arguments, void 0, function* (options = {}) {
             const request = this.getCommandRequest(OnStarApiCommand.LockTrunk).setBody({
                 lockTrunkRequest: Object.assign({ delay: 0 }, options),
             });
             return this.sendRequest(request);
         });
     }
-    unlockTrunk(options = {}) {
-        return __awaiter(this, void 0, void 0, function* () {
+    unlockTrunk() {
+        return __awaiter(this, arguments, void 0, function* (options = {}) {
             const request = this.getCommandRequest(OnStarApiCommand.UnlockTrunk).setBody({
                 unlockTrunkRequest: Object.assign({ delay: 0 }, options),
             });
             return this.sendRequest(request);
         });
     }
-    alert(options = {}) {
-        return __awaiter(this, void 0, void 0, function* () {
+    alert() {
+        return __awaiter(this, arguments, void 0, function* (options = {}) {
             const request = this.getCommandRequest(OnStarApiCommand.Alert).setBody({
                 alertRequest: Object.assign({ action: [AlertRequestAction.Honk, AlertRequestAction.Flash], delay: 0, duration: 1, override: [
                         AlertRequestOverride.DoorOpen,
@@ -402,8 +402,8 @@ class RequestService {
             return this.sendRequest(request);
         });
     }
-    chargeOverride(options = {}) {
-        return __awaiter(this, void 0, void 0, function* () {
+    chargeOverride() {
+        return __awaiter(this, arguments, void 0, function* (options = {}) {
             const request = this.getCommandRequest(OnStarApiCommand.ChargeOverride).setBody({
                 chargeOverrideRequest: Object.assign({ mode: ChargeOverrideMode.ChargeNow }, options),
             });
@@ -416,16 +416,16 @@ class RequestService {
             return this.sendRequest(request);
         });
     }
-    setChargingProfile(options = {}) {
-        return __awaiter(this, void 0, void 0, function* () {
+    setChargingProfile() {
+        return __awaiter(this, arguments, void 0, function* (options = {}) {
             const request = this.getCommandRequest(OnStarApiCommand.SetChargingProfile).setBody({
                 chargingProfile: Object.assign({ chargeMode: ChargingProfileChargeMode.Immediate, rateType: ChargingProfileRateType.Midpeak }, options),
             });
             return this.sendRequest(request);
         });
     }
-    diagnostics(options = {}) {
-        return __awaiter(this, void 0, void 0, function* () {
+    diagnostics() {
+        return __awaiter(this, arguments, void 0, function* (options = {}) {
             const request = this.getCommandRequest(OnStarApiCommand.Diagnostics).setBody({
                 diagnosticsRequest: Object.assign({ diagnosticItem: [
                         DiagnosticRequestItem.Odometer,
@@ -567,8 +567,8 @@ class RequestService {
         });
     }
     sendRequest(request) {
-        var _a;
         return __awaiter(this, void 0, void 0, function* () {
+            var _a;
             try {
                 const response = yield this.makeClientRequest(request);
                 const { data } = response;
