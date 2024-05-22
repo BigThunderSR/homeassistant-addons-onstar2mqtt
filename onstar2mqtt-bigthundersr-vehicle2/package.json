@@ -30,7 +30,7 @@
   "homepage": "https://github.com/BigThunderSR/onstar2mqtt#readme",
   "dependencies": {
     "async-mqtt": "^2.6.3",
-    "axios": "^1.6.8",
+    "axios": "^1.7.2",
     "convert-units": "^2.3.4",
     "dotenv": "^16.4.5",
     "jsonwebtoken": "^9.0.2",
@@ -45,7 +45,7 @@
     "@babel/preset-env": "^7.24.5",
     "eslint": "^8.57.0",
     "eslint-plugin-import": "^2.29.1",
-    "eslint-plugin-n": "^17.6.0",
+    "eslint-plugin-n": "^17.7.0",
     "eslint-plugin-promise": "^6.1.1",
     "mocha": "^10.4.0",
     "nyc": "^15.1.0"
