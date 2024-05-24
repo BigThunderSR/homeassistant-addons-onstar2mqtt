@@ -30,7 +30,7 @@
   "homepage": "https://github.com/BigThunderSR/onstar2mqtt#readme",
   "dependencies": {
     "async-mqtt": "^2.6.3",
-    "axios": "^1.6.8",
+    "axios": "^1.7.2",
     "convert-units": "^2.3.4",
     "dotenv": "^16.4.5",
     "jsonwebtoken": "^9.0.2",
