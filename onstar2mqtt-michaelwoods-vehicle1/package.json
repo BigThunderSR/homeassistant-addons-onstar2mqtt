@@ -38,7 +38,7 @@
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.24.1",
-    "@babel/eslint-plugin": "^7.22.5",
+    "@babel/eslint-plugin": "^7.24.6",
     "@babel/plugin-syntax-class-properties": "^7.12.13",
     "@babel/preset-env": "^7.24.3",
     "eslint": "^8.51.0",
