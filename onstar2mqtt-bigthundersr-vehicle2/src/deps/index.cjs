@@ -37,8 +37,8 @@ typeof SuppressedError === "function" ? SuppressedError : function (error, suppr
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 };
 
-var appId = "OMB_CVY_iOS_6Y0";
-var appSecret = "mzLiswGw9NReBtmWQQH9V5TPYm6i8tSHxjyD";
+var appId = "OMB_CVY_iOS_6Y2";
+var appSecret = "KXbtAmTMVT9Pczz8UkhLSu3RHrjevKgLecwD";
 var optionalClientScope = "";
 var requiredClientScope = "onstar gmoc user_trailer user priv";
 var serviceUrl = "https://api.gm.com";
