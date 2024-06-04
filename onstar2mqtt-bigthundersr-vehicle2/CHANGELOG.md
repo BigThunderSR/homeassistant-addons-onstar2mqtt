@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.18.3
+
+- Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.18.3](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.18.3)
+- Update embedded OnStarJS version
+
 ## 1.18.2
 
 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.18.2](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.18.2)
@@ -54,7 +59,7 @@
 ## 1.15.0
 
 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.15.0](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.15.0)
-- Command Status and Timestamp from last command run are published to MQTT auto-discovery topics and are grouped in a MQTT device grouping for all 
+- Command Status and Timestamp from last command run are published to MQTT auto-discovery topics and are grouped in a MQTT device grouping for all
 command status sensors for the same vehicle
 - Fix a bug in the alert function command handling
 - Add suggested area for sensor groupings
@@ -72,7 +77,7 @@ command status sensors for the same vehicle
 ## 1.14.0
 
 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.14.0](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.14.0)
-- Buttons are added disabled by default because it's easy to accidentally press the wrong button and trigger an action at an inopportune time. 
+- Buttons are added disabled by default because it's easy to accidentally press the wrong button and trigger an action at an inopportune time.
 Enable at your own risk and you assume all responsibility for your actions.
 - All available buttons for all vehicles are included for now, so only enable the buttons you need and/or work for your vehicle.
 - Changed the model displayed in the MQTT device in HA from "Model Year" to "Model Year + Model Name".
@@ -86,7 +91,7 @@ Enable at your own risk and you assume all responsibility for your actions.
 
 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.13.0](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.13.0)
 - Changed the dependency on OnStarJS to embedded to enable easier key rotation updates
-- Added Trunk Open/Close commands based on PR 248 in [OnStarJS ](https://github.com/samrum/OnStarJS)and added delay option
+- Added Trunk Open/Close commands based on PR 248 in [OnStarJS](https://github.com/samrum/OnStarJS)and added delay option
 - Added additional packages to base install due to change of embedded dependency
 - Modifications to allow sending all commands with options using MQTT
 
@@ -122,7 +127,7 @@ Enable at your own risk and you assume all responsibility for your actions.
 
 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.12.0](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.12.0)
 
-- Added device_tracker auto discovery by @BigThunderSR in https://github.com/BigThunderSR/onstar2mqtt/pull/143
+- Added device_tracker auto discovery by @BigThunderSR in <https://github.com/BigThunderSR/onstar2mqtt/pull/143>
   - The device_tracker auto discovery config is published to: "homeassistant/device_tracker/(VIN)/config" and the GPS coordinates are still read from the original topic automatically at: "homeassistant/device_tracker/(VIN)/getlocation/state".
   - Also added GPS based speed and direction to the device_tracker attributes
 
