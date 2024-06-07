@@ -473,7 +473,7 @@ const configureMQTT = async (commands, client, mqttHA) => {
                             const deviceTrackerConfig = {
                                 "json_attributes_topic": topic,
                                 "name": vehicle,
-                                "unique_id": MQTT.convertName(vehicle) + '_device_tracker',
+                                "unique_id": MQTT.convertName(vehicle) + '_device_tracker_' + onstarConfig.vin,
                             };
 
                             logger.debug(vehicle)
