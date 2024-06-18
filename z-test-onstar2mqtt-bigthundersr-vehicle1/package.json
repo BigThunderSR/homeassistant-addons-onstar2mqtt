@@ -35,7 +35,7 @@
     "dotenv": "^16.4.5",
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
-    "uuid": "^9.0.1",
+    "uuid": "^10.0.0",
     "winston": "^3.13.0"
   },
   "devDependencies": {
@@ -45,9 +45,9 @@
     "@babel/preset-env": "^7.24.7",
     "eslint": "^8.57.0",
     "eslint-plugin-import": "^2.29.1",
-    "eslint-plugin-n": "^17.8.1",
+    "eslint-plugin-n": "^17.9.0",
     "eslint-plugin-promise": "^6.2.0",
     "mocha": "^10.4.0",
-    "nyc": "^15.1.0"
+    "nyc": "^17.0.0"
   }
 }
