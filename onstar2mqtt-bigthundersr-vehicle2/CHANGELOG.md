@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.18.6
+
+- Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.18.6](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.18.6)
+- Fix for #561
+
 ## 1.18.5
 
 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.18.5](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.18.5)
