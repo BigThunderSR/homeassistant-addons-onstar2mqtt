@@ -36,13 +36,13 @@
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
     "uuid": "^10.0.0",
-    "winston": "^3.13.0"
+    "winston": "^3.13.1"
   },
   "devDependencies": {
-    "@babel/eslint-parser": "^7.24.7",
+    "@babel/eslint-parser": "^7.24.8",
     "@babel/eslint-plugin": "^7.24.7",
     "@babel/plugin-syntax-class-properties": "^7.12.13",
-    "@babel/preset-env": "^7.24.7",
+    "@babel/preset-env": "^7.24.8",
     "eslint": "^8.57.0",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-n": "^17.9.0",
