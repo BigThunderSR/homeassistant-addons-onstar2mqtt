@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.18.7
+
+- Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.18.7](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.18.7)
+- Fix for [#599](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/issues/599)
+
 ## 1.18.6
 
 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.18.6](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.18.6)
