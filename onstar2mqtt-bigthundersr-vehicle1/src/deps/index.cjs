@@ -37,11 +37,11 @@ typeof SuppressedError === "function" ? SuppressedError : function (error, suppr
     return e.name = "SuppressedError", e.error = error, e.suppressed = suppressed, e;
 };
 
-var appId = "OMB_CVY_iOS_6Y2";
-var appSecret = "KXbtAmTMVT9Pczz8UkhLSu3RHrjevKgLecwD";
+var appId = "OMB_CVY_iOS_6Z0";
+var appSecret = "tCujQXR8nvPhewodWMPrUNExBK4dmCmBAfMb";
 var optionalClientScope = "";
 var requiredClientScope = "onstar gmoc user_trailer user priv";
-var serviceUrl = "https://api.gm.com";
+var serviceUrl = "https://na-mobile-api.gm.com";
 var userAgent = "myChevrolet/118 CFNetwork/1408.0.4 Darwin/22.5.0";
 var onStarAppConfig = {
 	appId: appId,
@@ -465,7 +465,7 @@ class RequestService {
                 Accept: "application/json",
                 "Accept-Language": "en-US",
                 "Content-Type": request.getContentType(),
-                Host: "api.gm.com",
+                Host: "na-mobile-api.gm.com",
                 Connection: "keep-alive",
                 "Accept-Encoding": "br, gzip, deflate",
                 "User-Agent": onStarAppConfig.userAgent,
