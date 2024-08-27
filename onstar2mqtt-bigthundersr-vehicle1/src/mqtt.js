@@ -151,6 +151,8 @@ class MQTT {
             case 'EV PLUG STATE':
             case 'PRIORITY CHARGE INDICATOR':
             case 'PRIORITY CHARGE STATUS':
+            case 'EXHST PART FLTR WARN ON':
+            case 'EXHST PART FLTR WARN2 ON':
                 return 'binary_sensor';
             case 'getLocation':
                 return 'device_tracker';
@@ -777,9 +779,15 @@ class MQTT {
             // binary_sensor, no state_class and no applicable device_class
             case 'PRIORITY CHARGE INDICATOR': // FALSE/TRUE
             case 'PRIORITY CHARGE STATUS': // NOT_ACTIVE/ACTIVE
+            case 'EXHST PART FLTR WARN ON': // FALSE/TRUE - Diesel Exhaust Particulate Filter Warning On
+            case 'EXHST PART FLTR WARN2 ON': // FALSE/TRUE - Diesel Exhaust Particulate Filter Warning 2 On
                 return this.mapBinarySensorConfigPayload(diag, diagEl);
             // non-numeric sensor, no state_class or device_class
             case 'CHARGER POWER LEVEL':
+            case 'EXHST FL LEVL WARN IND': // Diesel Exhaust Fluid Level Warning Indicator
+            case 'EXHST FL LEVL WARN STATUS': // Diesel Exhaust Fluid Level Warning Status
+            //case 'EXHST PART FLTR WARN ON': // Diesel Exhaust Particulate Filter Warning On
+            //case 'EXHST PART FLTR WARN2 ON': // Diesel Exhaust Particulate Filter Warning 2 On
                 return this.mapSensorConfigPayload(diag, diagEl);
             // has state_class, new device class, camel case name
             case 'GAS RANGE':
