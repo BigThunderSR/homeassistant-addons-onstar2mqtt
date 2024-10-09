@@ -50,7 +50,7 @@
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-n": "^17.10.3",
     "eslint-plugin-promise": "^7.1.0",
-    "globals": "^15.10.0",
+    "globals": "^15.11.0",
     "mocha": "^10.7.3",
     "nyc": "^17.1.0"
   }
