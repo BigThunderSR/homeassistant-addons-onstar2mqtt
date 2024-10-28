@@ -33,7 +33,7 @@
     "convert-units": "^2.3.4",
     "lodash": "^4.17.21",
     "onstarjs": "^2.5.3",
-    "uuid": "^10.0.0",
+    "uuid": "^11.0.2",
     "winston": "^3.13.0"
   },
   "devDependencies": {
