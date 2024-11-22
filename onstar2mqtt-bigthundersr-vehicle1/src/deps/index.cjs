@@ -12748,7 +12748,7 @@ function requireForm_data () {
 	  }
 
 	  // https://github.com/felixge/node-form-data/issues/38
-	  if (Array.isArray(value)) {
+	  if (util.isArray(value)) {
 	    // Please convert your array into string
 	    // the way web server expects it
 	    this._error(new Error('Arrays are not supported.'));
@@ -13581,8 +13581,6 @@ class InterceptorManager {
   }
 }
 
-var InterceptorManager$1 = InterceptorManager;
-
 var transitionalDefaults = {
   silentJSONParsing: true,
   forcedJSONParsing: true,
@@ -13784,7 +13782,7 @@ function stringifySafely(rawValue, parser, encoder) {
     }
   }
 
-  return (encoder || JSON.stringify)(rawValue);
+  return (0, JSON.stringify)(rawValue);
 }
 
 const defaults$1 = {
@@ -13911,8 +13909,6 @@ const defaults$1 = {
 utils$2.forEach(['delete', 'get', 'head', 'post', 'put', 'patch'], (method) => {
   defaults$1.headers[method] = {};
 });
-
-var defaults$2 = defaults$1;
 
 // RawAxiosHeaders whose duplicates are ignored by node
 // c.f. https://nodejs.org/api/http.html#http_message_headers
@@ -14262,8 +14258,6 @@ utils$2.reduceDescriptors(AxiosHeaders.prototype, ({value}, key) => {
 
 utils$2.freezeMethods(AxiosHeaders);
 
-var AxiosHeaders$1 = AxiosHeaders;
-
 /**
  * Transform the data for a request or a response
  *
@@ -14273,9 +14267,9 @@ var AxiosHeaders$1 = AxiosHeaders;
  * @returns {*} The resulting transformed data
  */
 function transformData(fns, response) {
-  const config = this || defaults$2;
+  const config = this || defaults$1;
   const context = response || config;
-  const headers = AxiosHeaders$1.from(context.headers);
+  const headers = AxiosHeaders.from(context.headers);
   let data = context.data;
 
   utils$2.forEach(fns, function transform(fn) {
@@ -15090,6 +15084,8 @@ function requireBrowser () {
 				return false;
 			}
 
+			let m;
+
 			// Is webkit? http://stackoverflow.com/a/16459606/376773
 			// document is undefined in react-native: https://github.com/facebook/react-native/pull/1632
 			return (typeof document !== 'undefined' && document.documentElement && document.documentElement.style && document.documentElement.style.WebkitAppearance) ||
@@ -15097,7 +15093,7 @@ function requireBrowser () {
 				(typeof window !== 'undefined' && window.console && (window.console.firebug || (window.console.exception && window.console.table))) ||
 				// Is firefox >= v31?
 				// https://developer.mozilla.org/en-US/docs/Tools/Web_Console#Styling_messages
-				(typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/) && parseInt(RegExp.$1, 10) >= 31) ||
+				(typeof navigator !== 'undefined' && navigator.userAgent && (m = navigator.userAgent.toLowerCase().match(/firefox\/(\d+)/)) && parseInt(m[1], 10) >= 31) ||
 				// Double check webkit in userAgent just in case we are in a worker
 				(typeof navigator !== 'undefined' && navigator.userAgent && navigator.userAgent.toLowerCase().match(/applewebkit\/(\d+)/));
 		}
@@ -15588,11 +15584,11 @@ function requireNode () {
 		}
 
 		/**
-		 * Invokes `util.format()` with the specified arguments and writes to stderr.
+		 * Invokes `util.formatWithOptions()` with the specified arguments and writes to stderr.
 		 */
 
 		function log(...args) {
-			return process.stderr.write(util.format(...args) + '\n');
+			return process.stderr.write(util.formatWithOptions(exports.inspectOpts, ...args) + '\n');
 		}
 
 		/**
@@ -15721,21 +15717,10 @@ function requireFollowRedirects () {
 	var assert = require$$0$5;
 	var debug = requireDebug();
 
-	// Preventive platform detection
-	// istanbul ignore next
-	(function detectUnsupportedEnvironment() {
-	  var looksLikeNode = typeof process !== "undefined";
-	  var looksLikeBrowser = typeof window !== "undefined" && typeof document !== "undefined";
-	  var looksLikeV8 = isFunction(Error.captureStackTrace);
-	  if (!looksLikeNode && (looksLikeBrowser || !looksLikeV8)) {
-	    console.warn("The follow-redirects package should be excluded from browser builds.");
-	  }
-	}());
-
 	// Whether to use the native URL object or the legacy url module
 	var useNativeURL = false;
 	try {
-	  assert(new URL(""));
+	  assert(new URL());
 	}
 	catch (error) {
 	  useNativeURL = error.code === "ERR_INVALID_URL";
@@ -16072,17 +16057,17 @@ function requireFollowRedirects () {
 	    var buffers = this._requestBodyBuffers;
 	    (function writeNext(error) {
 	      // Only write if this request has not been redirected yet
-	      // istanbul ignore else
+	      /* istanbul ignore else */
 	      if (request === self._currentRequest) {
 	        // Report any write errors
-	        // istanbul ignore if
+	        /* istanbul ignore if */
 	        if (error) {
 	          self.emit("error", error);
 	        }
 	        // Write the next buffer if there are still left
 	        else if (i < buffers.length) {
 	          var buffer = buffers[i++];
-	          // istanbul ignore else
+	          /* istanbul ignore else */
 	          if (!request.finished) {
 	            request.write(buffer.data, buffer.encoding, writeNext);
 	          }
@@ -16278,7 +16263,7 @@ function requireFollowRedirects () {
 
 	function parseUrl(input) {
 	  var parsed;
-	  // istanbul ignore else
+	  /* istanbul ignore else */
 	  if (useNativeURL) {
 	    parsed = new URL(input);
 	  }
@@ -16293,7 +16278,7 @@ function requireFollowRedirects () {
 	}
 
 	function resolveUrl(relative, base) {
-	  // istanbul ignore next
+	  /* istanbul ignore next */
 	  return useNativeURL ? new URL(relative, base) : parseUrl(url.resolve(base, relative));
 	}
 
@@ -16342,10 +16327,7 @@ function requireFollowRedirects () {
 	function createErrorType(code, message, baseClass) {
 	  // Create constructor
 	  function CustomError(properties) {
-	    // istanbul ignore else
-	    if (isFunction(Error.captureStackTrace)) {
-	      Error.captureStackTrace(this, this.constructor);
-	    }
+	    Error.captureStackTrace(this, this.constructor);
 	    Object.assign(this, properties || {});
 	    this.code = code;
 	    this.message = this.cause ? message + ": " + this.cause.message : message;
@@ -16597,8 +16579,6 @@ class AxiosTransformStream extends stream.Transform{
   }
 }
 
-var AxiosTransformStream$1 = AxiosTransformStream;
-
 const {asyncIterator} = Symbol;
 
 const readBlob = async function* (blob) {
@@ -16612,8 +16592,6 @@ const readBlob = async function* (blob) {
     yield blob;
   }
 };
-
-var readBlob$1 = readBlob;
 
 const BOUNDARY_ALPHABET = utils$2.ALPHABET.ALPHA_DIGIT + '-_';
 
@@ -16656,7 +16634,7 @@ class FormDataPart {
     if(utils$2.isTypedArray(value)) {
       yield value;
     } else {
-      yield* readBlob$1(value);
+      yield* readBlob(value);
     }
 
     yield CRLF_BYTES;
@@ -16720,8 +16698,6 @@ const formDataToStream = (form, headersHandler, options) => {
   })());
 };
 
-var formDataToStream$1 = formDataToStream;
-
 class ZlibHeaderTransformStream extends stream.Transform {
   __transform(chunk, encoding, callback) {
     this.push(chunk);
@@ -16745,8 +16721,6 @@ class ZlibHeaderTransformStream extends stream.Transform {
   }
 }
 
-var ZlibHeaderTransformStream$1 = ZlibHeaderTransformStream;
-
 const callbackify = (fn, reducer) => {
   return utils$2.isAsyncFn(fn) ? function (...args) {
     const cb = args.pop();
@@ -16759,8 +16733,6 @@ const callbackify = (fn, reducer) => {
     }, cb);
   } : fn;
 };
-
-var callbackify$1 = callbackify;
 
 /**
  * Calculate data maxRate
@@ -17048,7 +17020,7 @@ var httpAdapter = isHttpAdapterSupported && function httpAdapter(config) {
     let req;
 
     if (lookup) {
-      const _lookup = callbackify$1(lookup, (value) => utils$2.isArray(value) ? value : [value]);
+      const _lookup = callbackify(lookup, (value) => utils$2.isArray(value) ? value : [value]);
       // hotfix to support opt.all option which is required for node 20.x
       lookup = (hostname, opt, cb) => {
         _lookup(hostname, opt, (err, arg0, arg1) => {
@@ -17138,7 +17110,7 @@ var httpAdapter = isHttpAdapterSupported && function httpAdapter(config) {
         data: convertedData,
         status: 200,
         statusText: 'OK',
-        headers: new AxiosHeaders$1(),
+        headers: new AxiosHeaders(),
         config
       });
     }
@@ -17151,7 +17123,7 @@ var httpAdapter = isHttpAdapterSupported && function httpAdapter(config) {
       ));
     }
 
-    const headers = AxiosHeaders$1.from(config.headers).normalize();
+    const headers = AxiosHeaders.from(config.headers).normalize();
 
     // Set User-Agent (required by some servers)
     // See https://github.com/axios/axios/issues/69
@@ -17168,7 +17140,7 @@ var httpAdapter = isHttpAdapterSupported && function httpAdapter(config) {
     if (utils$2.isSpecCompliantForm(data)) {
       const userBoundary = headers.getContentType(/boundary=([-_\w\d]{10,70})/i);
 
-      data = formDataToStream$1(data, (formHeaders) => {
+      data = formDataToStream(data, (formHeaders) => {
         headers.set(formHeaders);
       }, {
         tag: `axios-${VERSION}-boundary`,
@@ -17189,7 +17161,7 @@ var httpAdapter = isHttpAdapterSupported && function httpAdapter(config) {
     } else if (utils$2.isBlob(data)) {
       data.size && headers.setContentType(data.type || 'application/octet-stream');
       headers.setContentLength(data.size || 0);
-      data = stream.Readable.from(readBlob$1(data));
+      data = stream.Readable.from(readBlob(data));
     } else if (data && !utils$2.isStream(data)) {
       if (Buffer.isBuffer(data)) ; else if (utils$2.isArrayBuffer(data)) {
         data = Buffer.from(new Uint8Array(data));
@@ -17229,7 +17201,7 @@ var httpAdapter = isHttpAdapterSupported && function httpAdapter(config) {
         data = stream.Readable.from(data, {objectMode: false});
       }
 
-      data = stream.pipeline([data, new AxiosTransformStream$1({
+      data = stream.pipeline([data, new AxiosTransformStream({
         maxRate: utils$2.toFiniteNumber(maxUploadRate)
       })], utils$2.noop);
 
@@ -17339,7 +17311,7 @@ var httpAdapter = isHttpAdapterSupported && function httpAdapter(config) {
       const responseLength = +res.headers['content-length'];
 
       if (onDownloadProgress || maxDownloadRate) {
-        const transformStream = new AxiosTransformStream$1({
+        const transformStream = new AxiosTransformStream({
           maxRate: utils$2.toFiniteNumber(maxDownloadRate)
         });
 
@@ -17381,7 +17353,7 @@ var httpAdapter = isHttpAdapterSupported && function httpAdapter(config) {
           delete res.headers['content-encoding'];
           break;
         case 'deflate':
-          streams.push(new ZlibHeaderTransformStream$1());
+          streams.push(new ZlibHeaderTransformStream());
 
           // add the unzipper to the body stream processing pipeline
           streams.push(zlib$1.createUnzip(zlibOptions));
@@ -17407,7 +17379,7 @@ var httpAdapter = isHttpAdapterSupported && function httpAdapter(config) {
       const response = {
         status: res.statusCode,
         statusText: res.statusMessage,
-        headers: new AxiosHeaders$1(res.headers),
+        headers: new AxiosHeaders(res.headers),
         config,
         request: lastRequest
       };
@@ -17664,7 +17636,7 @@ var cookies = platform.hasStandardBrowserEnv ?
     remove() {}
   };
 
-const headersToObject = (thing) => thing instanceof AxiosHeaders$1 ? { ...thing } : thing;
+const headersToObject = (thing) => thing instanceof AxiosHeaders ? { ...thing } : thing;
 
 /**
  * Config-specific merge-function which creates a new config-object
@@ -17771,7 +17743,7 @@ var resolveConfig = (config) => {
 
   let {data, withXSRFToken, xsrfHeaderName, xsrfCookieName, headers, auth} = newConfig;
 
-  newConfig.headers = headers = AxiosHeaders$1.from(headers);
+  newConfig.headers = headers = AxiosHeaders.from(headers);
 
   newConfig.url = buildURL(buildFullPath(newConfig.baseURL, newConfig.url), config.params, config.paramsSerializer);
 
@@ -17820,7 +17792,7 @@ var xhrAdapter = isXHRAdapterSupported && function (config) {
   return new Promise(function dispatchXhrRequest(resolve, reject) {
     const _config = resolveConfig(config);
     let requestData = _config.data;
-    const requestHeaders = AxiosHeaders$1.from(_config.headers).normalize();
+    const requestHeaders = AxiosHeaders.from(_config.headers).normalize();
     let {responseType, onUploadProgress, onDownloadProgress} = _config;
     let onCanceled;
     let uploadThrottled, downloadThrottled;
@@ -17847,7 +17819,7 @@ var xhrAdapter = isXHRAdapterSupported && function (config) {
         return;
       }
       // Prepare the response
-      const responseHeaders = AxiosHeaders$1.from(
+      const responseHeaders = AxiosHeaders.from(
         'getAllResponseHeaders' in request && request.getAllResponseHeaders()
       );
       const responseData = !responseType || responseType === 'text' || responseType === 'json' ?
@@ -18044,12 +18016,10 @@ const composeSignals = (signals, timeout) => {
   }
 };
 
-var composeSignals$1 = composeSignals;
-
 const streamChunk = function* (chunk, chunkSize) {
   let len = chunk.byteLength;
 
-  if (!chunkSize || len < chunkSize) {
+  if (len < chunkSize) {
     yield chunk;
     return;
   }
@@ -18238,7 +18208,7 @@ var fetchAdapter = isFetchSupported && (async (config) => {
 
   responseType = responseType ? (responseType + '').toLowerCase() : 'text';
 
-  let composedSignal = composeSignals$1([signal, cancelToken && cancelToken.toAbortSignal()], timeout);
+  let composedSignal = composeSignals([signal, cancelToken && cancelToken.toAbortSignal()], timeout);
 
   let request;
 
@@ -18328,7 +18298,7 @@ var fetchAdapter = isFetchSupported && (async (config) => {
     return await new Promise((resolve, reject) => {
       settle(resolve, reject, {
         data: responseData,
-        headers: AxiosHeaders$1.from(response.headers),
+        headers: AxiosHeaders.from(response.headers),
         status: response.status,
         statusText: response.statusText,
         config,
@@ -18452,7 +18422,7 @@ function throwIfCancellationRequested(config) {
 function dispatchRequest(config) {
   throwIfCancellationRequested(config);
 
-  config.headers = AxiosHeaders$1.from(config.headers);
+  config.headers = AxiosHeaders.from(config.headers);
 
   // Transform request data
   config.data = transformData.call(
@@ -18464,7 +18434,7 @@ function dispatchRequest(config) {
     config.headers.setContentType('application/x-www-form-urlencoded', false);
   }
 
-  const adapter = adapters.getAdapter(config.adapter || defaults$2.adapter);
+  const adapter = adapters.getAdapter(config.adapter || defaults$1.adapter);
 
   return adapter(config).then(function onAdapterResolution(response) {
     throwIfCancellationRequested(config);
@@ -18476,7 +18446,7 @@ function dispatchRequest(config) {
       response
     );
 
-    response.headers = AxiosHeaders$1.from(response.headers);
+    response.headers = AxiosHeaders.from(response.headers);
 
     return response;
   }, function onAdapterRejection(reason) {
@@ -18490,7 +18460,7 @@ function dispatchRequest(config) {
           config.transformResponse,
           reason.response
         );
-        reason.response.headers = AxiosHeaders$1.from(reason.response.headers);
+        reason.response.headers = AxiosHeaders.from(reason.response.headers);
       }
     }
 
@@ -18598,8 +18568,8 @@ class Axios {
   constructor(instanceConfig) {
     this.defaults = instanceConfig;
     this.interceptors = {
-      request: new InterceptorManager$1(),
-      response: new InterceptorManager$1()
+      request: new InterceptorManager(),
+      response: new InterceptorManager()
     };
   }
 
@@ -18689,7 +18659,7 @@ class Axios {
       }
     );
 
-    config.headers = AxiosHeaders$1.concat(contextHeaders, headers);
+    config.headers = AxiosHeaders.concat(contextHeaders, headers);
 
     // filter out skipped interceptors
     const requestInterceptorChain = [];
@@ -18800,8 +18770,6 @@ utils$2.forEach(['post', 'put', 'patch'], function forEachMethodWithData(method)
 
   Axios.prototype[method + 'Form'] = generateHTTPMethod(true);
 });
-
-var Axios$1 = Axios;
 
 /**
  * A `CancelToken` is an object that can be used to request cancellation of an operation.
@@ -18933,8 +18901,6 @@ class CancelToken {
   }
 }
 
-var CancelToken$1 = CancelToken;
-
 /**
  * Syntactic sugar for invoking a function and expanding an array for arguments.
  *
@@ -19043,8 +19009,6 @@ Object.entries(HttpStatusCode).forEach(([key, value]) => {
   HttpStatusCode[value] = key;
 });
 
-var HttpStatusCode$1 = HttpStatusCode;
-
 /**
  * Create an instance of Axios
  *
@@ -19053,11 +19017,11 @@ var HttpStatusCode$1 = HttpStatusCode;
  * @returns {Axios} A new instance of Axios
  */
 function createInstance(defaultConfig) {
-  const context = new Axios$1(defaultConfig);
-  const instance = bind(Axios$1.prototype.request, context);
+  const context = new Axios(defaultConfig);
+  const instance = bind(Axios.prototype.request, context);
 
   // Copy axios.prototype to instance
-  utils$2.extend(instance, Axios$1.prototype, context, {allOwnKeys: true});
+  utils$2.extend(instance, Axios.prototype, context, {allOwnKeys: true});
 
   // Copy context to instance
   utils$2.extend(instance, context, null, {allOwnKeys: true});
@@ -19071,14 +19035,14 @@ function createInstance(defaultConfig) {
 }
 
 // Create the default instance to be exported
-const axios = createInstance(defaults$2);
+const axios = createInstance(defaults$1);
 
 // Expose Axios class to allow class inheritance
-axios.Axios = Axios$1;
+axios.Axios = Axios;
 
 // Expose Cancel & CancelToken
 axios.CanceledError = CanceledError;
-axios.CancelToken = CancelToken$1;
+axios.CancelToken = CancelToken;
 axios.isCancel = isCancel;
 axios.VERSION = VERSION;
 axios.toFormData = toFormData;
@@ -19102,18 +19066,15 @@ axios.isAxiosError = isAxiosError;
 // Expose mergeConfig
 axios.mergeConfig = mergeConfig;
 
-axios.AxiosHeaders = AxiosHeaders$1;
+axios.AxiosHeaders = AxiosHeaders;
 
 axios.formToJSON = thing => formDataToJSON(utils$2.isHTMLForm(thing) ? new FormData(thing) : thing);
 
 axios.getAdapter = adapters.getAdapter;
 
-axios.HttpStatusCode = HttpStatusCode$1;
+axios.HttpStatusCode = HttpStatusCode;
 
 axios.default = axios;
-
-// this module should only have a default export
-var axios$1 = axios;
 
 var RequestMethod;
 (function (RequestMethod) {
@@ -30343,7 +30304,7 @@ function requireLruCache () {
 }
 
 var name = "openid-client";
-var version = "5.7.0";
+var version = "5.7.1";
 var description = "OpenID Connect Relying Party (RP, Client) implementation for Node.js runtime, supports passportjs";
 var keywords = [
 	"auth",
@@ -30365,8 +30326,8 @@ var keywords = [
 	"relying party",
 	"strategy"
 ];
-var homepage = "https://github.com/panva/node-openid-client";
-var repository = "panva/node-openid-client";
+var homepage = "https://github.com/panva/openid-client";
+var repository = "panva/openid-client";
 var funding = {
 	url: "https://github.com/sponsors/panva"
 };
@@ -31144,9 +31105,6 @@ function requireClient$1 () {
 	    case 'private_key_jwt':
 	    case 'client_secret_jwt': {
 	      const timestamp = now();
-	      const audience = [
-	        ...new Set([this.issuer.issuer, this.issuer.token_endpoint].filter(Boolean)),
-	      ];
 
 	      const assertion = await clientAssertion.call(this, endpoint, {
 	        iat: timestamp,
@@ -31154,7 +31112,7 @@ function requireClient$1 () {
 	        jti: random(),
 	        iss: this.client_id,
 	        sub: this.client_id,
-	        aud: audience,
+	        aud: this.issuer.issuer,
 	        ...clientAssertionPayload,
 	      });
 
@@ -34488,7 +34446,7 @@ class GMAuth {
             generators: generators,
         };
         this.jar = new cookieExports.CookieJar();
-        this.axiosClient = axios$1.create({
+        this.axiosClient = axios.create({
             httpAgent: new httpExports.HttpCookieAgent({ cookies: { jar: this.jar } }),
             httpsAgent: new httpExports.HttpsCookieAgent({ cookies: { jar: this.jar } }),
         });
@@ -34513,7 +34471,12 @@ class GMAuth {
                 return yield this.getGMAPIToken(loadedTokenSet);
             }
             catch (error) {
-                console.error("Authentication failed:", error);
+                if (axios.isAxiosError(error)) {
+                    this.handleRequestError(error);
+                }
+                else {
+                    console.error("Authentication failed:", error);
+                }
                 throw error;
             }
         });
@@ -34544,6 +34507,7 @@ class GMAuth {
             // Save the GM API token as well
             if (this.currentGMAPIToken) {
                 const tokenFilePath = this.GMTokenPath; // Define the path for the token file
+                // console.log("Saving GM tokens to ", this.GMTokenPath);
                 fs.writeFileSync(tokenFilePath, JSON.stringify(this.currentGMAPIToken));
                 // console.log("Saved current GM API token to ", tokenFilePath);
             }
@@ -34604,7 +34568,8 @@ class GMAuth {
                     const storedToken = JSON.parse(fs.readFileSync(tokenFilePath, "utf-8"));
                     const now = Math.floor(Date.now() / 1000);
                     // Check if the token is still valid
-                    if (storedToken.expires_at && storedToken.expires_at > now) {
+                    if (storedToken.expires_at && storedToken.expires_at > now + 5 * 60) {
+                        // console.log("GM expires at: ", storedToken.expires_at, " now: ", now);
                         // console.log("Loaded existing GM API token");
                         this.currentGMAPIToken = storedToken;
                     }
@@ -34623,7 +34588,7 @@ class GMAuth {
             // Check if we already have a valid token
             const now = Math.floor(Date.now() / 1000);
             if (this.currentGMAPIToken &&
-                this.currentGMAPIToken.expires_at > now + 60) {
+                this.currentGMAPIToken.expires_at > now + 5 * 60) {
                 // console.log("Returning existing GM API token");
                 return this.currentGMAPIToken;
             }
@@ -34647,6 +34612,8 @@ class GMAuth {
                     parseInt(response.data.expires_in.toString());
                 response.data.expires_in = parseInt(response.data.expires_in.toString());
                 response.data.expires_at = expires_at;
+                // console.log(JSON.stringify(response.data));
+                // console.log("GM Says we expire in ", response.data.expires_in);
                 // console.log("Set GM Token expiration to ", expires_at);
                 // Store the new token
                 this.currentGMAPIToken = response.data;
@@ -34683,8 +34650,13 @@ class GMAuth {
                 return response;
             }
             catch (error) {
-                this.handleRequestError(error);
-                throw error;
+                if (axios.isAxiosError(error)) {
+                    this.handleRequestError(error);
+                }
+                else {
+                    console.error("GET Request failed:", error);
+                }
+                return error.response;
             }
         });
     }
@@ -34704,22 +34676,28 @@ class GMAuth {
                 return response;
             }
             catch (error) {
-                this.handleRequestError(error);
-                throw error;
+                if (axios.isAxiosError(error)) {
+                    this.handleRequestError(error);
+                }
+                else {
+                    console.error("POST Request failed:", error);
+                }
+                return error.response;
             }
         });
     }
     handleRequestError(error) {
+        console.log("reqer");
         if (error.response) {
             console.error(`HTTP Error ${error.response.status}: ${error.response.statusText}`);
-            console.error("Response data:", error.response.data);
+            console.debug("Response data:", error.response.data);
             if (error.response.status === 401) {
                 console.error("Authentication failed. Please check your credentials.");
             }
         }
         else if (error.request) {
             console.error("No response received from server");
-            console.error(error.request);
+            console.debug(error.request);
         }
         else {
             console.error("Request Error:", error.message);
@@ -34822,8 +34800,9 @@ class GMAuth {
                     throw err;
                 }
                 const now = Math.floor(Date.now() / 1000);
-                if (storedTokens.expires_at && storedTokens.expires_at > now) {
+                if (storedTokens.expires_at && storedTokens.expires_at > now + 5 * 60) {
                     // console.log("MS Access token is still valid");
+                    // console.log("MS expires at: ", storedTokens.expires_at, " now: ", now);
                     tokenSet = storedTokens;
                 }
                 else if (storedTokens.refresh_token) {
@@ -35185,7 +35164,7 @@ class RequestService {
                     throw error;
                 }
                 let errorObj = new RequestError();
-                if (axios$1.isAxiosError(error)) {
+                if (axios.isAxiosError(error)) {
                     if (error.response) {
                         errorObj.message = `Request Failed with status ${error.response.status} - ${error.response.statusText}`;
                         errorObj.setResponse(error.response);
@@ -35231,7 +35210,7 @@ class OnStar {
         this.requestService = requestService;
     }
     static create(config) {
-        const requestService = new RequestService(config, axios$1);
+        const requestService = new RequestService(config, axios);
         return new OnStar(requestService);
     }
     getAccountVehicles() {
