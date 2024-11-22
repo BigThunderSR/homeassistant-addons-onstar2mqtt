@@ -1,5 +1,5 @@
 name: X - Do NOT Install - Testing - OnStar2MQTT Home Assistant Add-on (BigThunderSR) for Vehicle 1
-version: 1.18.8
+version: 1.19.0
 slug: x_test_onstar2mqtt_bigthundersr_vehicle1
 description: Do NOT Install - Testing - Home Assistant Add On Version of BigThunderSR/onstar2mqtt for Vehicle 1
 codenotary: bigthundersr@outlook.com
@@ -26,6 +26,7 @@ options:
   ONSTAR_VIN: ""
   ONSTAR_USERNAME: ""
   ONSTAR_PASSWORD: ""
+  ONSTAR_TOTP: ""
   ONSTAR_PIN: ""
   ONSTAR_URL: "https://api.gm.com" #This value is hard coded in the program code and cannot be changed at this time
   ONSTAR_REFRESH: 1800000
@@ -49,6 +50,7 @@ schema:
   ONSTAR_VIN: str
   ONSTAR_USERNAME: str
   ONSTAR_PASSWORD: password
+  ONSTAR_TOTP: password
   ONSTAR_PIN: password
   ONSTAR_URL: str
   ONSTAR_REFRESH: int
