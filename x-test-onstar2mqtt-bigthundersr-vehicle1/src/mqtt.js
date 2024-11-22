@@ -71,7 +71,7 @@ class MQTT {
                 Name: 'unlockDoor',
                 Icon: 'mdi:car-door-lock-open',
             },
-            LockTrunk: { 
+            LockTrunk: {
                 Name: 'lockTrunk',
                 Icon: 'mdi:archive-lock',
             },
@@ -784,10 +784,7 @@ class MQTT {
                 return this.mapBinarySensorConfigPayload(diag, diagEl);
             // non-numeric sensor, no state_class or device_class
             case 'CHARGER POWER LEVEL':
-            case 'EXHST FL LEVL WARN IND': // Diesel Exhaust Fluid Level Warning Indicator
             case 'EXHST FL LEVL WARN STATUS': // Diesel Exhaust Fluid Level Warning Status
-            //case 'EXHST PART FLTR WARN ON': // Diesel Exhaust Particulate Filter Warning On
-            //case 'EXHST PART FLTR WARN2 ON': // Diesel Exhaust Particulate Filter Warning 2 On
                 return this.mapSensorConfigPayload(diag, diagEl);
             // has state_class, new device class, camel case name
             case 'GAS RANGE':
@@ -818,6 +815,7 @@ class MQTT {
             case 'LIFETIME MPGE':
             case 'LIFETIME EFFICIENCY':
             case 'ELECTRIC ECONOMY':
+            case 'EXHST FL LEVL WARN IND': // Diesel Exhaust Fluid Level Warning Indicator
             default:
                 return this.mapSensorConfigPayload(diag, diagEl, 'measurement');
         }

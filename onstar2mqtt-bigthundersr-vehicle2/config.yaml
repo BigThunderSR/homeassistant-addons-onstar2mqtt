@@ -26,6 +26,7 @@ options:
   ONSTAR_VIN: ""
   ONSTAR_USERNAME: ""
   ONSTAR_PASSWORD: ""
+  ONSTAR_TOTP: ""
   ONSTAR_PIN: ""
   ONSTAR_URL: "https://api.gm.com" #This value is hard coded in the program code and cannot be changed at this time
   ONSTAR_REFRESH: 1800000
@@ -50,6 +51,7 @@ schema:
   ONSTAR_VIN: str
   ONSTAR_USERNAME: str
   ONSTAR_PASSWORD: password
+  ONSTAR_TOTP: password
   ONSTAR_PIN: password
   ONSTAR_URL: str
   ONSTAR_REFRESH: int

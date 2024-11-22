@@ -45,7 +45,7 @@ If you prefer to use the OG build of onstar2mqtt 😎
 Collect the following information:
 
 1. [Generate](https://www.uuidgenerator.net/version4) a v4 uuid for the device ID
-1. OnStar login: username, password, PIN
+1. OnStar login: username, password, PIN, TOTP Key
 1. Your car's VIN. Easily found in the monthly OnStar diagnostic emails.
 1. MQTT server information: hostname, username, password
 

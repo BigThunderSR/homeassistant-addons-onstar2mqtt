@@ -25,6 +25,10 @@ configuration:
     name: OnStar Password
     description: >-
       Password for your OnStar Account.
+  ONSTAR_TOTP:
+    name: OnStar TOTP Key
+    description: >-
+      TOTP Key for your OnStar Account.
   ONSTAR_PIN:
     name: OnStar PIN
     description: >-

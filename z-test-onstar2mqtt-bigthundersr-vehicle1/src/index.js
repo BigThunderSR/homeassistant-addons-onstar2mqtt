@@ -18,6 +18,7 @@ const onstarConfig = {
     vin: process.env.ONSTAR_VIN,
     username: process.env.ONSTAR_USERNAME,
     password: process.env.ONSTAR_PASSWORD,
+    onStarTOTP: process.env.ONSTAR_TOTP,
     onStarPin: process.env.ONSTAR_PIN,
     checkRequestStatus: _.get(process.env, 'ONSTAR_SYNC', 'true') === 'true',
     refreshInterval: parseInt(process.env.ONSTAR_REFRESH) || (30 * 60 * 1000), // 30 min
@@ -30,6 +31,7 @@ const onstarRequiredProperties = {
     vin: 'ONSTAR_VIN',
     username: 'ONSTAR_USERNAME',
     password: 'ONSTAR_PASSWORD',
+    onStarTOTP: 'ONSTAR_TOTP',
     onStarPin: 'ONSTAR_PIN'
 };
 
@@ -52,7 +54,7 @@ if (!/^\d{4}$/.test(onstarConfig.onStarPin)) {
 if (process.env.LOG_LEVEL === 'debug') {
     logger.debug('OnStar Config:', { onstarConfig });
 } else {
-    logger.info('OnStar Config:', { onstarConfig: { ...onstarConfig, password: '********', onStarPin: '####' } });
+    logger.info('OnStar Config:', { onstarConfig: { ...onstarConfig, password: '********', onStarTOTP: '***************', onStarPin: '####' } });
 }
 
 const mqttConfig = {

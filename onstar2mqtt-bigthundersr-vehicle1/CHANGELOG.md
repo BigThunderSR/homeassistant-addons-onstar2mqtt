@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.19.0
+
+- Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.19.0](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.19.0)
+- Enable TOTP login which was figured out by @metheos - Thanks a lot to @metheos without whom this project could not continue!
+
 ## 1.18.8
 
 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.18.8](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.18.8)
