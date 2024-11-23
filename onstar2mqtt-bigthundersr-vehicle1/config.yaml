@@ -12,8 +12,8 @@ arch:
   - armv7
   - i386
 map:
-  - share
-  - ssl
+  - share:rw
+  - ssl:rw
 url: "https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt"
 image: "ghcr.io/bigthundersr/ha-addons-onstar2mqtt-bigthundersr-vehicle1-{arch}"
 services:
