@@ -33,6 +33,10 @@ configuration:
     name: OnStar PIN
     description: >-
       PIN for your OnStar Account.
+  TOKEN_LOCATION:
+    name: Token Location
+    description: >-
+      Location to store the long-lived OnStar tokens to persist container rebuilds. Recommendation is to use /ssl if you wish to change the token location. Optional.
   ONSTAR_URL:
     name: OnStar URL
     description: >-

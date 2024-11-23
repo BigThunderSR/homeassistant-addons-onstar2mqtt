@@ -28,6 +28,7 @@ options:
   ONSTAR_PASSWORD: ""
   ONSTAR_TOTP: ""
   ONSTAR_PIN: ""
+  TOKEN_LOCATION: ""
   ONSTAR_URL: "https://api.gm.com" #This value is hard coded in the program code and cannot be changed at this time
   ONSTAR_REFRESH: 1800000
   ONSTAR_POLL_INTERVAL: 6
@@ -53,6 +54,7 @@ schema:
   ONSTAR_PASSWORD: password
   ONSTAR_TOTP: password
   ONSTAR_PIN: password
+  TOKEN_LOCATION: str?
   ONSTAR_URL: str
   ONSTAR_REFRESH: int
   ONSTAR_POLL_INTERVAL: int

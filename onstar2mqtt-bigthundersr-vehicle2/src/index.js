@@ -1,5 +1,5 @@
-const OnStar = require('./deps/index.cjs');
-//const OnStar = require('onstarjs');
+//const OnStar = require('./deps/index.cjs');
+const OnStar = require('onstarjs2');
 const mqtt = require('async-mqtt');
 const uuidv4 = require('uuid').v4;
 const _ = require('lodash');
@@ -20,6 +20,7 @@ const onstarConfig = {
     password: process.env.ONSTAR_PASSWORD,
     onStarTOTP: process.env.ONSTAR_TOTP,
     onStarPin: process.env.ONSTAR_PIN,
+    tokenLocation: process.env.TOKEN_LOCATION || '',
     checkRequestStatus: _.get(process.env, 'ONSTAR_SYNC', 'true') === 'true',
     refreshInterval: parseInt(process.env.ONSTAR_REFRESH) || (30 * 60 * 1000), // 30 min
     requestPollingIntervalSeconds: parseInt(process.env.ONSTAR_POLL_INTERVAL) || 6, // 6 sec default

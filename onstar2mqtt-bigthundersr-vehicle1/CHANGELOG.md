@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.20.0
+
+- Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.20.0](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.20.0)
+- Add token location option per homeassistant-addons-onstar2mqtt#819
+- Change from embedded OnStarJS to my published version https://www.npmjs.com/package/onstarjs2
+- Update README
+
 ## 1.19.1
 
 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.19.1](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.19.1)
