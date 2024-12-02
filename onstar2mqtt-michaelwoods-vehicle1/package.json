@@ -45,7 +45,7 @@
     "eslint-plugin-import": "^2.30.0",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^7.1.0",
-    "mocha": "^10.7.3",
+    "mocha": "^11.0.1",
     "nyc": "^17.0.0"
   }
 }
