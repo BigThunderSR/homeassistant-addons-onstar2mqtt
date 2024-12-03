@@ -1,6 +1,6 @@
 {
   "name": "onstar2mqtt",
-  "version": "1.19.1",
+  "version": "1.20.0",
   "description": "OnStarJS wrapper for MQTT",
   "main": "src/index.js",
   "scripts": {
@@ -30,11 +30,12 @@
   "homepage": "https://github.com/BigThunderSR/onstar2mqtt#readme",
   "dependencies": {
     "async-mqtt": "^2.6.3",
-    "axios": "^1.7.7",
+    "axios": "^1.7.8",
     "convert-units": "^2.3.4",
-    "dotenv": "^16.4.5",
+    "dotenv": "^16.4.6",
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
+    "onstarjs2": "^2.6.0",
     "uuid": "^11.0.3",
     "winston": "^3.17.0"
   },
@@ -45,13 +46,13 @@
     "@babel/preset-env": "^7.26.0",
     "@eslint/compat": "^1.2.3",
     "@eslint/eslintrc": "^3.2.0",
-    "@eslint/js": "^9.15.0",
-    "eslint": "^9.15.0",
+    "@eslint/js": "^9.16.0",
+    "eslint": "^9.16.0",
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-n": "^17.14.0",
-    "eslint-plugin-promise": "^7.1.0",
-    "globals": "^15.12.0",
-    "mocha": "^10.8.2",
+    "eslint-plugin-promise": "^7.2.1",
+    "globals": "^15.13.0",
+    "mocha": "^11.0.1",
     "nyc": "^17.1.0"
   }
 }
