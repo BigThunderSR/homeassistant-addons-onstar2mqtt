@@ -34,11 +34,11 @@ This repository contains the following add-ons
 
   As well as many new additional customizations such as log colorization which are also not available in the OG build. Please see detailed list of differences/enhancements below.
 
-If you prefer to use the OG build of onstar2mqtt 😎
+~~If you prefer to use the OG build of onstar2mqtt 😎~~ (Retired since this is no longer maintained by the author)
 
-- [OnStar2MQTT for Vehicle 1 Using michaelwoods/onstar2mqtt Build](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/tree/main/onstar2mqtt-michaelwoods-vehicle1)
+~~- [OnStar2MQTT for Vehicle 1 Using michaelwoods/onstar2mqtt Build](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/tree/main/onstar2mqtt-michaelwoods-vehicle1)~~
 
-- [OnStar2MQTT for Vehicle 2 Using michaelwoods/onstar2mqtt Build](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/tree/main/onstar2mqtt-michaelwoods-vehicle2)
+~~- [OnStar2MQTT for Vehicle 2 Using michaelwoods/onstar2mqtt Build](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/tree/main/onstar2mqtt-michaelwoods-vehicle2)~~
 
 ## Running
 
