@@ -1,0 +1,111 @@
+---
+configuration:
+  VEHICLE_NAME:
+    name: Vehicle Name
+    description: >-
+      Name/Nickname/Personal Identifier for your vehicle.
+  LOG_LEVEL:
+    name: Log Level
+    description: >-
+      The level of log output by the add-on and the underlying OnStar2MQTT program. 
+      Options are: info (default - passwords masked) and debug (passwords unmasked in logs).
+  ONSTAR_DEVICEID:
+    name: OnStar Device ID
+    description: >-
+      V4 UUID generated for your vehicle using https://www.uuidgenerator.net/version4.
+  ONSTAR_VIN:
+    name: OnStar VIN
+    description: >-
+      VIN of the vehicle you want OnStar data from.
+  ONSTAR_USERNAME:
+    name: OnStar User Name
+    description: >-
+      Username for your OnStar Account.
+  ONSTAR_PASSWORD:
+    name: OnStar Password
+    description: >-
+      Password for your OnStar Account.
+  ONSTAR_TOTP:
+    name: OnStar TOTP Key
+    description: >-
+      TOTP Key for your OnStar Account. This value is 16 characters long and is alpha-numeric. If you are not entering an alpha-numeric value that is 16 characters long, you are not entering a valid TOTP key. NOTE: If you are providing a token obtained using email-based 2FA and provided through the "Token Location" field below, enter any value in this TOTP Key field. This TOTP Key will be ignored and the token from the "Token Location" will be used.
+  ONSTAR_PIN:
+    name: OnStar PIN
+    description: >-
+      PIN for your OnStar Account.
+  TOKEN_LOCATION:
+    name: Token Location
+    description: >-
+      Location to store the long-lived OnStar tokens to persist container rebuilds. Recommendation is to use /ssl/vehicle1 (you will need to create this directory first) if you wish to change the token location. Optional.
+  ONSTAR_URL:
+    name: OnStar URL
+    description: >-
+      OnStar URL for your OnStar Account.
+  ONSTAR_REFRESH:
+    name: OnStar Refresh Period
+    description: >-
+      The refresh period for polling OnStar for data updates in milliseconds.
+      Note: Reducing the polling timeout to less than the default set by the add-on (30 minutes/1800000 ms) is likely to get you rate limited (Error 429).   
+  ONSTAR_POLL_INTERVAL:
+    name: OnStar Poll Interval
+    description: >-
+      From OnStarJS: requestPollingIntervalSeconds - How often status check requests will be made.
+  ONSTAR_POLL_TIMEOUT:
+    name: OnStar Poll Timeout
+    description: >-
+      From OnStarJS: requestPollingTimeoutSeconds - How long a request will make subsequent status check requests before timing out.
+  MQTT_HOST:
+    name: MQTT Host
+    description: >-
+      Hostname of MQTT broker/server.
+  MQTT_USERNAME:
+    name: MQTT Username
+    description: >-
+      Username for MQTT broker/server.
+  MQTT_PASSWORD:
+    name: MQTT Password
+    description: >-
+      Password for MQTT broker/server.
+  MQTT_PORT:
+    name: MQTT Port
+    description: >-
+      Port for MQTT broker/server. Usually 1883 for non-TLS and 8883 for TLS.
+  MQTT_PREFIX:
+    name: MQTT Prefix
+    description: >-
+      Prefix for MQTT topics published to broker/server.
+  MQTT_ONSTAR_POLLING_STATUS_TOPIC:
+    name: MQTT OnSTAR Polling Status Topic
+    description: >-
+      Topic for publishing OnStar data polling success/failure True/False status and detailed messages to broker/server. Optional.
+  MQTT_LIST_ALL_SENSORS_TOGETHER:
+    name: MQTT List All Sensors Together
+    description: >-
+      List all numeric/component and command status sensors together in a single MQTT device group instead of the default which groups numeric/component 
+      sensors in one MQTT device and command status sensors in a separate MQTT device. 
+      Default is "false".     
+  MQTT_TLS:
+    name: MQTT TLS
+    description: >-
+      Enable TLS for MQTT broker/server. Default is "false".
+  MQTT_REJECT_UNAUTHORIZED:
+    name: MQTT Reject Unauthorized
+    description: >-
+      Reject unauthorized certificates for MQTT broker/server. Default is "true". 
+      For self-signed certificates, you may need to set this to false. Not recommended for production use.
+  MQTT_CA_FILE:
+    name: CA File
+    description: >-
+      CA file for MQTT client certificates. This can be located in /ssl or in /share directory of Home Assistant.
+      Please provide the full path to the file (e.g. "/ssl/cacert.pem" or "/share/cacert.pem").
+  MQTT_CERT_FILE:
+    name: Certificate File
+    description: >-
+      Certificate file for MQTT client. This can be located in /ssl or in /share directory of Home Assistant.
+      Please provide the full path to the file (e.g. "/ssl/client-cert.pem" or "/share/client-cert.pem").
+  MQTT_KEY_FILE:
+    name: Key File
+    description: >-
+      Key file for MQTT client. This can be located in /ssl or in /share directory of Home Assistant.
+      Please provide the full path to the file (e.g. "/ssl/client-key.pem" or "/share/client-key.pem").
+      
