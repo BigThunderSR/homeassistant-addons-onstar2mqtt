@@ -12,7 +12,7 @@
 <!-- [![Notarize Assets with CAS](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/actions/workflows/cas_notarize.yml/badge.svg)](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/actions/workflows/cas_notarize.yml)
 [![Authenticate Assets with CAS](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/actions/workflows/cas_authenticate.yml/badge.svg)](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/actions/workflows/cas_authenticate.yml) -->
 
-Home Assistant Add-on of [BigThunderSR/onstar2mqtt](https://github.com/BigThunderSR/onstar2mqtt) which provides the ability to run two independent instances if you have two vehicles that you would like to connect to.
+Home Assistant Add-on of [BigThunderSR/onstar2mqtt](https://github.com/BigThunderSR/onstar2mqtt) which provides the ability to run up to four independent instances if you have up to four vehicles that you would like to connect to.
 
 [BigThunderSR/onstar2mqtt](https://github.com/BigThunderSR/onstar2mqtt) was originally based on [michaelwoods/onstar2mqtt](https://github.com/michaelwoods/onstar2mqtt) and this add-on was originally based on modifications to [dannysporea/onstar2mqtt-addon](https://github.com/dannysporea/onstar2mqtt-addon)'s HA add-on config and has since been significantly modified/updated from the originals while adding many new capabilities and features over time.
 <!--Add-on documentation: <https://developers.home-assistant.io/docs/add-ons> -->
@@ -30,6 +30,16 @@ This repository contains the following add-ons
 
 - [OnStar2MQTT for Vehicle 2 Using BigThunderSR/onstar2mqtt Build](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/tree/main/onstar2mqtt-bigthundersr-vehicle2)
   ![Dynamic YAML Badge](https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fraw.githubusercontent.com%2FBigThunderSR%2Fhomeassistant-addons-onstar2mqtt%2Frefs%2Fheads%2Fmain%2Fonstar2mqtt-bigthundersr-vehicle2%2Fconfig.yaml&query=%24.version&style=flat&label=Ver)
+
+  - ***NOTE:** Breaking Change for Upgrading to Version 1.3.27 and beyond. Please see [CHANGELOG](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/blob/main/onstar2mqtt-bigthundersr-vehicle2/CHANGELOG.md).*
+
+- [OnStar2MQTT for Vehicle 3 Using BigThunderSR/onstar2mqtt Build](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/tree/main/onstar2mqtt-bigthundersr-vehicle3)
+  ![Dynamic YAML Badge](https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fraw.githubusercontent.com%2FBigThunderSR%2Fhomeassistant-addons-onstar2mqtt%2Frefs%2Fheads%2Fmain%2Fonstar2mqtt-bigthundersr-vehicle3%2Fconfig.yaml&query=%24.version&style=flat&label=Ver)
+
+  - ***NOTE:** Breaking Change for Upgrading to Version 1.3.27 and beyond. Please see [CHANGELOG](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/blob/main/onstar2mqtt-bigthundersr-vehicle1/CHANGELOG.md).*
+
+- [OnStar2MQTT for Vehicle 4 Using BigThunderSR/onstar2mqtt Build](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/tree/main/onstar2mqtt-bigthundersr-vehicle4)
+  ![Dynamic YAML Badge](https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fraw.githubusercontent.com%2FBigThunderSR%2Fhomeassistant-addons-onstar2mqtt%2Frefs%2Fheads%2Fmain%2Fonstar2mqtt-bigthundersr-vehicle4%2Fconfig.yaml&query=%24.version&style=flat&label=Ver)
 
   - ***NOTE:** Breaking Change for Upgrading to Version 1.3.27 and beyond. Please see [CHANGELOG](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/blob/main/onstar2mqtt-bigthundersr-vehicle2/CHANGELOG.md).*
 
