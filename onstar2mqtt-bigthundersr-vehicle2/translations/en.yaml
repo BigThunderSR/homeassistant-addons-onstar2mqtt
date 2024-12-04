@@ -28,7 +28,7 @@ configuration:
   ONSTAR_TOTP:
     name: OnStar TOTP Key
     description: >-
-      TOTP Key for your OnStar Account.
+      TOTP Key for your OnStar Account. This value is 16 characters long and is alpha-numeric. If you are not entering an alpha-numeric value that is 16 characters long, you are not entering a valid TOTP key.
   ONSTAR_PIN:
     name: OnStar PIN
     description: >-
