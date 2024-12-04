@@ -1,0 +1,73 @@
+name: OnStar2MQTT Home Assistant Add-on (BigThunderSR) for Vehicle 4
+version: 1.20.1
+slug: onstar2mqtt_bigthundersr_vehicle4
+description: Home Assistant Add On Version of BigThunderSR/onstar2mqtt for Vehicle 4
+codenotary: bigthundersr@outlook.com
+#startup: application
+#boot: auto
+arch:
+  - aarch64
+  - amd64
+  - armhf
+  - armv7
+  - i386
+map:
+  - share:rw
+  - ssl:rw
+url: "https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt"
+image: "ghcr.io/bigthundersr/ha-addons-onstar2mqtt-bigthundersr-vehicle4-{arch}"
+services:
+  - "mqtt:need"
+init: false
+options:
+  LOG_LEVEL: "info"
+  VEHICLE_NAME: "Vehicle 4"
+  ONSTAR_DEVICEID: ""
+  ONSTAR_VIN: ""
+  ONSTAR_USERNAME: ""
+  ONSTAR_PASSWORD: ""
+  ONSTAR_TOTP: ""
+  ONSTAR_PIN: ""
+  TOKEN_LOCATION: ""
+  ONSTAR_URL: "https://api.gm.com" #This value is hard coded in the program code and cannot be changed at this time
+  ONSTAR_REFRESH: 1800000
+  ONSTAR_POLL_INTERVAL: 6
+  ONSTAR_POLL_TIMEOUT: 90
+  MQTT_HOST: ""
+  MQTT_USERNAME: ""
+  MQTT_PASSWORD: ""
+  MQTT_PORT: 1883
+  MQTT_PREFIX: "homeassistant"
+  MQTT_ONSTAR_POLLING_STATUS_TOPIC: ""
+  MQTT_LIST_ALL_SENSORS_TOGETHER: false
+  MQTT_TLS: false
+  MQTT_REJECT_UNAUTHORIZED: true
+  MQTT_CA_FILE: ""
+  MQTT_CERT_FILE: ""
+  MQTT_KEY_FILE: ""
+schema:
+  LOG_LEVEL: str
+  VEHICLE_NAME: str
+  ONSTAR_DEVICEID: str
+  ONSTAR_VIN: str
+  ONSTAR_USERNAME: str
+  ONSTAR_PASSWORD: password
+  ONSTAR_TOTP: password
+  ONSTAR_PIN: password
+  TOKEN_LOCATION: str?
+  ONSTAR_URL: str
+  ONSTAR_REFRESH: int
+  ONSTAR_POLL_INTERVAL: int
+  ONSTAR_POLL_TIMEOUT: int
+  MQTT_HOST: str
+  MQTT_USERNAME: str
+  MQTT_PASSWORD: password
+  MQTT_PORT: port
+  MQTT_PREFIX: str
+  MQTT_ONSTAR_POLLING_STATUS_TOPIC: str?
+  MQTT_LIST_ALL_SENSORS_TOGETHER: bool
+  MQTT_TLS: bool
+  MQTT_REJECT_UNAUTHORIZED: bool 
+  MQTT_CA_FILE: str?
+  MQTT_CERT_FILE: str?
+  MQTT_KEY_FILE: str?
