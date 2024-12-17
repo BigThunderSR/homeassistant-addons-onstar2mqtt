@@ -162,7 +162,7 @@ mqtt:
 
 * **MQTT Auto-Discovery for Command Status Sensors for HA Added Starting at v1.15.0**
   * Command Status and Timestamp from last command run are published to MQTT auto-discovery topics and are grouped in a MQTT device grouping for all command status sensors for the same vehicle.
-  * Command needs to be run at least once before the sensor is visible in HA.
+  * ${{\color{red}\textnormal{\{\{Command\ needs\ to\ be\ run\ at\ least\ once\ before\ the\ sensor\ is\ visible\ in\ HA\. \}\}}}}$
   * Set 'MQTT_LIST_ALL_SENSORS_TOGETHER="true"' to group all the sensors under one MQTT device starting at v1.17.0. Default is "false".
 
 To add manually if wanted:
