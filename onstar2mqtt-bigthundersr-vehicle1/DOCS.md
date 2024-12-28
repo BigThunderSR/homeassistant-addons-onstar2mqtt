@@ -23,7 +23,12 @@ mode: single
 
 ### Example Script YAML for Running Commands
 
-**MQTT button auto discovery is enabled starting at v1.14.0 which sends/triggers the defaults of each command. The following isn't strictly necessary, but still available if needed or for sending customized commands.**
+**MQTT button auto discovery is enabled starting at v1.14.0 which sends/triggers the defaults of each command.**
+
+* Buttons are added disabled by default because it's easy to accidentally press the wrong button and trigger an action at an inopportune time. Enable at your own risk and you assume all responsibility for your actions.
+* All available buttons for all vehicles are included for now, so only enable the buttons you need and/or work for your vehicle.
+
+#### The following isn't strictly necessary starting at v1.14.0, but still available if needed or for sending customized commands
 
 ```yaml
 alias: Car - Start Vehicle
@@ -253,11 +258,13 @@ Commands Implemented in this Program:
 
 ### Lovelace Dashboard
 
+* This is just an example and is meant to show some possible usage modes. It is not all-inclusive and is not intended to be for the purpose of copy-and-use-as-is. Please modify as necessary for your specific needs.
+
 Create a new dashboard, or use the cards in your own view. The `mdi:car-electric` icon works well here.
 
 ![lovelace screenshot](https://github.com/BigThunderSR/onstar2mqtt/raw/main/images/lovelace.png)
 
-#### Dashboard YAML
+#### Example Dashboard YAML
 
 ```yaml
 views:
@@ -361,27 +368,31 @@ views:
           - type: button
             tap_action:
               action: toggle
-            entity: script.car_start_vehicle
+            entity: button.<vehicle_name>_command_start ## If you want to use the auto-created button
+            #entity: script.car_start_vehicle ## If you want to use a script instead of the auto-created button
             name: Start
             show_state: false
           - type: button
             tap_action:
               action: toggle
-            entity: script.car_cancel_start_vehicle
+            entity: button.<vehicle_name>_command_cancelstart ## If you want to use the auto-created button
+            #entity: script.car_cancel_start_vehicle ## If you want to use a script instead of the auto-created button
             name: Cancel Start
             show_state: false
             icon: 'mdi:car-off'
           - type: button
             tap_action:
               action: toggle
-            entity: script.car_lock_doors
+            entity: button.<vehicle_name>_command_lockdoor ## If you want to use the auto-created button
+            #entity: script.car_lock_doors ## If you want to use a script instead of the auto-created button
             name: Lock
             show_state: false
             icon: 'mdi:car-door-lock'
           - type: button
             tap_action:
               action: toggle
-            entity: script.car_unlock_doors
+            entity: button.<vehicle_name>_command_unlockdoor ## If you want to use the auto-created button
+            #entity: script.car_unlock_doors ## If you want to use a script instead of the auto-created button
             name: Unlock
             show_state: false
             icon: 'mdi:car-door'
