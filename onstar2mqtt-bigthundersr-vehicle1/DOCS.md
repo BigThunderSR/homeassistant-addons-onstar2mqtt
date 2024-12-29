@@ -25,7 +25,8 @@ mode: single
 
 **MQTT button auto discovery is enabled starting at v1.14.0 which sends/triggers the defaults of each command.**
 
-* Buttons are added disabled by default because it's easy to accidentally press the wrong button and trigger an action at an inopportune time. Enable at your own risk and you assume all responsibility for your actions.
+* Buttons are added disabled by default because it's easy to accidentally press the wrong button and trigger an action at an inopportune time.
+  * Enable at your own risk and you assume all responsibility for your actions.
 * All available buttons for all vehicles are included for now, so only enable the buttons you need and/or work for your vehicle.
 
 #### The following isn't strictly necessary starting at v1.14.0, but still available if needed or for sending customized commands
@@ -115,9 +116,11 @@ icon: 'mdi:map-marker'
 
 * **MQTT Auto-Discovery for Polling Status Sensors for HA Added Starting at v1.16.0**
   * Polling Status Message, Timestamp and True/False Sensor from last command run are published to MQTT auto-discovery topics and are grouped in a MQTT device grouping for all command status sensors for the same vehicle.
-  * Set 'MQTT_LIST_ALL_SENSORS_TOGETHER="true"' to group all the sensors under one MQTT device starting at v1.17.0. Default is "false".
+  * Set 'MQTT_LIST_ALL_SENSORS_TOGETHER="true"' to group all the sensors under one MQTT device starting at v1.17.0.
+    * Default is "false".
   
-To add manually if wanted:
+#### To add manually if wanted
+
 Create a MQTT binary sensor in Home Assistant
 
 ```yaml
@@ -141,9 +144,11 @@ mqtt:
 
 * **MQTT Auto-Discovery for Polling Status Sensors for HA Added Starting at v1.16.0**
   * Polling Status Message, Timestamp and True/False Sensor from last command run are published to MQTT auto-discovery topics and are grouped in a MQTT device grouping for all command status sensors for the same vehicle.
-  * Set 'MQTT_LIST_ALL_SENSORS_TOGETHER="true"' to group all the sensors under one MQTT device starting at v1.17.0. Default is "false".
+  * Set 'MQTT_LIST_ALL_SENSORS_TOGETHER="true"' to group all the sensors under one MQTT device starting at v1.17.0.
+    * Default is "false".
 
-To add manually if wanted:
+#### To add manually if wanted
+
 Create a MQTT sensor in Home Assistant
 
 ```yaml
@@ -167,14 +172,13 @@ mqtt:
 
 * **MQTT Auto-Discovery for Command Status Sensors for HA Added Starting at v1.15.0**
   * Command Status and Timestamp from last command run are published to MQTT auto-discovery topics and are grouped in a MQTT device grouping for all command status sensors for the same vehicle.
+  * **Important Note:**
+    * _Command needs to be run at least once before the sensor is visible in HA._
+  * Set 'MQTT_LIST_ALL_SENSORS_TOGETHER="true"' to group all the sensors under one MQTT device starting at v1.17.0.
+    * Default is "false".
 
-  * ```yaml
-    Important Note: Command needs to be run at least once before the sensor is visible in HA. 
-    ```
+#### To add manually if wanted
 
-  * Set 'MQTT_LIST_ALL_SENSORS_TOGETHER="true"' to group all the sensors under one MQTT device starting at v1.17.0. Default is "false".
-
-To add manually if wanted:
 Create a MQTT sensor in Home Assistant for each command status you want to monitor. Below is an example for the getLocation command and other commands follow a similar format.
 
 ```yaml
@@ -194,10 +198,13 @@ mqtt:
 
 * **MQTT Auto-Discovery for Command Status Sensors for HA Added Starting at v1.15.0**
   * Command Status and Timestamp from last command run are published to MQTT auto-discovery topics and are grouped in a MQTT device grouping for all command status sensors for the same vehicle.
-  * Command needs to be run at least once before the sensor is visible in HA.
-  * Set 'MQTT_LIST_ALL_SENSORS_TOGETHER="true"' to group all the sensors under one MQTT device starting at v1.17.0. Default is "false".
+  * **Important Note:**
+    * _Command needs to be run at least once before the sensor is visible in HA._
+  * Set 'MQTT_LIST_ALL_SENSORS_TOGETHER="true"' to group all the sensors under one MQTT device starting at v1.17.0.
+    * Default is "false".
 
-To add manually if wanted:
+#### To add manually if wanted
+
 Create a MQTT sensor in Home Assistant for each command timestamp you want to monitor. Below is an example for the getLocation command and other commands follow a similar format.
 
 ```yaml
