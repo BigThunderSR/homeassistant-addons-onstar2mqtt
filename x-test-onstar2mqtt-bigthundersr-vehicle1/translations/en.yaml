@@ -65,7 +65,8 @@ configuration:
   MQTT_PREFIX:
     name: MQTT Prefix
     description: >-
-      Prefix for MQTT topics published to broker/server.
+      Prefix for MQTT topics published to broker/server. Changing this will break MQTT discovery and automatic creation of sensors and buttons in Home Assistant.
+      Changing this also requires you to manually update the MQTT configuration in Home Assistant. Please do not change this unless you know what you are doing.
   MQTT_ONSTAR_POLLING_STATUS_TOPIC:
     name: MQTT OnSTAR Polling Status Topic
     description: >-
