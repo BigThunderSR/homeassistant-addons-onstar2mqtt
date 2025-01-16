@@ -1,4 +1,11 @@
-# Sample Configs for MQTT Home Assistant Integration
+# Instructions and Usage Notes for MQTT Home Assistant Integration
+
+## Sensor and Button Location in HA
+
+When everything is setup correctly, all available sensors and buttons are created automatically (please review this entire document for specific caveats) and can be seen in HA under:
+
+* "Settings --> Devices & services --> MQTT"
+  * They will be grouped under a MQTT device with the name of your vehicle
 
 ## Dynamically Change Polling Frequency Using MQTT
 
@@ -265,7 +272,9 @@ Commands Implemented in this Program:
 
 ### Lovelace Dashboard
 
-* This is just an example and is meant to show some possible usage modes. It is not all-inclusive and is not intended to be for the purpose of copy-and-use-as-is. Please modify as necessary for your specific needs.
+* This is just an example and is meant to show some possible usage modes.
+* It is not all-inclusive and is not intended to be for the purpose of copy-and-use-as-is.
+* Please modify as necessary for your specific needs.
 
 Create a new dashboard, or use the cards in your own view. The `mdi:car-electric` icon works well here.
 
@@ -278,7 +287,7 @@ views:
   - badges: []
     cards:
       - type: gauge
-        entity: sensor.ev_battery_level
+        entity: sensor.<vehicle_name>_ev_battery_level
         min: 0
         max: 100
         name: Battery
@@ -287,7 +296,7 @@ views:
           yellow: 40
           red: 15
       - type: gauge
-        entity: sensor.ev_range
+        entity: sensor.<vehicle_name>_ev_range
         min: 0
         max: 420
         name: Range
@@ -297,16 +306,16 @@ views:
           red: 75
       - type: glance
         entities:
-          - entity: sensor.tire_pressure_left_front
+          - entity: sensor.<vehicle_name>_tire_pressure_left_front
             name: Left Front
             icon: 'mdi:car-tire-alert'
-          - entity: sensor.tire_pressure_right_front
+          - entity: sensor.<vehicle_name>_tire_pressure_right_front
             name: Right Front
             icon: 'mdi:car-tire-alert'
-          - entity: sensor.tire_pressure_left_rear
+          - entity: sensor.<vehicle_name>_tire_pressure_left_rear
             name: Left Rear
             icon: 'mdi:car-tire-alert'
-          - entity: sensor.tire_pressure_right_rear
+          - entity: sensor.<vehicle_name>_tire_pressure_right_rear
             name: Right Rear
             icon: 'mdi:car-tire-alert'
         columns: 2
@@ -314,15 +323,15 @@ views:
       - type: entities
         title: Mileage
         entities:
-          - entity: sensor.lifetime_mpge
-          - entity: sensor.lifetime_efficiency
-          - entity: sensor.electric_economy
+          - entity: sensor.<vehicle_name>_lifetime_mpge
+          - entity: sensor.<vehicle_name>_lifetime_efficiency
+          - entity: sensor.<vehicle_name>_electric_economy
         state_color: true
         footer:
           type: 'custom:mini-graph-card'
           entities:
-            - entity: sensor.odometer
-            - entity: sensor.lifetime_energy_used
+            - entity: sensor.<vehicle_name>_odometer
+            - entity: sensor.<vehicle_name>_lifetime_energy_used
               y_axis: secondary
               show_state: true
           hours_to_show: 672
@@ -334,21 +343,21 @@ views:
             icon: false
       - type: entities
         entities:
-          - entity: binary_sensor.ev_plug_state
+          - entity: binary_sensor.<vehicle_name>_ev_plug_state
             secondary_info: last-changed
-          - entity: binary_sensor.ev_charge_state
+          - entity: binary_sensor.<vehicle_name>_ev_charge_state
             secondary_info: last-changed
-          - entity: binary_sensor.priority_charge_indicator
-          - entity: binary_sensor.priority_charge_status
-          - entity: sensor.ev_plug_voltage
-          - entity: sensor.interm_volt_batt_volt
-          - entity: sensor.charger_power_level
+          - entity: binary_sensor.<vehicle_name>_priority_charge_indicator
+          - entity: binary_sensor.<vehicle_name>_priority_charge_status
+          - entity: sensor.<vehicle_name>_ev_plug_voltage
+          - entity: sensor.<vehicle_name>_interm_volt_batt_volt
+          - entity: sensor.<vehicle_name>_charger_power_level
         title: Charging
         state_color: true
       - type: 'custom:mini-graph-card'
         entities:
-          - entity: sensor.last_trip_total_distance
-          - entity: sensor.last_trip_electric_econ
+          - entity: sensor.<vehicle_name>_last_trip_total_distance
+          - entity: sensor.<vehicle_name>_last_trip_electric_econ
             y_axis: secondary
             show_state: true
         name: Last Trip
@@ -360,9 +369,9 @@ views:
           icon: false
       - type: 'custom:mini-graph-card'
         entities:
-          - entity: sensor.ambient_air_temperature
+          - entity: sensor.<vehicle_name>_ambient_air_temperature
             name: Ambient
-          - entity: sensor.hybrid_battery_minimum_temperature
+          - entity: sensor.<vehicle_name>_hybrid_battery_minimum_temperature
             name: Battery
           - entity: sensor.kewr_daynight_temperature
             name: Outdoor
