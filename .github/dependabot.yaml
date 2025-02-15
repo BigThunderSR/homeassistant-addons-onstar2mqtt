@@ -22,12 +22,12 @@ updates:
       interval: "weekly"
     open-pull-requests-limit: 50
   - package-ecosystem: "npm"
-    directory: "/onstar2mqtt-michaelwoods-vehicle1"
+    directory: "/onstar2mqtt-bigthundersr-vehicle3"
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 50
   - package-ecosystem: "npm"
-    directory: "/onstar2mqtt-michaelwoods-vehicle2"
+    directory: "/onstar2mqtt-bigthundersr-vehicle4"
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 50
