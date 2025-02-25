@@ -45,7 +45,6 @@ body:
           value: enhancement
         - label: Other
           value: other
-
     validations:
       required: true
 
