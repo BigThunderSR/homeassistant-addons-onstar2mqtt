@@ -74,15 +74,38 @@ body:
       placeholder: Add screenshots
 
   - type: input
-    id: environment
+    id: ha_version
     attributes:
-      label: Environment
-      description: |
-        - Home Assistant Version: [e.g. 2025.1.0]
-        - What type of Home Assistant installation are you using? [e.g. Home Assistant OS, Home Assistant Supervised, Home Assistant Container, Home Assistant Core, Home Assistant VM]
-        - Version of the add-on: [e.g. 1.20.0]
-        - Any other relevant environment details
-      placeholder: Environment Details
+      label: Home Assistant Version
+      description: e.g. 2025.1.0
+      placeholder: Home Assistant Version
+    validations:
+      required: true
+
+  - type: input
+    id: ha_installation
+    attributes:
+      label: Type of Home Assistant Installation
+      description: e.g. Home Assistant OS, Home Assistant Supervised, Home Assistant Container, Home Assistant Core, Home Assistant VM
+      placeholder: Type of Home Assistant Installation
+    validations:
+      required: true
+
+  - type: input
+    id: addon_version
+    attributes:
+      label: Version of the Add-on
+      description: e.g. 1.20.0
+      placeholder: Version of the Add-on
+    validations:
+      required: true
+
+  - type: input
+    id: other_environment_details
+    attributes:
+      label: Other Relevant Environment Details
+      description: Any other relevant environment details
+      placeholder: Other Environment Details
     validations:
       required: true
 
