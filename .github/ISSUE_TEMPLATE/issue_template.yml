@@ -26,25 +26,20 @@ body:
     validations:
       required: true
 
-  - type: select
+  - type: dropdown
     id: type
     attributes:
       label: Type
       description: Was this working before and it has since stopped working, is this a net new issue (never worked before), a bug or a feature request?
-      placeholder: Select an option
+      multiple: false
       options:
-        - label: Working before
-          value: working
-        - label: Net new issue
-          value: new
-        - label: Bug
-          value: bug
-        - label: Feature request
-          value: feature
-        - label: Enhancement
-          value: enhancement
-        - label: Other
-          value: other
+        - Please select an option
+        - Working before
+        - Net new issue
+        - Bug      
+        - Feature request          
+        - Enhancement          
+        - Other
     validations:
       required: true
 
