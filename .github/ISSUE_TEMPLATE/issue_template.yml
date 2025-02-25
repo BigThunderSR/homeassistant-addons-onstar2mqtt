@@ -6,7 +6,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thank you for taking the time to fill out this request for your issue! Please use the [Discussions](https://github.com/BigThunderSR/homeassistant-addons-bigthundersr/discussions) tab for general questions or help with the project.
+        Thank you for taking the time to fill out this request for your issue! Please use the [Discussions](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/discussions) tab for general questions or help with the project.
 
   - type: textarea
     id: description
