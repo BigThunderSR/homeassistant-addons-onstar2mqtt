@@ -20,7 +20,7 @@ body:
   - type: textarea
     id: description
     attributes:
-      label: Describe the issue
+      label: Describe the Issue
       description: A clear and concise description of what the issue is.
       placeholder: Describe the issue
     validations:
@@ -29,7 +29,7 @@ body:
   - type: dropdown
     id: type
     attributes:
-      label: Type
+      label: Type of Issue
       description: Was this working before and it has since stopped working, is this a net new issue (never worked before), a bug or a feature request?
       multiple: false
       options:
@@ -61,7 +61,7 @@ body:
   - type: textarea
     id: expected
     attributes:
-      label: Expected behavior
+      label: Expected Behavior
       description: A clear and concise description of what you expected to happen.
       placeholder: Expected result
     validations:
@@ -87,17 +87,17 @@ body:
     attributes:
       label: Environment
       description: |
-        - Home Assistant Version: [e.g. 2021.12.0]
+        - Home Assistant Version: [e.g. 2025.1.0]
         - What type of Home Assistant installation are you using? [e.g. Home Assistant OS, Home Assistant Supervised, Home Assistant Container, Home Assistant Core, Home Assistant VM]
         - Version of the add-on: [e.g. 1.20.0]
         - Any other relevant environment details
-      placeholder: Environment details
+      placeholder: Environment Details
     validations:
       required: true
 
   - type: textarea
     id: additional
     attributes:
-      label: Additional context
+      label: Additional Context
       description: Add any other context about the problem here.
       placeholder: Additional context
