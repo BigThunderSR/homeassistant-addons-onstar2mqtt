@@ -1,12 +1,12 @@
 name: Submit an Issue
 description: Open an issue to report a bug or request a feature.
-title: '[Issue] Please replace with a clear and concise title'
+title: "[Issue]: <Please replace with a clear and concise title>" 
 
 body:
   - type: markdown
     attributes:
       value: |
-        Thank you for taking the time to fill out this request for your issue! Please use the discussions tab for general questions or help with the project.
+        Thank you for taking the time to fill out this request for your issue! Please use the [Discussions](https://github.com/BigThunderSR/homeassistant-addons-bigthundersr/discussions) tab for general questions or help with the project.
 
   - type: textarea
     id: description
