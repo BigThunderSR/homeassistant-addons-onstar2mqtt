@@ -1,0 +1,109 @@
+name: Submit an Issue
+description: Open an issue to report a bug or request a feature.
+title: '[Please replace with a clear and concise title]'
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for taking the time to fill out this request for your issue! Please use the discussions tab for general questions or help with the project.
+
+  - type: input
+    id: title
+    attributes:
+      label: Title
+      description: A clear and concise title of what the issue is.
+      placeholder: Issue title
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the issue
+      description: A clear and concise description of what the issue is.
+      placeholder: Describe the issue
+    validations:
+      required: true
+
+  - type: select
+    id: type
+    attributes:
+      label: Type
+      description: Was this working before and it has since stopped working, is this a net new issue (never worked before), a bug or a feature request?
+      placeholder: Select an option
+      options:
+        - label: Working before
+          value: working
+        - label: Net new issue
+          value: new
+        - label: Bug
+          value: bug
+        - label: Feature request
+          value: feature
+        - label: Enhancement
+          value: enhancement
+        - label: Other
+          value: other
+
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: To Reproduce
+      description: |
+        Steps to reproduce the behavior (**Note: these are generic steps, please replace with your own steps**):
+
+        1. Start '...'
+        2. Try '...'
+        3. Do '...'
+        4. See error
+      placeholder: Steps to reproduce the behavior
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: A clear and concise description of what you expected to happen.
+      placeholder: Expected result
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Sanitized Log Output
+      description: |
+        If applicable, add sanitized log output (remove any sensitive information) to help explain your problem.
+      placeholder: Sanitized log output
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots
+      description: If applicable, add screenshots to help explain your problem.
+      placeholder: Add screenshots
+
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: |
+        - Home Assistant Version: [e.g. 2021.12.0]
+        - What type of Home Assistant installation are you using? [e.g. Home Assistant OS, Home Assistant Supervised, Home Assistant Container, Home Assistant Core, Home Assistant VM]
+        - Version of the add-on: [e.g. 1.20.0]
+        - Any other relevant environment details
+      placeholder: Environment details
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      description: Add any other context about the problem here.
+      placeholder: Additional context

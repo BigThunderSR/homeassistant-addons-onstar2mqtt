@@ -1,0 +1,9 @@
+blank_issues_enabled: false
+issue_templates:
+  - name: Submit an Issue
+    description: Open an issue to report a bug or request a feature.
+    template: issue_template.yml
+contact_links:
+  - name: Create an Issue
+    url: https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/issues/new?template=issue_template.yml
+    about: Use this template for creating issues.
