@@ -2,16 +2,16 @@
 
 ## Sensor and Button Location in HA
 
-When everything is setup correctly, all available sensors and buttons are created automatically (please review this entire document for specific caveats) and can be seen in HA under:
+When everything is setup correctly, all available sensors and buttons are created automatically (_please review this entire document for specific caveats_) and can be seen in HA under:
 
-* "Settings --> Devices & services --> MQTT"
+* `Settings --> Devices & services --> MQTT`
   * They will be grouped under a MQTT device with the name of your vehicle
 
 ## Dynamically Change Polling Frequency Using MQTT
 
-* Uses the value from "ONSTAR_REFRESH" on initial startup
-* Change the value dynamically by publishing the new refresh value in milliseconds (ms) as an INT to: "homeassistant/YOUR_CAR_VIN/refresh_interval"
-* Retained topic of "homeassistant/YOUR_CAR_VIN/refresh_interval_current_val" can be used to monitor current refresh value set via MQTT
+* Uses the value from `ONSTAR_REFRESH` on initial startup
+* Change the value dynamically by publishing the new refresh value in milliseconds (ms) as an INT to: `homeassistant/YOUR_CAR_VIN/refresh_interval`
+* Retained topic of `homeassistant/YOUR_CAR_VIN/refresh_interval_current_val` can be used to monitor current refresh value set via MQTT
 
 ### Example Script YAML
 
@@ -51,14 +51,12 @@ icon: 'mdi:car-electric'
 
 #### Format for sending command options in the payload
 
-```text
   * Diagnostics:
-    * {"command": "diagnostics","options": "OIL LIFE,VEHICLE RANGE"}
+    * `{"command": "diagnostics","options": "OIL LIFE,VEHICLE RANGE"}`
   * Set Charging Profile
-    * {"command": "setChargingProfile","options": {"chargeMode": "RATE_BASED","rateType": "OFFPEAK"}}
+    * `{"command": "setChargingProfile","options": {"chargeMode": "RATE_BASED","rateType": "OFFPEAK"}}`
   * Alert
-    * {"command": "alert","options": {"action": "Flash"}}
-```
+    * `{"command": "alert","options": {"action": "Flash"}}`
 
 ### Trigger Precondition via Calendar
 
@@ -86,10 +84,11 @@ mode: single
 
 ### Location
 
-**MQTT device_tracker auto discovery capability is enabled starting at v1.12.0. Requires running the getLocation command for initial setup of the device_tracker entity via auto discovery.**
+**MQTT `device_tracker` auto discovery capability is enabled starting at v1.12.0 and _requires_ running the `getLocation` command for initial setup of the `device_tracker` entity via auto discovery.**
 
-* The device_tracker auto discovery config is published to: "homeassistant/device_tracker/YOUR_CAR_VIN/config"
-* The GPS coordinates are still read from the original topic automatically at: "homeassistant/device_tracker/YOUR_CAR_VIN/getlocation/state"
+* The `device_tracker` auto discovery config is published to: `homeassistant/device_tracker/YOUR_CAR_VIN/config`
+* The GPS coordinates are still read from the original topic automatically at: `homeassistant/device_tracker/YOUR_CAR_VIN/getlocation/state`
+* The `device_tracker` can be found in HA by going to: `Settings --> Devices & services --> Entities`
 
 ~~Unfortunately, the MQTT Device tracker uses a home/not_home state and the MQTT Json device tracker does not support
 the discovery schema so a manual entity configuration is required.~~
@@ -123,8 +122,8 @@ icon: 'mdi:map-marker'
 
 * **MQTT Auto-Discovery for Polling Status Sensors for HA Added Starting at v1.16.0**
   * Polling Status Message, Timestamp and True/False Sensor from last command run are published to MQTT auto-discovery topics and are grouped in a MQTT device grouping for all command status sensors for the same vehicle.
-  * Set 'MQTT_LIST_ALL_SENSORS_TOGETHER="true"' to group all the sensors under one MQTT device starting at v1.17.0.
-    * Default is "false".
+  * Set `MQTT_LIST_ALL_SENSORS_TOGETHER="true"` to group all the sensors under one MQTT device starting at v1.17.0.
+    * Default is `"false"`.
   
 #### To add manually if wanted
 
@@ -151,8 +150,8 @@ mqtt:
 
 * **MQTT Auto-Discovery for Polling Status Sensors for HA Added Starting at v1.16.0**
   * Polling Status Message, Timestamp and True/False Sensor from last command run are published to MQTT auto-discovery topics and are grouped in a MQTT device grouping for all command status sensors for the same vehicle.
-  * Set 'MQTT_LIST_ALL_SENSORS_TOGETHER="true"' to group all the sensors under one MQTT device starting at v1.17.0.
-    * Default is "false".
+  * Set `MQTT_LIST_ALL_SENSORS_TOGETHER="true"` to group all the sensors under one MQTT device starting at v1.17.0.
+    * Default is `"false"`.
 
 #### To add manually if wanted
 
@@ -179,10 +178,10 @@ mqtt:
 
 * **MQTT Auto-Discovery for Command Status Sensors for HA Added Starting at v1.15.0**
   * Command Status and Timestamp from last command run are published to MQTT auto-discovery topics and are grouped in a MQTT device grouping for all command status sensors for the same vehicle.
-  * **Important Note:**
-    * _Command needs to be run at least once before the sensor is visible in HA._
-  * Set 'MQTT_LIST_ALL_SENSORS_TOGETHER="true"' to group all the sensors under one MQTT device starting at v1.17.0.
-    * Default is "false".
+  * >**Important Note:**
+    * >_Command needs to be run at least once before the sensor is visible in HA._
+  * Set `MQTT_LIST_ALL_SENSORS_TOGETHER="true"` to group all the sensors under one MQTT device starting at v1.17.0.
+    * Default is `"false"`.
 
 #### To add manually if wanted
 
@@ -205,10 +204,10 @@ mqtt:
 
 * **MQTT Auto-Discovery for Command Status Sensors for HA Added Starting at v1.15.0**
   * Command Status and Timestamp from last command run are published to MQTT auto-discovery topics and are grouped in a MQTT device grouping for all command status sensors for the same vehicle.
-  * **Important Note:**
-    * _Command needs to be run at least once before the sensor is visible in HA._
-  * Set 'MQTT_LIST_ALL_SENSORS_TOGETHER="true"' to group all the sensors under one MQTT device starting at v1.17.0.
-    * Default is "false".
+  * >**Important Note:**
+    * >_Command needs to be run at least once before the sensor is visible in HA._
+  * Set `MQTT_LIST_ALL_SENSORS_TOGETHER="true"` to group all the sensors under one MQTT device starting at v1.17.0.
+    * Default is `"false"`.
 
 #### To add manually if wanted
 
@@ -274,6 +273,7 @@ Commands Implemented in this Program:
 ### Lovelace Dashboard
 
 * This is just an example and is meant to show some possible usage modes.
+* The sensors shown in this example may not exist in your vehicle.
 * It is not all-inclusive and is not intended to be for the purpose of copy-and-use-as-is.
 * Please modify as necessary for your specific needs.
 
