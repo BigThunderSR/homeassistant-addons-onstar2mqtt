@@ -3,6 +3,7 @@ name: Builder
 permissions:
   contents: read
   pull-requests: write
+  packages: write
 
 env:
   BUILD_ARGS: "--test"
