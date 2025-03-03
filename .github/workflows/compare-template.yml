@@ -13,13 +13,13 @@ jobs:
     - name: Checkout downstream project
       uses: actions/checkout@v2
       with:
-        path: downstream
+        path: .github/workflows/builder.yaml
 
     - name: Checkout template repository
       uses: actions/checkout@v2
       with:
         repository: home-assistant/addons-example
-        path: template
+        path: .github/workflows/builder.yaml
 
     - name: Compare changes
       run: |
