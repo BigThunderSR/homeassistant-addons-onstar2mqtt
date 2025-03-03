@@ -6,7 +6,7 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 RUN apk add --no-cache \
     nodejs=18.20.6 \
-    npm=10.9.2
+    npm
 
 RUN mkdir /app
 WORKDIR /app
