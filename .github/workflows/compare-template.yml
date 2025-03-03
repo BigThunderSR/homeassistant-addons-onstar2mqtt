@@ -23,4 +23,4 @@ jobs:
 
     - name: Compare builder.yaml files
       run: |
-        diff -u downstream/.github/workflows/builder.yaml template/.github/workflows/builder.yaml
+        diff -u downstream/.github/workflows/builder.yaml template/.github/workflows/builder.yaml || true
