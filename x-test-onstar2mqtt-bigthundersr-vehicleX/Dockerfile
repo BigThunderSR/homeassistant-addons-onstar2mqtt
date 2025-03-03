@@ -13,7 +13,8 @@ WORKDIR /app
 
 COPY ["package.json", "/app/"]
 COPY ["package-lock.json", "/app/"]
-RUN npm ci --omit=dev --no-fund
+#RUN npm ci --omit=dev --no-fund
+RUN npm ci --no-fund
 
 COPY ["overrides/index.cjs", "/app/node_modules/onstarjs/dist/"]
 COPY ["overrides/index.mjs", "/app/node_modules/onstarjs/dist/"]
