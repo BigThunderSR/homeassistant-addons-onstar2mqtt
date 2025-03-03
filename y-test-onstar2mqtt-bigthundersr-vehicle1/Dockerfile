@@ -27,8 +27,8 @@ CMD [ "/app/run.sh" ]
 
 #  Labels 
 
-ARG BUILD_DESCRIPTION="Home Assistant Add On Version of BigThunderSR/onstar2mqtt for Vehicle 1"
-ARG BUILD_NAME="OnStar2MQTT Home Assistant Add-on (BigThunderSR) for Vehicle 1"
+ARG BUILD_DESCRIPTION="Y Test Home Assistant Add On Version of BigThunderSR/onstar2mqtt for Vehicle 1"
+ARG BUILD_NAME="Y Test OnStar2MQTT Home Assistant Add-on (BigThunderSR) for Vehicle 1"
 ARG BUILD_REPOSITORY="BigThunderSR/homeassistant-addons-onstar2mqtt"
 
 LABEL \
