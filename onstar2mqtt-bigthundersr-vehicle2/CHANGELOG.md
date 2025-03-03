@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.20.2
+
+- Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.20.2](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.20.2)
+
 ## 1.20.1
 
 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.20.1](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.20.1)
