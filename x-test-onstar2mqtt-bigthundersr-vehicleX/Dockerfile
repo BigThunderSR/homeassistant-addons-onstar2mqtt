@@ -5,8 +5,8 @@ ENV LANG C.UTF-8
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 RUN apk add --no-cache \
-    nodejs \
-    npm
+    nodejs=18.20.6 \
+    npm=10.9.2
 
 RUN mkdir /app
 WORKDIR /app
