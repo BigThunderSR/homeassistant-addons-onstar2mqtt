@@ -11,16 +11,16 @@ jobs:
 
     steps:
     - name: Checkout downstream project
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
-        path: .github/workflows/builder.yaml
+        path: downstream
 
     - name: Checkout template repository
-      uses: actions/checkout@v2
+      uses: actions/checkout@v3
       with:
         repository: home-assistant/addons-example
-        path: .github/workflows/builder.yaml
+        path: template
 
-    - name: Compare changes
+    - name: Compare builder.yaml files
       run: |
-        git diff --name-status downstream template
+        git diff --name-status downstream/.github/workflows/builder.yaml template/.github/workflows/builder.yaml
