@@ -1,5 +1,12 @@
+#ARG BUILD_FROM
+#FROM $BUILD_FROM
+
 ARG BUILD_FROM
-FROM $BUILD_FROM
+ARG ARCH
+
+# Use Alpine 3.18 for armhf and armv7, otherwise use $BUILD_FROM
+FROM ${ARCH:+alpine:3.18} AS base
+FROM ${ARCH:-$BUILD_FROM}
 
 ENV LANG C.UTF-8
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
@@ -7,10 +14,6 @@ SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 RUN apk add --no-cache \
     nodejs \
     npm
-
-RUN npm -v
-RUN npm update -g --no-fund
-RUN npm -v
 
 RUN mkdir /app
 WORKDIR /app
