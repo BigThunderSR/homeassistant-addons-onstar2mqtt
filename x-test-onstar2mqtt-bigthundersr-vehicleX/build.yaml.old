@@ -1,0 +1,10 @@
+---
+#build_from:
+#  aarch64: ghcr.io/home-assistant/aarch64-builder
+#  amd64: ghcr.io/home-assistant/amd64-builder
+#  armhf: ghcr.io/home-assistant/armhf-builder
+#  armv7: ghcr.io/home-assistant/armv7-builder
+#  i386: ghcr.io/home-assistant/i386-builder
+codenotary:
+  base_image: notary@home-assistant.io
+  signer: bigthundersr@outlook.com
