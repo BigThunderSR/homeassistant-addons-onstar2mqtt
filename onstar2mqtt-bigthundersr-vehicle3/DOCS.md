@@ -4,14 +4,14 @@
 
 When everything is setup correctly, all available sensors and buttons are created automatically (_please review this entire document for specific caveats_) and can be seen in HA under:
 
-* `Settings --> Devices & services --> MQTT`
-  * They will be grouped under a MQTT device with the name of your vehicle
+- `Settings --> Devices & services --> MQTT`
+  - They will be grouped under a MQTT device with the name of your vehicle
 
 ## Dynamically Change Polling Frequency Using MQTT
 
-* Uses the value from `ONSTAR_REFRESH` on initial startup
-* Change the value dynamically by publishing the new refresh value in milliseconds (ms) as an INT to: `homeassistant/YOUR_CAR_VIN/refresh_interval`
-* Retained topic of `homeassistant/YOUR_CAR_VIN/refresh_interval_current_val` can be used to monitor current refresh value set via MQTT
+- Uses the value from `ONSTAR_REFRESH` on initial startup
+- Change the value dynamically by publishing the new refresh value in milliseconds (ms) as an INT to: `homeassistant/YOUR_CAR_VIN/refresh_interval`
+- Retained topic of `homeassistant/YOUR_CAR_VIN/refresh_interval_current_val` can be used to monitor current refresh value set via MQTT
 
 ### Example Script YAML
 
@@ -32,9 +32,9 @@ mode: single
 
 **MQTT button auto discovery is enabled starting at v1.14.0 which sends/triggers the defaults of each command.**
 
-* >Buttons are added disabled by default because it's easy to accidentally press the wrong button and trigger an action at an inopportune time.
-  * >Enable at your own risk and you assume all responsibility for your actions.
-* All available buttons for all vehicles are included for now, so only enable the buttons you need and/or work for your vehicle.
+- > Buttons are added disabled by default because it's easy to accidentally press the wrong button and trigger an action at an inopportune time.
+  - > Enable at your own risk and you assume all responsibility for your actions.
+- All available buttons for all vehicles are included for now, so only enable the buttons you need and/or work for your vehicle.
 
 #### The following isn't strictly necessary starting at v1.14.0, but still available if needed or for sending customized commands
 
@@ -46,28 +46,28 @@ sequence:
       topic: homeassistant/YOUR_CAR_VIN/command
       payload: '{"command": "startVehicle"}'
 mode: single
-icon: 'mdi:car-electric'
+icon: "mdi:car-electric"
 ```
 
 #### Format for sending command options in the payload
 
-  * Diagnostics:
-    * `{"command": "diagnostics","options": "OIL LIFE,VEHICLE RANGE"}`
-  * Set Charging Profile
-    * `{"command": "setChargingProfile","options": {"chargeMode": "RATE_BASED","rateType": "OFFPEAK"}}`
-  * Alert
-    * `{"command": "alert","options": {"action": "Flash"}}`
+- Diagnostics:
+  - `{"command": "diagnostics","options": "OIL LIFE,VEHICLE RANGE"}`
+- Set Charging Profile
+  - `{"command": "setChargingProfile","options": {"chargeMode": "RATE_BASED","rateType": "OFFPEAK"}}`
+- Alert
+  - `{"command": "alert","options": {"action": "Flash"}}`
 
 ### Trigger Precondition via Calendar
 
-````yaml
+```yaml
 alias: Car Precondition
 description: Precondition if group.family is home (ie, at least one person).
 trigger:
   - platform: state
     entity_id: calendar.YOUR_CAL_NAME
-    from: 'off'
-    to: 'on'
+    from: "off"
+    to: "on"
 condition:
   - condition: state
     entity_id: group.family
@@ -80,15 +80,15 @@ action:
   - service: script.car_start_vehicle
     data: {}
 mode: single
-````
+```
 
 ### Location
 
 **MQTT `device_tracker` auto discovery capability is enabled starting at v1.12.0 and _requires_ running the `getLocation` command for initial setup of the `device_tracker` entity via auto discovery.**
 
-* The `device_tracker` auto discovery config is published to: `homeassistant/device_tracker/YOUR_CAR_VIN/config`
-* The GPS coordinates are still read from the original topic automatically at: `homeassistant/device_tracker/YOUR_CAR_VIN/getlocation/state`
-* The `device_tracker` can be found in HA by going to: `Settings --> Devices & services --> Entities`
+- The `device_tracker` auto discovery config is published to: `homeassistant/device_tracker/YOUR_CAR_VIN/config`
+- The GPS coordinates are still read from the original topic automatically at: `homeassistant/device_tracker/YOUR_CAR_VIN/getlocation/state`
+- The `device_tracker` can be found in HA by going to: `Settings --> Devices & services --> Entities`
 
 ~~Unfortunately, the MQTT Device tracker uses a home/not_home state and the MQTT Json device tracker does not support
 the discovery schema so a manual entity configuration is required.~~
@@ -115,17 +115,17 @@ sequence:
       topic: homeassistant/YOUR_CAR_VIN/command
       payload: '{"command": "getLocation"}'
 mode: single
-icon: 'mdi:map-marker'
+icon: "mdi:map-marker"
 ```
 
 ### MQTT Polling Status Success Monitor (T/F)
 
-* **MQTT Auto-Discovery for Polling Status Sensors for HA Added Starting at v1.16.0**
-  * Polling Status Message, Timestamp and True/False Sensor from last command run are published to MQTT auto-discovery topics and are grouped in a MQTT device grouping for all command status sensors for the same vehicle.
-  * Set `MQTT_LIST_ALL_SENSORS_TOGETHER="true"` to group all the sensors under one MQTT device starting at v1.17.0.
-    * Default is `"false"`.
-  
-#### To add manually if wanted
+- **MQTT Auto-Discovery for Polling Status Sensors for HA Added Starting at v1.16.0**
+  - Polling Status Message, Timestamp and True/False Sensor from last command run are published to MQTT auto-discovery topics and are grouped in a MQTT device grouping for all command status sensors for the same vehicle.
+  - Set `MQTT_LIST_ALL_SENSORS_TOGETHER="true"` to group all the sensors under one MQTT device starting at v1.17.0.
+    - Default is `"false"`.
+
+#### To Manually Add MQTT Polling Status Success Monitor if Wanted
 
 Create a MQTT binary sensor in Home Assistant
 
@@ -148,12 +148,12 @@ mqtt:
 
 ### MQTT Polling Status Success Timestamp Monitor
 
-* **MQTT Auto-Discovery for Polling Status Sensors for HA Added Starting at v1.16.0**
-  * Polling Status Message, Timestamp and True/False Sensor from last command run are published to MQTT auto-discovery topics and are grouped in a MQTT device grouping for all command status sensors for the same vehicle.
-  * Set `MQTT_LIST_ALL_SENSORS_TOGETHER="true"` to group all the sensors under one MQTT device starting at v1.17.0.
-    * Default is `"false"`.
+- **MQTT Auto-Discovery for Polling Status Sensors for HA Added Starting at v1.16.0**
+  - Polling Status Message, Timestamp and True/False Sensor from last command run are published to MQTT auto-discovery topics and are grouped in a MQTT device grouping for all command status sensors for the same vehicle.
+  - Set `MQTT_LIST_ALL_SENSORS_TOGETHER="true"` to group all the sensors under one MQTT device starting at v1.17.0.
+    - Default is `"false"`.
 
-#### To add manually if wanted
+#### To Manually Add MQTT Polling Status Success Timestamp Monitor if Wanted
 
 Create a MQTT sensor in Home Assistant
 
@@ -169,21 +169,21 @@ mqtt:
       # NOTE: If "MQTT_ONSTAR_POLLING_STATUS_TOPIC" is not explicitly set,
       #       "YOUR_POLLING_STATUS_TOPIC" defaults to "homeassistant/YOUR_CAR_VIN/polling_status/".
       #       If set, provide whatever value you set it to in this field.
-      value_template: "{{ value_json.completionTimestamp }}"  
-      icon: mdi:calendar-clock  
+      value_template: "{{ value_json.completionTimestamp }}"
+      icon: mdi:calendar-clock
       device_class: timestamp
 ```
 
 ### MQTT Command Status Monitor
 
-* **MQTT Auto-Discovery for Command Status Sensors for HA Added Starting at v1.15.0**
-  * Command Status and Timestamp from last command run are published to MQTT auto-discovery topics and are grouped in a MQTT device grouping for all command status sensors for the same vehicle.
-  * >**Important Note:**
-    * >_Command needs to be run at least once before the sensor is visible in HA._
-  * Set `MQTT_LIST_ALL_SENSORS_TOGETHER="true"` to group all the sensors under one MQTT device starting at v1.17.0.
-    * Default is `"false"`.
+- **MQTT Auto-Discovery for Command Status Sensors for HA Added Starting at v1.15.0**
+  - Command Status and Timestamp from last command run are published to MQTT auto-discovery topics and are grouped in a MQTT device grouping for all command status sensors for the same vehicle.
+  - > **Important Note:**
+    - > _Command needs to be run at least once before the sensor is visible in HA._
+  - Set `MQTT_LIST_ALL_SENSORS_TOGETHER="true"` to group all the sensors under one MQTT device starting at v1.17.0.
+    - Default is `"false"`.
 
-#### To add manually if wanted
+#### To Manually Add MQTT Command Status Monitor if Wanted
 
 Create a MQTT sensor in Home Assistant for each command status you want to monitor. Below is an example for the getLocation command and other commands follow a similar format.
 
@@ -196,20 +196,20 @@ mqtt:
       payload_available: "false"
       payload_not_available: "true"
       state_topic: "homeassistant/YOUR_VEHICLE_VIN/command/getLocation/state"
-      value_template: "{{ value_json.command.error.message }}"  
+      value_template: "{{ value_json.command.error.message }}"
       icon: mdi:message-alert
 ```
 
 ### MQTT Command Status Timestamp Monitor
 
-* **MQTT Auto-Discovery for Command Status Sensors for HA Added Starting at v1.15.0**
-  * Command Status and Timestamp from last command run are published to MQTT auto-discovery topics and are grouped in a MQTT device grouping for all command status sensors for the same vehicle.
-  * >**Important Note:**
-    * >_Command needs to be run at least once before the sensor is visible in HA._
-  * Set `MQTT_LIST_ALL_SENSORS_TOGETHER="true"` to group all the sensors under one MQTT device starting at v1.17.0.
-    * Default is `"false"`.
+- **MQTT Auto-Discovery for Command Status Sensors for HA Added Starting at v1.15.0**
+  - Command Status and Timestamp from last command run are published to MQTT auto-discovery topics and are grouped in a MQTT device grouping for all command status sensors for the same vehicle.
+  - > **Important Note:**
+    - > _Command needs to be run at least once before the sensor is visible in HA._
+  - Set `MQTT_LIST_ALL_SENSORS_TOGETHER="true"` to group all the sensors under one MQTT device starting at v1.17.0.
+    - Default is `"false"`.
 
-#### To add manually if wanted
+#### To Manually Add MQTT Command Status Timestamp Monitor if Wanted
 
 Create a MQTT sensor in Home Assistant for each command timestamp you want to monitor. Below is an example for the getLocation command and other commands follow a similar format.
 
@@ -222,8 +222,8 @@ mqtt:
       payload_available: "false"
       payload_not_available: "true"
       state_topic: "homeassistant/YOUR_VEHICLE_VIN/command/getLocation/state"
-      value_template: "{{ value_json.completionTimestamp}}"  
-      icon: mdi:calendar-clock  
+      value_template: "{{ value_json.completionTimestamp}}"
+      icon: mdi:calendar-clock
       device_class: timestamp
 ```
 
@@ -272,10 +272,10 @@ Commands Implemented in this Program:
 
 ### Lovelace Dashboard
 
-* This is just an example and is meant to show some possible usage modes.
-* The sensors shown in this example may not exist in your vehicle.
-* It is not all-inclusive and is not intended to be for the purpose of copy-and-use-as-is.
-* Please modify as necessary for your specific needs.
+- This is just an example and is meant to show some possible usage modes.
+- The sensors shown in this example may not exist in your vehicle.
+- It is not all-inclusive and is not intended to be for the purpose of copy-and-use-as-is.
+- Please modify as necessary for your specific needs.
 
 Create a new dashboard, or use the cards in your own view. The `mdi:car-electric` icon works well here.
 
@@ -309,16 +309,16 @@ views:
         entities:
           - entity: sensor.<vehicle_name>_tire_pressure_left_front
             name: Left Front
-            icon: 'mdi:car-tire-alert'
+            icon: "mdi:car-tire-alert"
           - entity: sensor.<vehicle_name>_tire_pressure_right_front
             name: Right Front
-            icon: 'mdi:car-tire-alert'
+            icon: "mdi:car-tire-alert"
           - entity: sensor.<vehicle_name>_tire_pressure_left_rear
             name: Left Rear
-            icon: 'mdi:car-tire-alert'
+            icon: "mdi:car-tire-alert"
           - entity: sensor.<vehicle_name>_tire_pressure_right_rear
             name: Right Rear
-            icon: 'mdi:car-tire-alert'
+            icon: "mdi:car-tire-alert"
         columns: 2
         title: Tires
       - type: entities
@@ -329,7 +329,7 @@ views:
           - entity: sensor.<vehicle_name>_electric_economy
         state_color: true
         footer:
-          type: 'custom:mini-graph-card'
+          type: "custom:mini-graph-card"
           entities:
             - entity: sensor.<vehicle_name>_odometer
             - entity: sensor.<vehicle_name>_lifetime_energy_used
@@ -355,7 +355,7 @@ views:
           - entity: sensor.<vehicle_name>_charger_power_level
         title: Charging
         state_color: true
-      - type: 'custom:mini-graph-card'
+      - type: "custom:mini-graph-card"
         entities:
           - entity: sensor.<vehicle_name>_last_trip_total_distance
           - entity: sensor.<vehicle_name>_last_trip_electric_econ
@@ -368,7 +368,7 @@ views:
         show:
           graph: bar
           icon: false
-      - type: 'custom:mini-graph-card'
+      - type: "custom:mini-graph-card"
         entities:
           - entity: sensor.<vehicle_name>_ambient_air_temperature
             name: Ambient
@@ -396,7 +396,7 @@ views:
             #entity: script.car_cancel_start_vehicle ## If you want to use a script instead of the auto-created button
             name: Cancel Start
             show_state: false
-            icon: 'mdi:car-off'
+            icon: "mdi:car-off"
           - type: button
             tap_action:
               action: toggle
@@ -404,7 +404,7 @@ views:
             #entity: script.car_lock_doors ## If you want to use a script instead of the auto-created button
             name: Lock
             show_state: false
-            icon: 'mdi:car-door-lock'
+            icon: "mdi:car-door-lock"
           - type: button
             tap_action:
               action: toggle
@@ -412,7 +412,7 @@ views:
             #entity: script.car_unlock_doors ## If you want to use a script instead of the auto-created button
             name: Unlock
             show_state: false
-            icon: 'mdi:car-door'
+            icon: "mdi:car-door"
         columns: 2
 title: Bolt EV
 ```
