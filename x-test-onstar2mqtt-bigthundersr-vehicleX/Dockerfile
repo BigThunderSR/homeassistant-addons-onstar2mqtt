@@ -1,12 +1,5 @@
-#ARG BUILD_FROM
-#FROM $BUILD_FROM
-
 ARG BUILD_FROM
-ARG ARCH
-
-# Use Alpine 3.18 for armhf and armv7, otherwise use $BUILD_FROM
-FROM ${ARCH:+alpine:3.18} AS base
-FROM ${ARCH:-$BUILD_FROM}
+FROM $BUILD_FROM
 
 ENV LANG C.UTF-8
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
