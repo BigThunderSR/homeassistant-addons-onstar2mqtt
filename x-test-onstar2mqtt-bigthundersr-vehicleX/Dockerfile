@@ -1,13 +1,16 @@
 ARG BUILD_FROM
 FROM $BUILD_FROM
-FROM node:18-alpine
 
-#ENV LANG C.UTF-8
-#SHELL ["/bin/bash", "-o", "pipefail", "-c"]
+ENV LANG C.UTF-8
+SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
-#RUN apk add --no-cache \
-#    nodejs \
-#    npm
+RUN apk add --no-cache \
+    nodejs \
+    npm
+
+RUN npm -v
+RUN npm update -g --no-fund
+RUN npm -v
 
 RUN mkdir /app
 WORKDIR /app

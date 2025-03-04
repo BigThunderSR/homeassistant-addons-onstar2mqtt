@@ -10,7 +10,7 @@ arch:
   - amd64
   - armhf
   - armv7
-  #- i386
+  - i386
 map:
   - share
   - ssl
