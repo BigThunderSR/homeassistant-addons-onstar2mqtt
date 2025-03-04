@@ -7,7 +7,7 @@ permissions:
 
 env:
   BUILD_ARGS: "--test"
-  MONITORED_FILES: "build.yaml config.yaml Dockerfile rootfs"
+  MONITORED_FILES: "build.yaml config.yaml Dockerfile rootfs/**"
 
 on:
   workflow_dispatch:
@@ -38,7 +38,11 @@ jobs:
 
       - name: Get changed files
         id: changed_files
-        uses: jitterbit/get-changed-files@v1
+        uses: dorny/paths-filter@v2
+        with:
+          filters: |
+            monitored:
+              paths: ${{ env.MONITORED_FILES }}
 
       - name: Find add-on directories
         id: addons
@@ -47,7 +51,7 @@ jobs:
       - name: Get changed add-ons
         id: changed_addons
         env:
-          CHANGED_FILES: ${{ steps.changed_files.outputs.all }}
+          CHANGED_FILES: ${{ steps.changed_files.outputs.monitored }}
         run: |
           declare -a changed_addons
           for addon in ${{ steps.addons.outputs.addons }}; do
