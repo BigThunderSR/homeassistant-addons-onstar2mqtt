@@ -40,7 +40,7 @@
     "winston": "^3.17.0"
   },
   "devDependencies": {
-    "@babel/eslint-parser": "^7.26.8",
+    "@babel/eslint-parser": "^7.26.10",
     "@babel/eslint-plugin": "^7.25.9",
     "@babel/plugin-syntax-class-properties": "^7.12.13",
     "@babel/preset-env": "^7.26.9",
