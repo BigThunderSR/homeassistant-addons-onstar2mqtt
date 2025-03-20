@@ -31,3 +31,23 @@ updates:
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 50
+  - package-ecosystem: "docker"
+    directory: "/onstar2mqtt-bigthundersr-vehicle1"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 50
+  - package-ecosystem: "docker"
+    directory: "/onstar2mqtt-bigthundersr-vehicle2"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 50
+  - package-ecosystem: "docker"
+    directory: "/onstar2mqtt-bigthundersr-vehicle3"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 50
+  - package-ecosystem: "docker"
+    directory: "/onstar2mqtt-bigthundersr-vehicle4"
+    schedule:
+      interval: "weekly"
+    open-pull-requests-limit: 50
