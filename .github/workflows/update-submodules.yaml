@@ -22,11 +22,13 @@ jobs:
 
       - name: Update submodules
         run: |
-          #git submodule update --remote --merge
+          # git submodule update --remote --merge
           git submodule update
 
       - name: Run link script
-        run: sh ./submodules/link_bigthundersr.sh
+        run: |
+          cd submodules
+          sh link_bigthundersr.sh
 
       - name: Commit and push changes
         run: |
