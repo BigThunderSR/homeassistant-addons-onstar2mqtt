@@ -21,7 +21,7 @@ jobs:
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
 
       - name: Update submodules
-        run: |
+        run:
           # git submodule update --remote --merge
           git submodule update
 
