@@ -20,10 +20,12 @@ jobs:
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
 
-      - name: Update submodules
-        run:
+      - name: Update from upstream
+        run: |
           # git submodule update --remote --merge
-          git submodule update
+          # git submodule update
+          cd ./submodules/bigthundersr/onstar2mqtt
+          git pull
 
       - name: Run link script
         run: |
