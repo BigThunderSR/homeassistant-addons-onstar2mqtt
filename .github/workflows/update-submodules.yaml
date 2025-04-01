@@ -28,8 +28,9 @@ jobs:
       - name: Import GPG private key for signing
         env:
           GPG_TTY: /dev/null
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         run: |
-          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --yes --pinentry-mode loopback --import
+          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --yes --pinentry-mode loopback --passphrase "$GPG_PASSPHRASE" --import
           GPG_KEY_ID=$(gpg --list-secret-keys --keyid-format LONG | grep sec | awk '{print $2}' | cut -d'/' -f2)
           git config --global gpg.program gpg
           git config --global commit.gpgsign true
@@ -60,10 +61,11 @@ jobs:
       - name: Commit and push changes
         env:
           GPG_TTY: /dev/null
+          GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
         run: |
           git add .
           if ! git diff-index --quiet HEAD; then
-            git commit -S -m "Pick up upstream updates"
+            git commit -S --passphrase "$GPG_PASSPHRASE" -m "Pick up upstream updates"
             git push
           else
             echo "No changes to commit"
