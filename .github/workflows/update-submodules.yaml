@@ -19,7 +19,13 @@ jobs:
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
-          git remote set-url origin https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository }}
+
+      - name: Configure Git for token signing
+        run: |
+          git config --global user.signingkey "${{ secrets.GITHUB_TOKEN }}"
+          git config --global commit.gpgsign true
+          git config --global gpg.format ssh
+          git config --global gpg.ssh.allowedSignersFile /dev/null
 
       - name: Update from upstream
         run: |
@@ -36,5 +42,5 @@ jobs:
       - name: Commit and push changes
         run: |
           git add .
-          git commit -m "Pickup upstream updates"
+          git commit -m "Pick up upstream updates"
           git push
