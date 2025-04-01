@@ -30,11 +30,12 @@ jobs:
           mkdir -p ~/.ssh
           echo "${{ secrets.GH_ACTIONS_COMMIT_TOKEN }}" > ~/.ssh/id_ed25519
           chmod 600 ~/.ssh/id_ed25519
+          ssh-keygen -y -f ~/.ssh/id_ed25519 > ~/.ssh/id_ed25519.pub
         shell: bash # Explicitly set the shell for security
 
       - name: Configure Git for SSH signing
         run: |
-          git config --global user.signingkey ~/.ssh/id_ed25519
+          git config --global user.signingkey ~/.ssh/id_ed25519.pub
           git config --global commit.gpgsign true
           git config --global gpg.format ssh
         shell: bash
@@ -54,6 +55,11 @@ jobs:
       - name: Commit and push changes
         run: |
           git add .
-          git commit -m "Pick up upstream updates"
+          GIT_SSH_COMMAND="ssh -i ~/.ssh/id_ed25519 -o IdentitiesOnly=yes" git commit -S -m "Pick up upstream updates"
           git push
+        shell: bash
+
+      - name: Cleanup SSH key
+        run: |
+          shred -u ~/.ssh/id_ed25519 ~/.ssh/id_ed25519.pub
         shell: bash
