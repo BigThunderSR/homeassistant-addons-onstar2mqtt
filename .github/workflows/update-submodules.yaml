@@ -28,11 +28,14 @@ jobs:
       - name: Import GPG private key for signing
         run: |
           echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
+          GPG_KEY_ID=$(gpg --list-secret-keys --keyid-format LONG | grep sec | awk '{print $2}' | cut -d'/' -f2)
+          gpg --batch --yes --default-key "$GPG_KEY_ID"
         shell: bash
 
       - name: Configure Git for GPG signing
         run: |
-          git config --global user.signingkey "$(gpg --list-secret-keys --keyid-format LONG | grep sec | awk '{print $2}' | cut -d'/' -f2)"
+          GPG_KEY_ID=$(gpg --list-secret-keys --keyid-format LONG | grep sec | awk '{print $2}' | cut -d'/' -f2)
+          git config --global user.signingkey "$GPG_KEY_ID"
           git config --global commit.gpgsign true
         shell: bash
 
