@@ -9,38 +9,51 @@ jobs:
   update-submodules:
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: write # Restrict permissions to only what is needed
+      id-token: write # Required for secure authentication if needed
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           submodules: recursive # Checkout submodules recursively
+          token: ${{ secrets.GITHUB_TOKEN }} # Explicitly use the token securely
 
       - name: Set up Git
         run: |
           git config --global user.name 'github-actions[bot]'
           git config --global user.email 'github-actions[bot]@users.noreply.github.com'
 
-      - name: Configure Git for token signing
+      - name: Import SSH private key for signing
         run: |
-          git config --global user.signingkey "${{ secrets.GITHUB_TOKEN }}"
+          mkdir -p ~/.ssh
+          echo "${{ secrets.GH_ACTIONS_COMMIT_TOKEN }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+        shell: bash # Explicitly set the shell for security
+
+      - name: Configure Git for SSH signing
+        run: |
+          git config --global user.signingkey ~/.ssh/id_ed25519
           git config --global commit.gpgsign true
           git config --global gpg.format ssh
-          git config --global gpg.ssh.allowedSignersFile /dev/null
+        shell: bash
 
       - name: Update from upstream
         run: |
-          # git submodule update --remote --merge
-          # git submodule update
           cd ./submodules/bigthundersr/onstar2mqtt
           git pull
+        shell: bash
 
       - name: Run link script
         run: |
           cd submodules
           sh link_bigthundersr.sh
+        shell: bash
 
       - name: Commit and push changes
         run: |
           git add .
           git commit -m "Pick up upstream updates"
           git push
+        shell: bash
