@@ -1,0 +1,34 @@
+name: Update Submodules
+
+on:
+  #schedule:
+  #  - cron: '0 0 * * *' # This will run the workflow daily at midnight
+  workflow_dispatch: # Allows manual triggering of the workflow
+
+jobs:
+  update-submodules:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+        with:
+          submodules: recursive # Checkout submodules recursively
+
+      - name: Set up Git
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+
+      - name: Update submodules
+        run: |
+          git submodule update --remote --merge
+
+      - name: Run link script
+        run: ./submodules/link_bigthundersr.sh
+
+      - name: Commit and push changes
+        run: |
+          git add .
+          git commit -m "Pickup upstream updates"
+          git push
