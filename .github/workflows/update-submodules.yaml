@@ -63,7 +63,7 @@ jobs:
         run: |
           git add .
           if ! git diff-index --quiet HEAD; then
-            git commit -S -m "Pick up upstream updates" --gpg-sign --yes
+            git commit -S -m "Pick up upstream updates"
             git push
           else
             echo "No changes to commit"
