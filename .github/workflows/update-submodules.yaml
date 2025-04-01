@@ -1,8 +1,8 @@
 name: Update Submodules
 
 on:
-  #schedule:
-  #  - cron: '0 0 * * *' # This will run the workflow daily at midnight
+  schedule:
+    - cron: '0 0 * * *' # Run daily at midnight
   workflow_dispatch: # Allows manual triggering of the workflow
 
 jobs:
@@ -11,7 +11,6 @@ jobs:
 
     permissions:
       contents: write # Restrict permissions to only what is needed
-      id-token: write # Required for secure authentication if needed
 
     steps:
       - name: Checkout repository
@@ -19,6 +18,7 @@ jobs:
         with:
           submodules: recursive # Checkout submodules recursively
           token: ${{ secrets.GITHUB_TOKEN }} # Explicitly use the token securely
+          fetch-depth: 1
 
       - name: Set up Git
         run: |
@@ -47,14 +47,14 @@ jobs:
 
       - name: Update from upstream
         run: |
-          cd ./submodules/bigthundersr/onstar2mqtt
-          git pull
+          cd ./submodules/bigthundersr/onstar2mqtt || exit 1
+          git pull || exit 1
         shell: bash
 
       - name: Run link script
         run: |
-          cd submodules
-          sh link_bigthundersr.sh
+          cd submodules || exit 1
+          sh link_bigthundersr.sh || exit 1
         shell: bash
 
       - name: Commit and push changes
