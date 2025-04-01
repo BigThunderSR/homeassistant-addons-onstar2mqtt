@@ -32,6 +32,7 @@ jobs:
 
       - name: Commit and push changes
         run: |
+          cd ..
           git add .
           git commit -m "Pickup upstream updates"
           git push
