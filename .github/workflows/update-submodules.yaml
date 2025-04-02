@@ -1,8 +1,6 @@
 name: Update Submodules
 
 on:
-  #schedule:
-  #  - cron: '0 0 * * *' # Run daily at midnight
   workflow_dispatch: # Allows manual triggering of the workflow
 
 jobs:
@@ -20,58 +18,26 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }} # Explicitly use the token securely
           fetch-depth: 1
 
-      - name: Set up Git
-        run: |
-          git config --global user.name 'BigThunderSR'
-          git config --global user.email '17056173+BigThunderSR@users.noreply.github.com'
-
-      - name: Import GPG private key for signing
-        env:
-          GPG_TTY: /dev/null
-        run: |
-          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
-          GPG_KEY_ID=$(gpg --list-secret-keys --keyid-format LONG | grep sec | awk '{print $2}' | cut -d'/' -f2)
-          echo -e "5\ny\n" | gpg --batch --command-fd 0 --expert --edit-key $GPG_KEY_ID trust
-          git config --global gpg.program gpg
-          git config --global commit.gpgsign true
-          git config --global user.signingkey "$GPG_KEY_ID"
-          git config --global tag.gpgSign true  # Sign all tags
-          git config --global commit.gpgSign true # Sign all commits
-        shell: bash
-
-      - name: Configure Git for GPG signing
-        env:
-          GPG_TTY: /dev/null
-        run: |
-          echo "allow-loopback-pinentry" > ~/.gnupg/gpg-agent.conf
-          gpgconf --reload gpg-agent
-        shell: bash
-
-      - name: Verify GPG key configuration
-        run: |
-          gpg --list-secret-keys --keyid-format LONG
-          git config --list --show-origin | grep signingkey
-        shell: bash
+      - name: Import GPG key
+        uses: crazy-max/ghaction-import-gpg@v6
+        with:
+          gpg_private_key: ${{ secrets.GPG_PRIVATE_KEY }}
+          git_user_signingkey: true
+          git_commit_gpgsign: true
 
       - name: Update from upstream
         run: |
           cd ./submodules/bigthundersr/onstar2mqtt || exit 1
           git pull || exit 1
-        shell: bash
 
       - name: Run link script
         run: |
           cd submodules || exit 1
           sh link_bigthundersr.sh || exit 1
-        shell: bash
 
       - name: Commit and push changes
-        env:
-          GPG_TTY: /dev/null
         run: |
           git add .
-          gpg --list-secret-keys --keyid-format LONG
-          git config --list --show-origin | grep signingkey
           if ! git diff-index --quiet HEAD; then
             echo "Changes detected, committing..."
             git commit -S -m "Pick up upstream updates"
@@ -80,11 +46,3 @@ jobs:
           else
             echo "No changes to commit"
           fi
-        shell: bash
-
-      - name: Cleanup GPG key
-        env:
-          GPG_TTY: /dev/null
-        run: |
-          gpg --batch --delete-secret-keys "$(gpg --list-secret-keys --keyid-format LONG | grep sec | awk '{print $2}' | cut -d'/' -f2)"
-        shell: bash
