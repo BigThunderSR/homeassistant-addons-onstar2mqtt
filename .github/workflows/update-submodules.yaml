@@ -1,8 +1,8 @@
 name: Update Submodules
 
 on:
-  schedule:
-    - cron: '0 0 * * *' # Run daily at midnight
+  #schedule:
+  #  - cron: '0 0 * * *' # Run daily at midnight
   workflow_dispatch: # Allows manual triggering of the workflow
 
 jobs:
