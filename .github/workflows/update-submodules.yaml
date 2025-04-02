@@ -27,7 +27,7 @@ jobs:
 
       - name: Update from upstream
         run: 
-          git submodule foreach --recursive git pull
+          git submodule foreach --recursive git pull --rebase
           # cd ./submodules/bigthundersr/onstar2mqtt || exit 1
           # git pull || exit 1
 
