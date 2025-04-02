@@ -27,8 +27,8 @@ jobs:
 
       - name: Update from upstream
         run: |
-          git fetch origin main
-          git reset --hard origin/main
+          git submodule update --init --recursive
+          git submodule foreach --recursive 'git fetch && git reset --hard origin/$(git rev-parse --abbrev-ref HEAD)'
           # git submodule foreach --recursive git pull --rebase
           # cd ./submodules/bigthundersr/onstar2mqtt || exit 1
           # git pull || exit 1
