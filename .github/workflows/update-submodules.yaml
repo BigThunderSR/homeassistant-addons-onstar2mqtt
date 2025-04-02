@@ -27,8 +27,9 @@ jobs:
 
       - name: Update from upstream
         run: |
-          cd ./submodules/bigthundersr/onstar2mqtt || exit 1
-          git pull || exit 1
+          git submodule update --remote
+          # cd ./submodules/bigthundersr/onstar2mqtt || exit 1
+          # git pull || exit 1
 
       - name: Run link script
         run: |
