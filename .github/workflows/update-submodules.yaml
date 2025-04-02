@@ -33,7 +33,12 @@ jobs:
 
       - name: Run link script
         run: |
-          cd submodules || exit 1
+          if [ -d "submodules" ]; then
+            cd submodules || exit 1
+          else
+            echo "Directory 'submodules' does not exist. Exiting..."
+            exit 1
+          fi
           sh link_bigthundersr.sh || exit 1
 
       - name: Commit and push changes
@@ -43,7 +48,7 @@ jobs:
             echo "Changes detected, committing..."
             git commit -S -m "Pick up upstream updates"
             echo "Pushing changes..."
-            git push
+            git push origin main
           else
             echo "No changes to commit"
           fi
