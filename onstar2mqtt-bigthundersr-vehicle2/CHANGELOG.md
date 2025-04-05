@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.21.0
+  
+- Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.21.0](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.21.0)
+- Add support for new Equinox EV sensors
+- Migrate to NodeJS 22
+
 ## 1.20.2
 
 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.20.2](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.20.2)
