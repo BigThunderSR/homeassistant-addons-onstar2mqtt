@@ -151,6 +151,16 @@ class MQTT {
             case 'EV PLUG STATE':
             case 'PRIORITY CHARGE INDICATOR':
             case 'PRIORITY CHARGE STATUS':
+            case 'LOC BASED CHARGING HOME LOC STORED':
+            case 'SCHEDULED CABIN PRECONDTION CUSTOM SET REQ ACTIVE': // There is a typo in the data coming from the API; 'PRECONDTION' is missing an 'i'.
+            case 'VEH IN HOME LOCATION':
+            case 'VEH NOT IN HOME LOC':
+            case 'VEH LOCATION STATUS INVALID':
+            case 'CABIN PRECOND REQUEST':
+            case 'PREF CHARGING TIMES SETTING':
+            case 'LOCATION BASE CHARGE SETTING':
+            case 'CABIN PRECONDITIONING REQUEST':
+            case 'HIGH VOLTAGE BATTERY PRECONDITIONING STATUS':
             case 'EXHST PART FLTR WARN ON':
             case 'EXHST PART FLTR WARN2 ON':
                 return 'binary_sensor';
@@ -678,6 +688,42 @@ class MQTT {
                 case 'PRIORITY CHARGE STATUS': // NOT_ACTIVE/ACTIVE
                     value = e.value === 'ACTIVE';
                     break;
+                case 'LOC BASED CHARGING HOME LOC STORED': // FALSE/TRUE
+                    value = e.value === 'TRUE';
+                    break;
+                case 'SCHEDULED CABIN PRECONDTION CUSTOM SET REQ ACTIVE': // FALSE/TRUE - There is a typo in the data coming from the API; 'PRECONDTION' is missing an 'i'.
+                    value = e.value === 'TRUE';
+                    break;
+                case 'VEH IN HOME LOCATION': // FALSE/TRUE
+                    value = e.value === 'TRUE';
+                    break;
+                case 'VEH NOT IN HOME LOC': // FALSE/TRUE
+                    value = e.value === 'TRUE';
+                    break;
+                case 'VEH LOCATION STATUS INVALID': // FALSE/TRUE
+                    value = e.value === 'TRUE';
+                    break;
+                case 'CABIN PRECOND REQUEST': // OFF/ON
+                    value = e.value === 'ON';
+                    break;
+                case 'PREF CHARGING TIMES SETTING': // OFF/ON
+                    value = e.value === 'ON';
+                    break;
+                case 'LOCATION BASE CHARGE SETTING': // OFF/ON
+                    value = e.value === 'ON';
+                    break;
+                case 'CABIN PRECONDITIONING REQUEST': // NO_ACTION/ACTION
+                    value = e.value === 'ACTION';
+                    break;
+                case 'HIGH VOLTAGE BATTERY PRECONDITIONING STATUS': // DISABLED/ENABLED
+                    value = e.value === 'ENABLED';
+                    break;
+                case 'EXHST PART FLTR WARN ON': // FALSE/TRUE
+                    value = e.value === 'TRUE';
+                    break;
+                case 'EXHST PART FLTR WARN2 ON': // FALSE/TRUE
+                    value = e.value === 'TRUE';
+                    break;
                 default:
                     // coerce to number if possible, API uses strings :eyeroll:
                     // eslint-disable-next-line no-case-declarations
@@ -752,6 +798,8 @@ class MQTT {
             case 'AMBIENT AIR TEMPERATURE F':
             case 'ENGINE COOLANT TEMP':
             case 'ENGINE COOLANT TEMP F':
+            case 'SCHEDULED CABIN PRECONDTION CUSTOM SET VALUE':
+            case 'SCHEDULED CABIN PRECONDTION CUSTOM SET VALUE F':
                 return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'temperature');
             case 'EV BATTERY LEVEL':
                 return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'battery');
@@ -779,11 +827,26 @@ class MQTT {
             // binary_sensor, no state_class and no applicable device_class
             case 'PRIORITY CHARGE INDICATOR': // FALSE/TRUE
             case 'PRIORITY CHARGE STATUS': // NOT_ACTIVE/ACTIVE
+            case 'LOC BASED CHARGING HOME LOC STORED': // FALSE/TRUE
+            case 'SCHEDULED CABIN PRECONDTION CUSTOM SET REQ ACTIVE': // FALSE/TRUE - There is a typo in the data coming from the API; 'PRECONDTION' is missing an 'i'.
+            case 'VEH IN HOME LOCATION': // FALSE/TRUE
+            case 'VEH NOT IN HOME LOC': // FALSE/TRUE
+            case 'VEH LOCATION STATUS INVALID': // FALSE/TRUE
+            case 'CABIN PRECOND REQUEST': // OFF/ON
+            case 'PREF CHARGING TIMES SETTING': // OFF/On
+            case 'LOCATION BASE CHARGE SETTING': // OFF/On
+            case 'CABIN PRECONDITIONING REQUEST': // NO_ACTION/ACTION
+            case 'HIGH VOLTAGE BATTERY PRECONDITIONING STATUS': // DISABLED/ENABLED
             case 'EXHST PART FLTR WARN ON': // FALSE/TRUE - Diesel Exhaust Particulate Filter Warning On
             case 'EXHST PART FLTR WARN2 ON': // FALSE/TRUE - Diesel Exhaust Particulate Filter Warning 2 On
                 return this.mapBinarySensorConfigPayload(diag, diagEl);
             // non-numeric sensor, no state_class or device_class
             case 'CHARGER POWER LEVEL':
+            case 'WEEKEND END TIME': // 08:00
+            case 'WEEKEND START TIME': // 08:00
+            case 'WEEKDAY START TIME': // 08:00
+            case 'WEEKDAY END TIME': // 08:00
+            case 'CHARGE DAY OF WEEK': // Monday
             case 'EXHST FL LEVL WARN STATUS': // Diesel Exhaust Fluid Level Warning Status
                 return this.mapSensorConfigPayload(diag, diagEl);
             // has state_class, new device class, camel case name
