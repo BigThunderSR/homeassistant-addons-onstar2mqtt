@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.21.1
+  
+- Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.21.1](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.21.1)
+- Map Additional EV Sensors and Address Numeric Sensors with Units "XXX"
+
 ## 1.21.0
   
 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.21.0](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.21.0)
