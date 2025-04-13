@@ -767,8 +767,8 @@ class MQTT {
 
     mapSensorConfigPayload(diag, diagEl, state_class, device_class, name, attr) {
         name = name || MQTT.convertFriendlyName(diagEl.name);
-        // Ignore units that are "NA"
-        const unit = diagEl.unit && diagEl.unit.toUpperCase() === 'NA' ? undefined : diagEl.unit;
+        // Ignore units that are "NA" or "XXX"
+        const unit = diagEl.unit && !['NA', 'XXX'].includes(diagEl.unit.toUpperCase()) ? diagEl.unit : undefined;
         return _.extend(
             this.mapBaseConfigPayload(diag, diagEl, state_class, device_class, name, attr),
             { unit_of_measurement: unit });
@@ -858,6 +858,8 @@ class MQTT {
             case 'EV RANGE MI':
             case 'LAST TRIP TOTAL DISTANCE':
             case 'LAST TRIP TOTAL DISTANCE MI':
+            case 'PROJECTED EV RANGE GENERAL AWAY TARGET CHARGE SET':
+            case 'PROJECTED EV RANGE GENERAL AWAY TARGET CHARGE SET MI':
                 return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'distance');
             case 'ODOMETER':
             case 'ODOMETER MI':
