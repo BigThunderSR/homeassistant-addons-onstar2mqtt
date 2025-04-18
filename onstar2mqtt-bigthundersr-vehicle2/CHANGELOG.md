@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.21.2
+  
+- Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.21.2](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.21.2)
+- Fix for authentication errors
+
 ## 1.21.1
   
 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.21.1](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.21.1)
