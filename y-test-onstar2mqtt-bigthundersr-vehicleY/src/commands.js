@@ -59,7 +59,7 @@ class Commands {
     static getFunctionNames() {
         return Object.getOwnPropertyNames(this.prototype).filter(name => typeof this.prototype[name] === 'function' && name !== 'constructor');
     }
-    
+
     constructor(onstar) {
         this.onstar = onstar;
     }

@@ -2,7 +2,7 @@ const _ = require('lodash');
 const convert = require('convert-units');
 
 class Measurement {
-    static CONVERTABLE_UNITS = [
+    static CONVERTIBLE_UNITS = [
         '°C',
         'km',
         'kPa',
@@ -15,7 +15,7 @@ class Measurement {
     constructor(value, unit) {
         this.value = value;
         this.unit = Measurement.correctUnitName(unit);
-        this.isConvertible = _.includes(Measurement.CONVERTABLE_UNITS, this.unit);
+        this.isConvertible = _.includes(Measurement.CONVERTIBLE_UNITS, this.unit);
     }
 
     /**
