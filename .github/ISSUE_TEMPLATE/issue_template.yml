@@ -7,7 +7,7 @@ body:
     attributes:
       value: |
         Thank you for taking the time to fill out this request for your issue! Please use the [Discussions](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/discussions) tab for general questions or help with the project.
-
+        NOTE: This repo is for users who use the Home Assistant add-on version of onstar2mqtt. If you are using the standalone Docker container version, please submit your issue [here](https://github.com/BigThunderSR/onstar2mqtt)
   - type: textarea
     id: description
     attributes:
