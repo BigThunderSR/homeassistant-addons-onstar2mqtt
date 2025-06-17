@@ -36,7 +36,7 @@ configuration:
   TOKEN_LOCATION:
     name: Token Location
     description: >-
-      Location to store the long-lived OnStar tokens to persist container rebuilds. Recommendation is to use /ssl/vehicle2 (you will need to create this directory first) if you wish to change the token location. Optional.
+      Strongly Recommended Setting: Location to store the long-lived OnStar tokens to persist container rebuilds. Recommendation is to use /ssl/vehicle2 (you will need to create this directory first) if you wish to change the token location. Optional.
   ONSTAR_URL:
     name: OnStar URL
     description: >-

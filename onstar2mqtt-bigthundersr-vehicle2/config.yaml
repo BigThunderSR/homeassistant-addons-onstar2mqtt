@@ -1,5 +1,5 @@
 name: OnStar2MQTT Home Assistant Add-on (BigThunderSR) for Vehicle 2
-version: 1.22.0
+version: 1.23.0
 slug: onstar2mqtt_bigthundersr_vehicle2
 description: Home Assistant Add On Version of BigThunderSR/onstar2mqtt for Vehicle 2
 codenotary: bigthundersr@outlook.com
@@ -25,7 +25,7 @@ options:
   ONSTAR_PASSWORD: ""
   ONSTAR_TOTP: ""
   ONSTAR_PIN: ""
-  TOKEN_LOCATION: ""
+  TOKEN_LOCATION: "/ssl/vehicle2"
   ONSTAR_URL: "https://api.gm.com" #This value is hard coded in the program code and cannot be changed at this time
   ONSTAR_REFRESH: 1800000
   ONSTAR_POLL_INTERVAL: 6

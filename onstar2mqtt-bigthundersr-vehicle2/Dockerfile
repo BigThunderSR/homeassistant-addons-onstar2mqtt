@@ -4,11 +4,15 @@ FROM $BUILD_FROM
 ENV LANG C.UTF-8
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
-RUN apk add --no-cache \
-    nodejs \
-    npm
+# Replace Alpine's apk with Debian's apt
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        nodejs \
+        npm \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN mkdir /app
+RUN mkdir -p /app
 WORKDIR /app
 
 COPY ["package.json", "/app/"]

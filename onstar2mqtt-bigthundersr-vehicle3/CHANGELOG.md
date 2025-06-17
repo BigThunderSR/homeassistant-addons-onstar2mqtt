@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.23.0
+
+- Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.23.0](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.23.0)
+- Switch to Debian based images for new authentication compatibility
+- Update to help text in configuration options
+
 ## 1.22.0
 
 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.22.0](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.22.0)
