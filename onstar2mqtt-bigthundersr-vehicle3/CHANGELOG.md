@@ -4,7 +4,7 @@
 
 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.22.0](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.22.0)
 - Fix for latest authentication errors
-- Remove support for ARMv7 architectures
+- Remove support for ARMHF and ARMv7 architectures
 
 ## 1.21.2
   
