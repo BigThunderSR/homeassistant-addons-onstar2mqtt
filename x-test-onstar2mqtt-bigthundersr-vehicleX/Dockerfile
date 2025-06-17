@@ -14,6 +14,7 @@ WORKDIR /app
 COPY ["package.json", "/app/"]
 COPY ["package-lock.json", "/app/"]
 RUN npm ci --omit=dev --no-fund --legacy-peer-deps
+RUN npx patchright install chromium --with-deps
 
 COPY ["overrides/index.cjs", "/app/node_modules/onstarjs/dist/"]
 COPY ["overrides/index.mjs", "/app/node_modules/onstarjs/dist/"]
