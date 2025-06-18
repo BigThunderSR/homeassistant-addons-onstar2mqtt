@@ -6,6 +6,7 @@
 ![No Support for armhf Architecture][armhf-shield]
 ![No Support for armv7 Architecture][armv7-shield]
 ![No Support for i386 Architecture][i386-shield]
+
 [![CodeQL](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/actions/workflows/github-code-scanning/codeql)
 [![Lint](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/actions/workflows/lint.yaml/badge.svg)](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/actions/workflows/lint.yaml)
 [![Builder](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/actions/workflows/builder.yaml/badge.svg)](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/actions/workflows/builder.yaml)
