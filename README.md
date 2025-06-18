@@ -3,6 +3,7 @@
 [![Home Assistant Add-on](https://img.shields.io/badge/home_assistant-add--on-blue.svg?logo=homeassistant&logoColor=white)](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt)
 ![Supports aarch64 Architecture][aarch64-shield]
 ![Supports amd64 Architecture][amd64-shield]
+
 ![No Support for armhf Architecture][armhf-shield]
 ![No Support for armv7 Architecture][armv7-shield]
 ![No Support for i386 Architecture][i386-shield]
