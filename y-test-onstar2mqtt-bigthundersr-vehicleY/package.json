@@ -52,7 +52,7 @@
     "eslint-plugin-n": "^17.19.0",
     "eslint-plugin-promise": "^7.2.1",
     "globals": "^16.2.0",
-    "mocha": "^11.5.0",
+    "mocha": "^11.6.0",
     "nyc": "^17.1.0"
   }
 }
