@@ -126,6 +126,12 @@ Enable at your own risk and you assume all responsibility for your actions.
 
 - [https://github.com/BigThunderSR/node-red-contrib-onstar2](https://github.com/BigThunderSR/node-red-contrib-onstar2)
 
+## Having Issues?
+
+- Please see the following for solutions and responses to common problems and questions: 
+  - https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/discussions
+  - https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/issues
+
 <!--## Example Lovelace Dashboard Using Example Code in Documentation Tab
 
 ![lovelace screenshot](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/raw/main/images/lovelace.png)
