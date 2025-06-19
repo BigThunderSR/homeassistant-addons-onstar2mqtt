@@ -66,6 +66,12 @@ Collect the following information:
 1. Your car's VIN. Easily found in the monthly OnStar diagnostic emails.
 1. MQTT server information: hostname, username, password
 
+### Home Assistant configuration templates
+
+MQTT auto discovery is enabled. For further integrations and screenshots see Documentation page within the add-on.
+
+### Feature Updates of Note
+
 - **NEW! - Provide MQTT topic (MQTT_ONSTAR_POLLING_STATUS_TOPIC) for Onstar Data Polling Status to monitor success/failure when OnStar is polled for data**
   - MQTT_ONSTAR_POLLING_STATUS_TOPIC/lastpollsuccessful - "true" or "false" depending on status of last poll
   - MQTT_ONSTAR_POLLING_STATUS_TOPIC/state - Polling Status and Detailed Error Messages in JSON
