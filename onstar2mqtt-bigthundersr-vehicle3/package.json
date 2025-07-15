@@ -33,7 +33,7 @@
     "axios": "^1.10.0",
     "chromium-bidi": "^5.3.1",
     "convert-units": "^2.3.4",
-    "dotenv": "^17.1.0",
+    "dotenv": "^17.2.0",
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
     "onstarjs2": "^2.6.7",
