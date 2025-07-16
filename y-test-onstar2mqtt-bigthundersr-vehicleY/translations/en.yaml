@@ -25,10 +25,18 @@ configuration:
     name: OnStar Password
     description: >-
       Password for your OnStar Account.
+  ONSTAR_TOTP:
+    name: OnStar TOTP Key
+    description: >-
+      TOTP Key for your OnStar Account. This value is 16 characters long and is alpha-numeric. If you are not entering an alpha-numeric value that is 16 characters long, you are not entering a valid TOTP key. NOTE: If you are providing a token obtained using email-based 2FA and provided through the "Token Location" field below, enter any value in this TOTP Key field. This TOTP Key will be ignored and the token from the "Token Location" will be used.
   ONSTAR_PIN:
     name: OnStar PIN
     description: >-
       PIN for your OnStar Account.
+  TOKEN_LOCATION:
+    name: Token Location
+    description: >-
+      Strongly Recommended Setting: Location to store the long-lived OnStar tokens to persist container rebuilds. Recommendation is to use /ssl/vehicle2 (NOTE: you will need to create this directory first) if you wish to change the token location. Optional but strongly recommended. Remove default value if you wish to use the default location of in-memory storage (not recommended).
   ONSTAR_URL:
     name: OnStar URL
     description: >-
@@ -70,7 +78,13 @@ configuration:
   MQTT_ONSTAR_POLLING_STATUS_TOPIC:
     name: MQTT OnSTAR Polling Status Topic
     description: >-
-      Topic for publishing OnStar data polling success/failure True/False status and detailed messages to broker/server. Optional.      
+      Topic for publishing OnStar data polling success/failure True/False status and detailed messages to broker/server. Optional.
+  MQTT_LIST_ALL_SENSORS_TOGETHER:
+    name: MQTT List All Sensors Together
+    description: >-
+      List all numeric/component and command status sensors together in a single MQTT device group instead of the default which groups numeric/component 
+      sensors in one MQTT device and command status sensors in a separate MQTT device. 
+      Default is "false".     
   MQTT_TLS:
     name: MQTT TLS
     description: >-
