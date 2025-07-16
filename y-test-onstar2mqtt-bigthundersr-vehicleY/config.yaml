@@ -1,5 +1,5 @@
 name: Y - Do NOT Install - Testing - OnStar2MQTT Home Assistant Add-on (BigThunderSR) for Vehicle 1
-version: 1.21.2
+version: 1.23.1
 slug: y_test_onstar2mqtt_bigthundersr_vehicle1
 description: Do NOT Install - Testing - Home Assistant Add On Version of BigThunderSR/onstar2mqtt for Vehicle 1
 codenotary: bigthundersr@outlook.com
@@ -8,9 +8,6 @@ codenotary: bigthundersr@outlook.com
 arch:
   - aarch64
   - amd64
-  - armhf
-  - armv7
-  - i386
 map:
   - share
   - ssl
@@ -20,14 +17,15 @@ services:
   - "mqtt:need"
 init: false
 options:
-  VEHICLE_NAME: "Vehicle 2"
   LOG_LEVEL: "info"
+  VEHICLE_NAME: "Vehicle 2"
   ONSTAR_DEVICEID: ""
   ONSTAR_VIN: ""
   ONSTAR_USERNAME: ""
   ONSTAR_PASSWORD: ""
   ONSTAR_TOTP: ""
   ONSTAR_PIN: ""
+  TOKEN_LOCATION: "/ssl/vehicle1"
   ONSTAR_URL: "https://api.gm.com" #This value is hard coded in the program code and cannot be changed at this time
   ONSTAR_REFRESH: 1800000
   ONSTAR_POLL_INTERVAL: 6
@@ -53,6 +51,7 @@ schema:
   ONSTAR_PASSWORD: password
   ONSTAR_TOTP: password
   ONSTAR_PIN: password
+  TOKEN_LOCATION: str?
   ONSTAR_URL: str
   ONSTAR_REFRESH: int
   ONSTAR_POLL_INTERVAL: int
@@ -62,7 +61,7 @@ schema:
   MQTT_PASSWORD: password
   MQTT_PORT: port
   MQTT_PREFIX: str
-  MQTT_ONSTAR_POLLING_STATUS_TOPIC: str
+  MQTT_ONSTAR_POLLING_STATUS_TOPIC: str?
   MQTT_LIST_ALL_SENSORS_TOGETHER: bool
   MQTT_TLS: bool
   MQTT_REJECT_UNAUTHORIZED: bool
