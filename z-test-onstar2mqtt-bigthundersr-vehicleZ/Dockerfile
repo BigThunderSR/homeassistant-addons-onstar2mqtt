@@ -4,16 +4,21 @@ FROM $BUILD_FROM
 ENV LANG C.UTF-8
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
-RUN apk add --no-cache \
+# Replace Alpine's apk with Debian's apt
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
     nodejs \
-    npm
+    npm \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN mkdir /app
+RUN mkdir -p /app
 WORKDIR /app
 
 COPY ["package.json", "/app/"]
 COPY ["package-lock.json", "/app/"]
 RUN npm ci --omit=dev --no-fund --legacy-peer-deps
+RUN npx patchright install chromium --with-deps
 
 COPY ["overrides/index.cjs", "/app/node_modules/onstarjs/dist/"]
 COPY ["overrides/index.mjs", "/app/node_modules/onstarjs/dist/"]
@@ -39,4 +44,4 @@ LABEL \
     org.opencontainers.image.authors="BigThunderSR (https://github.com/BigThunderSR)" \    
     org.opencontainers.image.url="https://github.com/BigThunderSR" \
     org.opencontainers.image.source="https://github.com/${BUILD_REPOSITORY}" \
-    org.opencontainers.image.documentation="https://github.com/${BUILD_REPOSITORY}/blob/main/README.md"  
+    org.opencontainers.image.documentation="https://github.com/${BUILD_REPOSITORY}/blob/main/README.md"
