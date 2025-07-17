@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.23.2b - Test Build. DO NOT Install!!!
+## 1.23.2c - Test Build. DO NOT Install!!!
 
 - Testing
 
