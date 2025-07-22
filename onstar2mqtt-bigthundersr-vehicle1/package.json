@@ -1,6 +1,6 @@
 {
   "name": "onstar2mqtt",
-  "version": "1.24.0",
+  "version": "1.24.1",
   "description": "OnStarJS wrapper for MQTT",
   "main": "src/index.js",
   "scripts": {
@@ -31,12 +31,12 @@
   "dependencies": {
     "async-mqtt": "^2.6.3",
     "axios": "^1.10.0",
-    "chromium-bidi": "^7.1.1",
+    "chromium-bidi": "^7.2.0",
     "convert-units": "^2.3.4",
     "dotenv": "^17.2.0",
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
-    "onstarjs2": "^2.7.0",
+    "onstarjs2": "^2.8.0",
     "uuid": "^11.1.0",
     "winston": "^3.17.0"
   },
