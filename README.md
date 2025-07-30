@@ -38,18 +38,19 @@ This repository contains the following add-ons
 - [OnStar2MQTT for Vehicle 3 Using BigThunderSR/onstar2mqtt Build](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/tree/main/onstar2mqtt-bigthundersr-vehicle3)
   ![Dynamic YAML Badge](https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fraw.githubusercontent.com%2FBigThunderSR%2Fhomeassistant-addons-onstar2mqtt%2Frefs%2Fheads%2Fmain%2Fonstar2mqtt-bigthundersr-vehicle3%2Fconfig.yaml&query=%24.version&style=flat&label=Ver)
 
-  - [CHANGELOG](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/blob/main/onstar2mqtt-bigthundersr-vehicle1/CHANGELOG.md)
+  - [CHANGELOG](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/blob/main/onstar2mqtt-bigthundersr-vehicle3/CHANGELOG.md)
 
 - [OnStar2MQTT for Vehicle 4 Using BigThunderSR/onstar2mqtt Build](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/tree/main/onstar2mqtt-bigthundersr-vehicle4)
   ![Dynamic YAML Badge](https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fraw.githubusercontent.com%2FBigThunderSR%2Fhomeassistant-addons-onstar2mqtt%2Frefs%2Fheads%2Fmain%2Fonstar2mqtt-bigthundersr-vehicle4%2Fconfig.yaml&query=%24.version&style=flat&label=Ver)
 
-  - [CHANGELOG](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/blob/main/onstar2mqtt-bigthundersr-vehicle2/CHANGELOG.md)
+  - [CHANGELOG](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/blob/main/onstar2mqtt-bigthundersr-vehicle4/CHANGELOG.md)
 
-  Which have these new commands which were not originally available in the OG build of onstar2mqtt, but have been added since v1.5.5:
-  - `alertFlash`
-  - `alertHonk`
+Which have these new commands which were not originally available in the OG build of onstar2mqtt, but have been added since v1.5.5:
 
-  As well as many new additional customizations such as log colorization which are also not available in the OG build. Please see detailed list of differences/enhancements below.
+- `alertFlash`
+- `alertHonk`
+
+As well as many new additional customizations such as log colorization which are also not available in the OG build. Please see detailed list of differences/enhancements below.
 
 ~~If you prefer to use the OG build of onstar2mqtt 😎~~ (Retired since this is no longer maintained by the author)
 
