@@ -36,7 +36,7 @@
     "dotenv": "^17.2.1",
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
-    "onstarjs2": "^2.8.0",
+    "onstarjs2": "^2.9.0",
     "uuid": "^11.1.0",
     "winston": "^3.17.0"
   },
