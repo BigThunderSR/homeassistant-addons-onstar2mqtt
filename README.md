@@ -65,6 +65,7 @@ Collect the following minimum information:
 1. OnStar login: username, password, PIN, [TOTP Key (Please click link for instructions)](https://github.com/BigThunderSR/OnStarJS?tab=readme-ov-file#new-requirement-as-of-2024-11-19)
 1. Your vehicle's VIN which is easily found in the monthly OnStar diagnostic emails, in your OnStar account or in the offcial OnStar apps
 1. MQTT server information: hostname, username, password
+
 > **NOTE**: Please review [this page](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/discussions/1134) if you do not know how to create directories in Home Assistant
 
 ### Home Assistant configuration templates
@@ -129,9 +130,9 @@ Enable at your own risk and you assume all responsibility for your actions.
 
 ## Having Issues?
 
-- Please see the following for solutions and responses to common problems and questions: 
-  - https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/discussions
-  - https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/issues
+- Please see the following for solutions and responses to common problems and questions:
+  - <https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/discussions>
+  - <https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/issues>
 
 <!--## Example Lovelace Dashboard Using Example Code in Documentation Tab
 
