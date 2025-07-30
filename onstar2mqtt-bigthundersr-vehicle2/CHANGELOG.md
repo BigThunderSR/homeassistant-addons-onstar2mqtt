@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.25.0
+
+- Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.25.0](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.25.0)
+- Additional fixes to new authentication method introduced in v1.22.0
+
 ## 1.24.1
 
 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.24.1](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.24.1)
