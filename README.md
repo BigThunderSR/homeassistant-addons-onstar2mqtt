@@ -64,7 +64,7 @@ Collect the following minimum information:
 
 1. [Generate](https://www.uuidgenerator.net/version4) a v4 uuid for the device ID
 1. OnStar login: username, password, PIN, [TOTP Key (Please click link for instructions)](https://github.com/BigThunderSR/OnStarJS?tab=readme-ov-file#new-requirement-as-of-2024-11-19)
-1. Your vehicle's VIN which is easily found in the monthly OnStar diagnostic emails, in your OnStar account or in the offcial OnStar apps
+1. Your vehicle's VIN which is easily found in the monthly OnStar diagnostic emails, in your OnStar account or in the official OnStar apps
 1. MQTT server information: hostname, username, password
 
 > **NOTE**: Please review [this page](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/discussions/1134) if you do not know how to create directories in Home Assistant
@@ -123,7 +123,7 @@ Enable at your own risk and you assume all responsibility for your actions.
 - The OnStar API can be very temperamental, so you may see numerous errors every now and then where you cannot get any data from your vehicle. These tend to be very sporadic and usually go away on their own.
   - A common example of this is: "Request Failed with status 504 - Gateway Timeout"
 - After your engine is turned off, the vehicle will respond to about 4 - 5 requests before going into a type of hibernation mode and will not respond to requests or commands until the engine is started up again. If your engine has been off for a while, you may still not be able to get any data from the vehicle or run commands even if it is your first attempt at trying to pull data from your vehicle after the engine was turned off.
-  - **Note:** You will see an error of *"Unable to establish packet session to the vehicle"* when this occurs.
+  - **Note:** You will see an error of `"Unable to establish packet session to the vehicle"` when this occurs.
 
 ## My other related project which provides additional capabilities through Node-RED
 
