@@ -28,22 +28,22 @@ This repository contains the following add-ons
 - [OnStar2MQTT for Vehicle 1 Using BigThunderSR/onstar2mqtt Build](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/tree/main/onstar2mqtt-bigthundersr-vehicle1)
   ![Dynamic YAML Badge](https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fraw.githubusercontent.com%2FBigThunderSR%2Fhomeassistant-addons-onstar2mqtt%2Frefs%2Fheads%2Fmain%2Fonstar2mqtt-bigthundersr-vehicle1%2Fconfig.yaml&query=%24.version&style=flat&label=Ver)
 
-  - ***NOTE:** Breaking Change for Upgrading to Version 1.3.27 and beyond. Please see [CHANGELOG](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/blob/main/onstar2mqtt-bigthundersr-vehicle1/CHANGELOG.md).*
+  - [CHANGELOG](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/blob/main/onstar2mqtt-bigthundersr-vehicle1/CHANGELOG.md)
 
 - [OnStar2MQTT for Vehicle 2 Using BigThunderSR/onstar2mqtt Build](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/tree/main/onstar2mqtt-bigthundersr-vehicle2)
   ![Dynamic YAML Badge](https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fraw.githubusercontent.com%2FBigThunderSR%2Fhomeassistant-addons-onstar2mqtt%2Frefs%2Fheads%2Fmain%2Fonstar2mqtt-bigthundersr-vehicle2%2Fconfig.yaml&query=%24.version&style=flat&label=Ver)
 
-  - ***NOTE:** Breaking Change for Upgrading to Version 1.3.27 and beyond. Please see [CHANGELOG](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/blob/main/onstar2mqtt-bigthundersr-vehicle2/CHANGELOG.md).*
+  - [CHANGELOG](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/blob/main/onstar2mqtt-bigthundersr-vehicle2/CHANGELOG.md)
 
 - [OnStar2MQTT for Vehicle 3 Using BigThunderSR/onstar2mqtt Build](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/tree/main/onstar2mqtt-bigthundersr-vehicle3)
   ![Dynamic YAML Badge](https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fraw.githubusercontent.com%2FBigThunderSR%2Fhomeassistant-addons-onstar2mqtt%2Frefs%2Fheads%2Fmain%2Fonstar2mqtt-bigthundersr-vehicle3%2Fconfig.yaml&query=%24.version&style=flat&label=Ver)
 
-  - ***NOTE:** Breaking Change for Upgrading to Version 1.3.27 and beyond. Please see [CHANGELOG](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/blob/main/onstar2mqtt-bigthundersr-vehicle1/CHANGELOG.md).*
+  - [CHANGELOG](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/blob/main/onstar2mqtt-bigthundersr-vehicle1/CHANGELOG.md)
 
 - [OnStar2MQTT for Vehicle 4 Using BigThunderSR/onstar2mqtt Build](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/tree/main/onstar2mqtt-bigthundersr-vehicle4)
   ![Dynamic YAML Badge](https://img.shields.io/badge/dynamic/yaml?url=https%3A%2F%2Fraw.githubusercontent.com%2FBigThunderSR%2Fhomeassistant-addons-onstar2mqtt%2Frefs%2Fheads%2Fmain%2Fonstar2mqtt-bigthundersr-vehicle4%2Fconfig.yaml&query=%24.version&style=flat&label=Ver)
 
-  - ***NOTE:** Breaking Change for Upgrading to Version 1.3.27 and beyond. Please see [CHANGELOG](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/blob/main/onstar2mqtt-bigthundersr-vehicle2/CHANGELOG.md).*
+  - [CHANGELOG](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/blob/main/onstar2mqtt-bigthundersr-vehicle2/CHANGELOG.md)
 
   Which have these new commands which were not originally available in the OG build of onstar2mqtt, but have been added since v1.5.5:
   - `alertFlash`
@@ -59,12 +59,13 @@ This repository contains the following add-ons
 
 ## Running
 
-Collect the following information:
+Collect the following minimum information:
 
 1. [Generate](https://www.uuidgenerator.net/version4) a v4 uuid for the device ID
 1. OnStar login: username, password, PIN, [TOTP Key (Please click link for instructions)](https://github.com/BigThunderSR/OnStarJS?tab=readme-ov-file#new-requirement-as-of-2024-11-19)
-1. Your car's VIN. Easily found in the monthly OnStar diagnostic emails.
+1. Your vehicle's VIN which is easily found in the monthly OnStar diagnostic emails, in your OnStar account or in the offcial OnStar apps
 1. MQTT server information: hostname, username, password
+> **NOTE**: Please review [this page](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/discussions/1134) if you do not know how to create directories in Home Assistant
 
 ### Home Assistant configuration templates
 
