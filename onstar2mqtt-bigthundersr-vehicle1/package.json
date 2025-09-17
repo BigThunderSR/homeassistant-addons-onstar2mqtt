@@ -7,7 +7,8 @@
     "coverage": "c8 npm test",
     "lint": "npx eslint src test",
     "start": "node src/index.js",
-    "test": "mocha"
+    "test": "mocha",
+    "sync-patchright": "node -e \"const pkg = require('./package.json'); const fs = require('fs'); const { execSync } = require('child_process'); try { const onstarPkg = JSON.parse(execSync('npm view onstarjs2@' + pkg.dependencies.onstarjs2 + ' --json', {encoding: 'utf8'})); const patchrightVersion = onstarPkg.dependencies?.patchright || onstarPkg.dependencies?.['patchright-core']; if (patchrightVersion) { pkg.overrides = pkg.overrides || {}; pkg.overrides.patchright = patchrightVersion; fs.writeFileSync('./package.json', JSON.stringify(pkg, null, 2) + '\\n'); console.log('Updated patchright override to:', patchrightVersion); } else { console.log('No patchright dependency found in onstarjs2'); } } catch(e) { console.error('Failed to sync patchright version:', e.message); }\""
   },
   "repository": {
     "type": "git",
@@ -39,6 +40,9 @@
     "onstarjs2": "^2.9.0",
     "uuid": "^11.1.0",
     "winston": "^3.17.0"
+  },
+  "overrides": {
+    "patchright": "^1.52.5"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.28.4",
