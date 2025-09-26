@@ -32,7 +32,7 @@
   "dependencies": {
     "async-mqtt": "^2.6.3",
     "axios": "^1.12.2",
-    "chromium-bidi": "^9.0.0",
+    "chromium-bidi": "^9.1.0",
     "convert-units": "^2.3.4",
     "dotenv": "^17.2.2",
     "jsonwebtoken": "^9.0.2",
