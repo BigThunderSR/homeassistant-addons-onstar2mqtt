@@ -42,7 +42,7 @@
     "winston": "^3.17.0"
   },
   "overrides": {
-    "patchright": "^1.52.5"
+    "patchright": "^1.55.3"
   },
   "devDependencies": {
     "@babel/eslint-parser": "^7.28.4",
