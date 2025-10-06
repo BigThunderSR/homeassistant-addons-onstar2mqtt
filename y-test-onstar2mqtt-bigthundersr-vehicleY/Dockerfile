@@ -10,7 +10,7 @@ RUN apt-get update \
     nodejs \
     npm \
     fonts-unifont \
-    fonts-dejavu \
+    fonts-ubuntu \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
