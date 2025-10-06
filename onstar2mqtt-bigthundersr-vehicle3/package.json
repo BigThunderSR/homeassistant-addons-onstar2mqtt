@@ -58,6 +58,6 @@
     "eslint-plugin-n": "^17.23.0",
     "eslint-plugin-promise": "^7.2.1",
     "globals": "^16.4.0",
-    "mocha": "^11.7.2"
+    "mocha": "^11.7.4"
   }
 }
