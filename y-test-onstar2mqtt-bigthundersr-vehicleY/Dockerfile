@@ -9,6 +9,8 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends \
     nodejs \
     npm \
+    fonts-unifont \
+    fonts-dejavu \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 

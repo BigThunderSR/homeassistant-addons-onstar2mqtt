@@ -4,11 +4,12 @@ FROM $BUILD_FROM
 ENV LANG C.UTF-8
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
-# Replace Alpine's apk with Debian's apt
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         nodejs \
         npm \
+        fonts-unifont \
+        fonts-dejavu \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
