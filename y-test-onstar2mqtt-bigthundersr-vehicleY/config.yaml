@@ -9,8 +9,8 @@ arch:
   - aarch64
   - amd64
 map:
-  - share
-  - ssl
+  - share:rw
+  - ssl:rw
 url: "https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt"
 image: "ghcr.io/bigthundersr/test-ha-addons-onstar2mqtt-btsr-test2-veh1-{arch}"
 services:
