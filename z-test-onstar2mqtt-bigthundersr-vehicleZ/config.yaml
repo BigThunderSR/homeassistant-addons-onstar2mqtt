@@ -8,6 +8,9 @@ codenotary: bigthundersr@outlook.com
 arch:
   - aarch64
   - amd64
+map:
+  - share:rw
+  - ssl:rw
 url: "https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt"
 image: "ghcr.io/bigthundersr/test-ha-addons-onstar2mqtt-btsr-test3-veh1-{arch}"
 services:
