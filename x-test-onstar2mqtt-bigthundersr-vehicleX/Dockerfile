@@ -8,8 +8,6 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends \
         nodejs \
         npm \
-        fonts-unifont \
-        fonts-ubuntu \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
