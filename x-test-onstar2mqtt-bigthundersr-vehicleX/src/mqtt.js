@@ -961,19 +961,19 @@ class MQTT {
             case 'FUEL_RANGE':
             case 'FUEL_RANGE MI':
             case 'FUEL_RANGE_MI':
-                return this.mapSensorConfigPayload(diag, diagEl, 'measurement', undefined, undefined, undefined, 'mdi:gas-station');
+                return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'distance', undefined, undefined, 'mdi:gas-station');
             case 'FUEL REMAINING':
             case 'FUEL REMAINING GAL':
             case 'FUEL_REMAINING':
             case 'FUEL_REMAINING GAL':
             case 'FUEL_REMAINING_GAL':
-                return this.mapSensorConfigPayload(diag, diagEl, 'measurement', undefined, undefined, undefined, 'mdi:gas-station');
+                return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'volume', undefined, undefined, 'mdi:gas-station');
             case 'FUEL USED':
             case 'FUEL USED GAL':
             case 'FUEL_USED':
             case 'FUEL_USED GAL':
             case 'FUEL_USED_GAL':
-                return this.mapSensorConfigPayload(diag, diagEl, 'measurement', undefined, undefined, undefined, 'mdi:gas-station');
+                return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'volume', undefined, undefined, 'mdi:gas-station');
             case 'ENGINE RPM':
             case 'ENGINE_RPM':
                 return this.mapSensorConfigPayload(diag, diagEl, 'measurement', undefined, undefined, undefined, 'mdi:engine');
@@ -991,13 +991,13 @@ class MQTT {
             case 'ODO_READ':
             case 'ODO_READ MI':
             case 'ODO_READ_MI':
-                return this.mapSensorConfigPayload(diag, diagEl, 'measurement', undefined, undefined, undefined, 'mdi:counter');
+                return this.mapSensorConfigPayload(diag, diagEl, 'total_increasing', 'distance', undefined, undefined, 'mdi:counter');
             case 'TRIP A ODO':
             case 'TRIP A ODO MI':
             case 'TRIP_A_ODO':
             case 'TRIP_A_ODO MI':
             case 'TRIP_A_ODO_MI':
-                return this.mapSensorConfigPayload(diag, diagEl, 'measurement', undefined, undefined, undefined, 'mdi:map-marker-distance');
+                return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'distance', undefined, undefined, 'mdi:map-marker-distance');
             case 'LEFT_FRONT_TIRE_PRESSURE':
             case 'LEFT_REAR_TIRE_PRESSURE':
             case 'RIGHT_FRONT_TIRE_PRESSURE':
