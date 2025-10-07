@@ -8,8 +8,12 @@ class Measurement {
         'kPa',
         'km/L(e)',
         'km/L',
+        // API CHANGE: New API may use L/100km format
+        'L/100km',
         // Helps with conversion to Gallons. 
-        'L'
+        'L',
+        // API CHANGE: New API may provide PSI directly
+        'psi'
     ];
 
     constructor(value, unit) {
@@ -31,12 +35,22 @@ class Measurement {
                 return 'kWh';
             case 'KM':
                 return 'km';
+            // API CHANGE: New API may use different case for kPa
             case 'KPa':
+            case 'kPa':
                 return 'kPa';
             case 'kmple':
                 return 'km/L(e)';
             case 'kmpl':
                 return 'km/L';
+            // API CHANGE: New API uses different fuel economy formats
+            case 'L/100KM':
+                return 'L/100km';
+            case 'KM/L':
+                return 'km/L';
+            // API CHANGE: New API may use PSI directly
+            case 'PSI':
+                return 'psi';
             case 'volts':
             case 'Volts':
                 return 'V';
@@ -83,11 +97,20 @@ class Measurement {
                 // km/L =  (1.609344 / 3.785411784) * MPG
                 value = _.round(value / (1.609344 / 3.785411784), 1);
                 break;
+            // API CHANGE: New API may use L/100km - convert to MPG
+            case 'L/100km':
+                // L/100km to MPG = 235.214583 / L/100km
+                value = _.round(235.214583 / value, 1);
+                break;
             case 'L':
                 value = _.round(value / 3.785411784, 1);
                 //case 'lit':
                 //    value = _.round(value / 3.785411784, 1);
 
+                break;
+            // API CHANGE: PSI is already in target unit, no conversion needed
+            case 'psi':
+                value = _.round(value, 1);
                 break;
         }
         return value;
@@ -110,8 +133,14 @@ class Measurement {
                 return 'mpg(e)';
             case 'km/L':
                 return 'mpg';
+            // API CHANGE: New API may use L/100km - convert to MPG
+            case 'L/100km':
+                return 'mpg';
             case 'L':
                 return 'gal';
+            // API CHANGE: PSI is already in target unit
+            case 'psi':
+                return 'psi';
             default:
                 return unit;
         }
