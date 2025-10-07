@@ -1,5 +1,32 @@
 # Changelog
 
+## 2.0.0
+
+**Important Update:** This version includes OnStar API v3 changes that may affect some sensors.
+
+- As this is a major change, some issues may occur.
+- Please report any problems you encounter by opening an issue on GitHub.
+- Most new sensors have been added. Any remaining sensors will be added in future updates.
+  - Current ETA is by the end of December 2025.
+
+**New Features:**
+
+- OnStar API v3 Support - Updated to OnStarJS 2.10.0 with full API v3 compatibility
+- Enhanced Reliability - Improved handling of OnStar API field naming variations
+
+**What This Means for You:**
+
+- Some sensors that worked with older OnStar API versions may no longer be available or may have different names
+- Sensor entity IDs and names may change in Home Assistant
+- You may need to update Home Assistant automations/dashboards that reference changed sensors
+- Review your dashboards for any broken sensor references after upgrading
+- Recommendation: Test in a sandbox/test environment first if possible, or be prepared to update your Home Assistant configurations after upgrading.
+
+**Other Updates:**
+
+- Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v2.0.0](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v2.0.0)
+- Bookworm Base Image - Switched to Debian Bookworm base images for better long-term support and stability
+
 ## 1.25.0
 
 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.25.0](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.25.0)
