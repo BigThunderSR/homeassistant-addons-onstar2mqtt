@@ -10,9 +10,11 @@ class Diagnostic {
         // New: diagnosticElements (plural), uom (unit of measure)
         // Try new format first, fallback to old format for backward compatibility
         const elements = diagResponse.diagnosticElements || diagResponse.diagnosticElement;
+        // API CHANGE: New API v3 includes fields without units (like percentages, status codes)
+        // Include elements that have a value, even if they don't have a unit
         const validEle = _.filter(
             elements,
-            d => _.has(d, 'value') && (d.uom || d.unit)  // Check value is truthy, not just present
+            d => _.has(d, 'value')  // Just check if value exists
         );
         this.diagnosticElements = _.map(validEle, e => new DiagnosticElement(e));
         const converted = _.map(_.filter(this.diagnosticElements, e => e.isConvertible),

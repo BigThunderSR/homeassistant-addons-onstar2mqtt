@@ -5,9 +5,16 @@ const Measurement = require('./measurement');
 class Diagnostic {
     constructor(diagResponse) {
         this.name = diagResponse.name;
+        // API CHANGE: New API format changes field names
+        // Old: diagnosticElement (singular), unit
+        // New: diagnosticElements (plural), uom (unit of measure)
+        // Try new format first, fallback to old format for backward compatibility
+        const elements = diagResponse.diagnosticElements || diagResponse.diagnosticElement;
+        // API CHANGE: New API v3 includes fields without units (like percentages, status codes)
+        // Include elements that have a value, even if they don't have a unit
         const validEle = _.filter(
-            diagResponse.diagnosticElement,
-            d => _.has(d, 'value') && _.has(d, 'unit')
+            elements,
+            d => _.has(d, 'value')  // Just check if value exists
         );
         this.diagnosticElements = _.map(validEle, e => new DiagnosticElement(e));
         const converted = _.map(_.filter(this.diagnosticElements, e => e.isConvertible),
@@ -49,12 +56,14 @@ class DiagnosticElement {
     /**
      * @param {string} ele.name
      * @param {string|number} ele.value
-     * @param {string} ele.unit
+     * @param {string} ele.unit (old API) or ele.uom (new API)
      */
     constructor(ele) {
         this._name = ele.name;
         this._message = ele.message;
-        this.measurement = new Measurement(ele.value, ele.unit);
+        // API CHANGE: Support both 'uom' (new API) and 'unit' (old API) for backward compatibility
+        const unitValue = ele.uom || ele.unit;
+        this.measurement = new Measurement(ele.value, unitValue);
     }
 
     get name() {

@@ -7,7 +7,8 @@
     "coverage": "c8 npm test",
     "lint": "npx eslint src test",
     "start": "node src/index.js",
-    "test": "mocha"
+    "test": "mocha",
+    "sync-patchright": "node -e \"const pkg = require('./package.json'); const fs = require('fs'); const { execSync } = require('child_process'); try { const onstarPkg = JSON.parse(execSync('npm view onstarjs2@' + pkg.dependencies.onstarjs2 + ' --json', {encoding: 'utf8'})); const patchrightVersion = onstarPkg.dependencies?.patchright || onstarPkg.dependencies?.['patchright-core']; if (patchrightVersion) { pkg.overrides = pkg.overrides || {}; pkg.overrides.patchright = patchrightVersion; fs.writeFileSync('./package.json', JSON.stringify(pkg, null, 2) + '\\n'); console.log('Updated patchright override to:', patchrightVersion); } else { console.log('No patchright dependency found in onstarjs2'); } } catch(e) { console.error('Failed to sync patchright version:', e.message); }\""
   },
   "repository": {
     "type": "git",
@@ -30,30 +31,33 @@
   "homepage": "https://github.com/BigThunderSR/onstar2mqtt#readme",
   "dependencies": {
     "async-mqtt": "^2.6.3",
-    "axios": "^1.11.0",
-    "chromium-bidi": "^8.0.0",
+    "axios": "^1.12.2",
+    "chromium-bidi": "^9.0.0",
     "convert-units": "^2.3.4",
-    "dotenv": "^17.2.1",
+    "dotenv": "^17.2.3",
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
-    "onstarjs2": "^2.9.0",
+    "onstarjs2": "^2.10.0",
     "uuid": "^11.1.0",
-    "winston": "^3.17.0"
+    "winston": "^3.18.3"
+  },
+  "overrides": {
+    "patchright": "^1.56.0"
   },
   "devDependencies": {
-    "@babel/eslint-parser": "^7.28.0",
+    "@babel/eslint-parser": "^7.28.4",
     "@babel/eslint-plugin": "^7.27.1",
     "@babel/plugin-syntax-class-properties": "^7.12.13",
     "@babel/preset-env": "^7.28.3",
-    "@eslint/compat": "^1.3.2",
+    "@eslint/compat": "^1.4.0",
     "@eslint/eslintrc": "^3.3.1",
-    "@eslint/js": "^9.34.0",
+    "@eslint/js": "^9.37.0",
     "c8": "^10.1.3",
-    "eslint": "^9.34.0",
+    "eslint": "^9.37.0",
     "eslint-plugin-import": "^2.32.0",
-    "eslint-plugin-n": "^17.21.3",
+    "eslint-plugin-n": "^17.23.1",
     "eslint-plugin-promise": "^7.2.1",
-    "globals": "^16.3.0",
-    "mocha": "^11.7.1"
+    "globals": "^16.4.0",
+    "mocha": "^11.7.4"
   }
 }

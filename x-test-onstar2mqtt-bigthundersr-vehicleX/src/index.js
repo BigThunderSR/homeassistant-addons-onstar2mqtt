@@ -1,5 +1,4 @@
-const OnStar = require('./deps/index.cjs');
-//const OnStar = require('onstarjs2');
+const OnStar = require('onstarjs2').default;
 const mqtt = require('async-mqtt');
 const uuidv4 = require('uuid').v4;
 const _ = require('lodash');
@@ -202,22 +201,22 @@ const configureMQTT = async (commands, client, mqttHA) => {
                 }
                 logger.debug("Diagnostic Item:", diagnosticItem)
                 const statsRes = await commands[command]({ diagnosticItem });
-                //logger.debug({ statsRes });
                 logger.info('Diagnostic request status', { status: _.get(statsRes, 'status') });
+                logger.info('Diagnostic response keys:', Object.keys(statsRes || {}));
+                logger.info('Diagnostic response.data keys:', Object.keys(_.get(statsRes, 'response.data') || {}));
                 
-                // API CHANGE: New API format changes diagnostic response structure
-                // Old path: response.data.commandResponse.body.diagnosticResponse
-                // New path: response.data.diagnostics OR response.diagnostics
-                // Try multiple paths for backward compatibility
+                // API CHANGE: New API v3 format changes diagnostic response structure completely
+                // Old path: response.data.commandResponse.body.diagnosticResponse (array)
+                // New path: response.data.diagnostics (array within HealthStatusResponse object)
+                // New structure has response.data as HealthStatusResponse with diagnostics array
                 let diagnosticResponses = _.get(statsRes, 'response.data.commandResponse.body.diagnosticResponse');
                 
-                // If old path doesn't exist, try new API paths
+                // If old path doesn't exist, try new API v3 path
                 if (!diagnosticResponses) {
-                    diagnosticResponses = _.get(statsRes, 'response.data.diagnostics') || 
-                                         _.get(statsRes, 'response.diagnostics');
+                    diagnosticResponses = _.get(statsRes, 'response.data.diagnostics');
                 }
                 
-                logger.debug('Diagnostic Response Body from Command', diagnosticResponses);
+                logger.info('Diagnostic responses found:', Array.isArray(diagnosticResponses) ? diagnosticResponses.length : 'not an array');
                 // Make sure the response is always an array
                 const diagArray = Array.isArray(diagnosticResponses) ? diagnosticResponses : [diagnosticResponses];
                 const stats = _.map(
@@ -625,10 +624,8 @@ logger.info('!-- Starting OnStar2MQTT Polling --!');
             if (!buttonConfigsPublished) {
                 const sensors = [
                     { name: 'oil_life', component: null, icon: 'mdi:oil-level' },
-                    { name: 'tire_pressure', component: 'tire_pressure_lf_message', icon: 'mdi:car-tire-alert' },
-                    { name: 'tire_pressure', component: 'tire_pressure_lr_message', icon: 'mdi:car-tire-alert' },
-                    { name: 'tire_pressure', component: 'tire_pressure_rf_message', icon: 'mdi:car-tire-alert' },
-                    { name: 'tire_pressure', component: 'tire_pressure_rr_message', icon: 'mdi:car-tire-alert' },
+                    // Tire pressure message sensors removed - OnStar API does not provide tire pressure messages
+                    // Only provides STATUS values (TPM_STATUS_NOMINAL, etc.) which are already captured in tire pressure status sensors
                 ];
 
                 for (let sensor of sensors) {
@@ -679,8 +676,19 @@ logger.info('!-- Starting OnStar2MQTT Polling --!');
 
             const statsRes = await commands.diagnostics({ diagnosticItem: v.getSupported() });
             logger.info('Diagnostic request status', { status: _.get(statsRes, 'status') });
+            
+            // API CHANGE: New API v3 format changes diagnostic response structure
+            // Old path: response.data.commandResponse.body.diagnosticResponse (array)
+            // New path: response.data.diagnostics (array within HealthStatusResponse object)
+            let diagnosticResponses = _.get(statsRes, 'response.data.commandResponse.body.diagnosticResponse');
+            
+            // If old path doesn't exist, try new API v3 path  
+            if (!diagnosticResponses) {
+                diagnosticResponses = _.get(statsRes, 'response.data.diagnostics');
+            }
+            
             const stats = _.map(
-                _.get(statsRes, 'response.data.commandResponse.body.diagnosticResponse'),
+                diagnosticResponses,
                 d => new Diagnostic(d)
             );
             logger.debug('Diagnostic request response:', { stats: _.map(stats, s => s.toString()) });
@@ -839,6 +847,6 @@ logger.info('!-- Starting OnStar2MQTT Polling --!');
         });
 
     } catch (e) {
-        logger.error('Main function error:', { error: e });
+        logger.error('Main function error:', { error: e, message: e.message, stack: e.stack });
     }
 })();
