@@ -667,20 +667,140 @@ class MQTT {
     }
 
     /**
+     * Get config topics and payloads for group-level status fields (API v3)
+     * @param {Diagnostic} diag
+     * @returns {Array} Array of {topic, payload} objects
+     */
+    getStatusFieldConfigs(diag) {
+        const configs = [];
+        const baseSensorType = MQTT.determineSensorType(diag.name);
+        const baseName = MQTT.convertName(diag.name);
+        
+        // Determine the icon based on the diagnostic group name to match element sensor icons
+        let groupIcon = 'mdi:information-outline'; // default
+        switch (diag.name) {
+            case 'TIRE_PRESSURE':
+            case 'TIRE PRESSURE':
+                groupIcon = 'mdi:car-tire-alert';
+                break;
+            case 'BRAKE_FLUID_LOW':
+            case 'BRAKE FLUID LOW':
+                groupIcon = 'mdi:car-brake-fluid-level';
+                break;
+            case 'WASHER_FLUID_LOW':
+            case 'WASHER FLUID LOW':
+                groupIcon = 'mdi:wiper-wash';
+                break;
+            case 'ENGINE_OIL_LIFE':
+            case 'ENGINE OIL LIFE':
+                groupIcon = 'mdi:oil-level';
+                break;
+            case 'ODOMETER':
+                groupIcon = 'mdi:counter';
+                break;
+            case 'FUEL_ECONOMY':
+            case 'FUEL ECONOMY':
+                groupIcon = 'mdi:gauge';
+                break;
+            case 'FUEL_LEVEL':
+            case 'FUEL LEVEL':
+                groupIcon = 'mdi:fuel';
+                break;
+            case 'LV_BATTERY':
+            case 'LV BATTERY':
+                groupIcon = 'mdi:battery-arrow-down';
+                break;
+            case 'ENGINE_AIR_FILTER':
+            case 'ENGINE AIR FILTER':
+            case 'ENGINE_AIR_FILTER_MONITOR':
+            case 'ENGINE AIR FILTER MONITOR':
+                groupIcon = 'mdi:air-filter';
+                break;
+            case 'INITIALIZATION_STATUS':
+            case 'INITIALIZATION STATUS':
+                groupIcon = 'mdi:checkbox-marked-circle';
+                break;
+            case 'FUEL_LEVEL_STATUS':
+            case 'FUEL LEVEL STATUS':
+                groupIcon = 'mdi:gas-station';
+                break;
+            // Add more cases here as needed for other diagnostic groups
+        }
+        
+        // Create config for status field if it exists
+        if (diag.status !== undefined && diag.status !== null) {
+            const statusName = `${baseName}_status`;
+            const statusTopic = `${this.getBaseTopic(baseSensorType)}/${statusName}/config`;
+            const statusPayload = {
+                unique_id: `${this.vehicle.vin}-${statusName}`,
+                name: this.addNamePrefix(MQTT.convertFriendlyName(`${diag.name} Status`)),
+                state_topic: this.getStateTopic(diag),
+                value_template: `{{ value_json.${statusName} }}`,
+                icon: groupIcon,
+                availability_topic: this.getAvailabilityTopic(),
+                payload_available: 'true',
+                payload_not_available: 'false',
+                device: {
+                    identifiers: [this.vehicle.vin],
+                    manufacturer: this.vehicle.make,
+                    model: this.vehicle.year + ' ' + this.vehicle.model,
+                    name: this.vehicle.toString(),
+                    suggested_area: this.vehicle.toString() + ' Sensors',
+                }
+            };
+            configs.push({ topic: statusTopic, payload: statusPayload });
+        }
+        
+        // Create config for statusColor field if it exists
+        if (diag.statusColor !== undefined && diag.statusColor !== null) {
+            const colorName = `${baseName}_status_color`;
+            const colorTopic = `${this.getBaseTopic(baseSensorType)}/${colorName}/config`;
+            const colorPayload = {
+                unique_id: `${this.vehicle.vin}-${colorName}`,
+                name: this.addNamePrefix(MQTT.convertFriendlyName(`${diag.name} Status Color`)),
+                state_topic: this.getStateTopic(diag),
+                value_template: `{{ value_json.${colorName} }}`,
+                icon: groupIcon,
+                availability_topic: this.getAvailabilityTopic(),
+                payload_available: 'true',
+                payload_not_available: 'false',
+                device: {
+                    identifiers: [this.vehicle.vin],
+                    manufacturer: this.vehicle.make,
+                    model: this.vehicle.year + ' ' + this.vehicle.model,
+                    name: this.vehicle.toString(),
+                    suggested_area: this.vehicle.toString() + ' Sensors',
+                }
+            };
+            configs.push({ topic: colorTopic, payload: colorPayload });
+        }
+        
+        return configs;
+    }
+
+    /**
      * Return the state payload for this diagnostic
      * @param {Diagnostic} diag
      */
     getStatePayload(diag) {
         const state = {};
+        // API CHANGE: Add group-level status and statusColor from API v3
+        // These appear on the diagnostic group itself (e.g., TIRE_PRESSURE)
+        if (diag.status !== undefined && diag.status !== null) {
+            state[`${MQTT.convertName(diag.name)}_status`] = diag.status;
+        }
+        if (diag.statusColor !== undefined && diag.statusColor !== null) {
+            state[`${MQTT.convertName(diag.name)}_status_color`] = diag.statusColor;
+        }
         _.forEach(diag.diagnosticElements, e => {
             // massage the binary_sensor values
             let value;
             switch (e.name) {
                 case 'EV PLUG STATE': // unplugged/plugged
-                    value = e.value === 'plugged';
+                    value = e.value && e.value.toLowerCase() === 'plugged';
                     break;
                 case 'EV CHARGE STATE': // not_charging/charging
-                    value = e.value === 'charging';
+                    value = e.value && e.value.toLowerCase() === 'charging';
                     break;
                 case 'PRIORITY CHARGE INDICATOR': // FALSE/TRUE
                     value = e.value === 'TRUE';
@@ -736,6 +856,14 @@ class MQTT {
             // This prevents overwriting legitimate messages with undefined values
             if (e.message !== undefined && e.message !== null && e.message !== '') {
                 state[`${MQTT.convertName(e.name)}_message`] = e.message;
+            }
+            // API CHANGE: Add element-level status and statusColor from API v3
+            // These appear on individual diagnostic elements (e.g., LEFT_FRONT_TIRE_PRESSURE)
+            if (e.status !== undefined && e.status !== null) {
+                state[`${MQTT.convertName(e.name)}_status`] = e.status;
+            }
+            if (e.statusColor !== undefined && e.statusColor !== null) {
+                state[`${MQTT.convertName(e.name)}_status_color`] = e.statusColor;
             }
         });
         return state;
@@ -923,15 +1051,16 @@ class MQTT {
                 return this.mapSensorConfigPayload(diag, diagEl, 'total_increasing', 'volume', undefined, undefined, 'mdi:gas-station');
             case 'FUEL AMOUNT':
             case 'FUEL AMOUNT GAL':
-                return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'volume_storage', undefined, undefined, 'mdi:fuel');
+                return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'volume_storage', undefined, undefined, 'mdi:gas-station');
             case 'FUEL CAPACITY':
             case 'FUEL CAPACITY GAL':
             case 'FUEL_CAPACITY':
+            case 'FUEL_CAPACITY GAL':  // Converted name with underscore + space
             case 'FUEL_CAPACITY_GAL':
                 return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'volume_storage', undefined, undefined, 'mdi:gas-station');
             case 'FUEL LEVEL IN GAL':
             case 'FUEL LEVEL IN GAL GAL':
-                return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'volume_storage', undefined, undefined, 'mdi:fuel');
+                return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'volume_storage', undefined, undefined, 'mdi:gas-station');
             // has state_class, no device_class, has message
             case 'OIL LIFE':
                 return this.mapSensorConfigPayload(diag, diagEl, 'measurement', undefined, 'Oil Life', `{{ {'message': value_json.${MQTT.convertName('OIL_LIFE_MESSAGE')}} | tojson }}`, 'mdi:oil');
@@ -955,7 +1084,8 @@ class MQTT {
                 return this.mapSensorConfigPayload(diag, diagEl, 'measurement', undefined, undefined, undefined, 'mdi:leaf-circle');
             case 'FUEL LEVEL':
             case 'FUEL_LEVEL':
-                return this.mapSensorConfigPayload(diag, diagEl, 'measurement', undefined, undefined, undefined, 'mdi:fuel');
+                // API v3: Include status and statusColor as attributes
+                return this.mapSensorConfigPayload(diag, diagEl, 'measurement', undefined, undefined, `{{ {'status': value_json.${MQTT.convertName(diagEl.name)}_status, 'status_color': value_json.${MQTT.convertName(diagEl.name)}_status_color} | tojson }}`, 'mdi:gas-station');
             case 'FUEL RANGE':
             case 'FUEL RANGE MI':
             case 'FUEL_RANGE':
@@ -979,13 +1109,16 @@ class MQTT {
                 return this.mapSensorConfigPayload(diag, diagEl, 'measurement', undefined, undefined, undefined, 'mdi:engine');
             case 'BATT SAVER MODE COUNTER':
             case 'BATT_SAVER_MODE_COUNTER':
-                return this.mapSensorConfigPayload(diag, diagEl, 'measurement', undefined, undefined, undefined, 'mdi:battery-arrow-down');
+                // API v3: Include status and statusColor as attributes
+                return this.mapSensorConfigPayload(diag, diagEl, 'measurement', undefined, undefined, `{{ {'status': value_json.${MQTT.convertName(diagEl.name)}_status, 'status_color': value_json.${MQTT.convertName(diagEl.name)}_status_color} | tojson }}`, 'mdi:battery-arrow-down');
             case 'BATT SAVER MODE SEV LVL':
             case 'BATT_SAVER_MODE_SEV_LVL':
-                return this.mapSensorConfigPayload(diag, diagEl, 'measurement', undefined, undefined, undefined, 'mdi:battery-alert');
+                // API v3: Include status and statusColor as attributes
+                return this.mapSensorConfigPayload(diag, diagEl, 'measurement', undefined, undefined, `{{ {'status': value_json.${MQTT.convertName(diagEl.name)}_status, 'status_color': value_json.${MQTT.convertName(diagEl.name)}_status_color} | tojson }}`, 'mdi:battery-alert');
             case 'EOL READ':
             case 'EOL_READ':
-                return this.mapSensorConfigPayload(diag, diagEl, 'measurement', undefined, undefined, undefined, 'mdi:oil-level');
+                // API v3: Include status and statusColor as attributes
+                return this.mapSensorConfigPayload(diag, diagEl, 'measurement', undefined, undefined, `{{ {'status': value_json.${MQTT.convertName(diagEl.name)}_status, 'status_color': value_json.${MQTT.convertName(diagEl.name)}_status_color} | tojson }}`, 'mdi:oil-level');
             case 'ODO READ':
             case 'ODO READ MI':
             case 'ODO_READ':
@@ -1006,6 +1139,8 @@ class MQTT {
             case 'LEFT REAR TIRE PRESSURE':
             case 'RIGHT FRONT TIRE PRESSURE':
             case 'RIGHT REAR TIRE PRESSURE':
+                // API v3: Include status and statusColor as attributes
+                return this.mapSensorConfigPayload(diag, diagEl, 'measurement', undefined, undefined, `{{ {'status': value_json.${MQTT.convertName(diagEl.name)}_status, 'status_color': value_json.${MQTT.convertName(diagEl.name)}_status_color} | tojson }}`, 'mdi:car-tire-alert');
             case 'LEFT_FRONT_TIRE_PRESSURE PSI':
             case 'LEFT_REAR_TIRE_PRESSURE PSI':
             case 'RIGHT_FRONT_TIRE_PRESSURE PSI':
@@ -1018,6 +1153,8 @@ class MQTT {
             case 'LEFT_REAR_TIRE_PRESSURE_IN_PSI':
             case 'RIGHT_FRONT_TIRE_PRESSURE_IN_PSI':
             case 'RIGHT_REAR_TIRE_PRESSURE_IN_PSI':
+                // API v3: Include status and statusColor as attributes
+                return this.mapSensorConfigPayload(diag, diagEl, 'measurement', undefined, undefined, `{{ {'status': value_json.${MQTT.convertName(diagEl.name)}_status, 'status_color': value_json.${MQTT.convertName(diagEl.name)}_status_color} | tojson }}`, 'mdi:car-tire-alert');
             case 'LEFT_FRONT_TIRE_PRESSURE_IN_PSI PSI':
             case 'LEFT_REAR_TIRE_PRESSURE_IN_PSI PSI':
             case 'RIGHT_FRONT_TIRE_PRESSURE_IN_PSI PSI':
