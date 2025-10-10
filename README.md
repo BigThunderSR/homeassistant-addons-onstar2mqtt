@@ -47,8 +47,8 @@ This repository contains the following add-ons
 
 Which have these new commands which were not originally available in the OG build of onstar2mqtt, but have been added since v1.5.5:
 
-- `alertFlash`
-- `alertHonk`
+- ~~`alertFlash`~~ (deprecated - use `flashLights` instead)
+- ~~`alertHonk`~~ (deprecated - no longer available in OnStarJS)
 
 As well as many new additional customizations such as log colorization which are also not available in the OG build. Please see detailed list of differences/enhancements below.
 
@@ -95,7 +95,7 @@ MQTT auto discovery is enabled. For further integrations and screenshots see Doc
 
 - **NEW - Most non-binary sensors have a state_class assigned to allow collection of long-term statistics in HA**
 
-- **NEW - Manual diagnostic refresh command and manual engine RPM refresh command are working**
+- **NEW - Manual diagnostic refresh command ~~and manual engine RPM refresh command~~ is working**
 
 - **NEW - OnStar password/pin and MQTT password are masked by default in the console log output. To see these values in the console log output, set "LOG_LEVEL" to "debug"**
 
@@ -109,7 +109,9 @@ MQTT auto discovery is enabled. For further integrations and screenshots see Doc
   - Send commands to the command topic in the format:
     - {"command": "diagnostics","options": "OIL LIFE,VEHICLE RANGE"}
     - {"command": "setChargingProfile","options": {"chargeMode": "RATE_BASED","rateType": "OFFPEAK"}}
-    - {"command": "alert","options": {"action": "Flash"}}
+    - ~~{"command": "alert","options": {"action": "Flash"}}~~ (deprecated - use `flashLights` instead)
+    - {"command": "flashLights"}
+    - {"command": "stopLights"}
 
 - **NEW - MQTT Button Auto-Discovery for HA Added Starting at v1.14.0**
   - Buttons are added disabled by default because it's easy to accidentally press the wrong button and trigger an action at an inopportune time.
