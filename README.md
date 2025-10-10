@@ -73,57 +73,83 @@ Collect the following minimum information:
 
 MQTT auto discovery is enabled. For further integrations and screenshots see Documentation page within the add-on.
 
-### Feature Updates of Note
+## Feature Updates of Note
 
-- **NEW! - Provide MQTT topic (MQTT_ONSTAR_POLLING_STATUS_TOPIC) for Onstar Data Polling Status to monitor success/failure when OnStar is polled for data**
-  - MQTT_ONSTAR_POLLING_STATUS_TOPIC/lastpollsuccessful - "true" or "false" depending on status of last poll
-  - MQTT_ONSTAR_POLLING_STATUS_TOPIC/state - Polling Status and Detailed Error Messages in JSON
-  - **NEW! - Automatic creation of pollingStatusTopic starting at v1.11.0**
-    - No longer need to specify MQTT_ONSTAR_POLLING_STATUS_TOPIC as this is now created automatically
-    - Format is "homeassistant/(VIN)/polling_status/"
-    - If it is explicitly specified, will use the specified value, so does not break backwards compatibility
+### Polling Status Topic via MQTT
 
-- **NEW - Ability to dynamically change polling frequency using MQTT**
-  - Uses the value from "ONSTAR_REFRESH" on initial startup
-  - Change the value dynamically by publishing the new refresh value in milliseconds (ms) as an INT to: "homeassistant/(VIN)/refresh_interval"
+**NEW!** - Provide MQTT topic (MQTT_ONSTAR_POLLING_STATUS_TOPIC) for Onstar Data Polling Status to monitor success/failure when OnStar is polled for data
 
-- **NEW - Command Response Status is now published to MQTT topics!**
-  - Topic format: MQTT_PREFIX/{VIN}/command/{commandName}/state
-    - Note: Unless defined, default MQTT_PREFIX=homeassistant
+- MQTT_ONSTAR_POLLING_STATUS_TOPIC/lastpollsuccessful - "true" or "false" depending on status of last poll
+- MQTT_ONSTAR_POLLING_STATUS_TOPIC/state - Polling Status and Detailed Error Messages in JSON
+- **NEW! - Automatic creation of pollingStatusTopic starting at v1.11.0**
+  - No longer need to specify MQTT_ONSTAR_POLLING_STATUS_TOPIC as this is now created automatically
+  - Format is "homeassistant/(VIN)/polling_status/"
+  - If it is explicitly specified, will use the specified value, so does not break backwards compatibility
 
-- **NEW - Sensor specific messages are now published to MQTT as sensor attributes which are visible in HA**
+### Dynamic Polling Frequency via MQTT
 
-- **NEW - Most non-binary sensors have a state_class assigned to allow collection of long-term statistics in HA**
+**NEW** - Ability to dynamically change polling frequency using MQTT
 
-- **NEW - Manual diagnostic refresh command ~~and manual engine RPM refresh command~~ is working**
+- Uses the value from "ONSTAR_REFRESH" on initial startup
+- Change the value dynamically by publishing the new refresh value in milliseconds (ms) as an INT to: "homeassistant/(VIN)/refresh_interval"
 
-- **NEW - OnStar password/pin and MQTT password are masked by default in the console log output. To see these values in the console log output, set "LOG_LEVEL" to "debug"**
+### Command Response Status via MQTT
 
-- **NEW - New options for securing connectivity for MQTTS using TLS**
-  - MQTT_REJECT_UNAUTHORIZED (Default: "true", set to "false" only for testing.)
-  - MQTT_CA_FILE
-  - MQTT_CERT_FILE
-  - MQTT_KEY_FILE
+**NEW** - Command Response Status is now published to MQTT topics!
 
-- **NEW - Ability to send commands with options using MQTT now works**
-  - Send commands to the command topic in the format:
-    - {"command": "diagnostics","options": "OIL LIFE,VEHICLE RANGE"}
-    - {"command": "setChargingProfile","options": {"chargeMode": "RATE_BASED","rateType": "OFFPEAK"}}
-    - ~~{"command": "alert","options": {"action": "Flash"}}~~ (deprecated - use `flashLights` instead)
-    - {"command": "flashLights"}
-    - {"command": "stopLights"}
+- Topic format: MQTT_PREFIX/{VIN}/command/{commandName}/state
+  - Note: Unless defined, default MQTT_PREFIX=homeassistant
 
-- **NEW - MQTT Button Auto-Discovery for HA Added Starting at v1.14.0**
-  - **⚠️ IMPORTANT DISCLAIMER:** Buttons are added **disabled by default** because it's easy to accidentally press the wrong button and trigger an action at an inopportune time. **Enable at your own risk and you assume all responsibility for your actions.**
-  - All available buttons for all vehicles are included for now, so only enable the buttons you need and/or work for your vehicle.
-  - **How to Enable Buttons in Home Assistant:**
-    1. Go to `Settings` → `Devices & Services` → `MQTT`
-    2. Find your vehicle device and click on it
-    3. Scroll to the **Controls** section where buttons are listed (they will show as "Disabled")
-    4. Click on each button you want to enable
-    5. Click the settings/gear icon (⚙️) and toggle "Enabled" to ON
-    6. Click "Update"
-  - See Documentation page within the add-on for detailed instructions and available button list
+### Sensor-Specific Messages as Attributes
+
+**NEW** - Sensor specific messages are now published to MQTT as sensor attributes which are visible in HA
+
+### Long-Term Statistics Support
+
+**NEW** - Most non-binary sensors have a state_class assigned to allow collection of long-term statistics in HA
+
+### Manual Diagnostic Refresh Command
+
+**NEW** - Manual diagnostic refresh command ~~and manual engine RPM refresh command~~ is working
+
+### Password Masking in Logs
+
+**NEW** - OnStar password/pin and MQTT password are masked by default in the console log output. To see these values in the console log output, set "LOG_LEVEL" to "debug"
+
+### MQTTS/TLS Security Options
+
+**NEW** - New env options for securing connectivity for MQTTS using TLS
+
+- MQTT_REJECT_UNAUTHORIZED (Default: "true", set to "false" only for testing.)
+- MQTT_CA_FILE
+- MQTT_CERT_FILE
+- MQTT_KEY_FILE
+
+### Commands with Options via MQTT
+
+**NEW** - Ability to send commands with options using MQTT now works
+
+- Send commands to the command topic in the format:
+  - {"command": "diagnostics","options": "OIL LIFE,VEHICLE RANGE"}
+  - {"command": "setChargingProfile","options": {"chargeMode": "RATE_BASED","rateType": "OFFPEAK"}}
+  - ~~{"command": "alert","options": {"action": "Flash"}}~~ (deprecated - use `flashLights` instead)
+  - {"command": "flashLights"}
+  - {"command": "stopLights"}
+
+### MQTT Button Auto-Discovery
+
+**NEW** - MQTT Button Auto-Discovery for HA Added Starting at v1.14.0
+
+- **⚠️ IMPORTANT DISCLAIMER:** Buttons are added **disabled by default** because it's easy to accidentally press the wrong button and trigger an action at an inopportune time. **Enable at your own risk and you assume all responsibility for your actions.**
+- All available buttons for all vehicles are included for now, so only enable the buttons you need and/or work for your vehicle.
+- **How to Enable Buttons in Home Assistant:**
+  1. Go to `Settings` → `Devices & Services` → `MQTT`
+  2. Find your vehicle device and click on it
+  3. Scroll to the **Controls** section where buttons are listed (they will show as "Disabled")
+  4. Click on each button you want to enable
+  5. Click the settings/gear icon (⚙️) and toggle "Enabled" to ON
+  6. Click "Update"
+- See Documentation page within the add-on for detailed instructions and available button list
 
 ## Helpful Usage Notes
 
