@@ -7,6 +7,209 @@ When everything is setup correctly, all available sensors and buttons are create
 - `Settings --> Devices & services --> MQTT`
   - They will be grouped under a MQTT device with the name of your vehicle
 
+## Advanced Diagnostics Sensors (OnStar API v3)
+
+### MQTT Auto-Discovery for Advanced Diagnostics Sensors Added
+
+Starting with the API v3 implementation, the application now provides detailed diagnostic system monitoring through 7 comprehensive diagnostic system sensors. Each sensor provides system-level status, diagnostic trouble codes (DTCs), and detailed subsystem information.
+
+### Diagnostic Systems Available
+
+1. **Engine & Transmission** (11 subsystems)
+   - Sensor: `sensor.<vehicle_name>_adv_diag_engine_transmission`
+   - Icon: `mdi:engine`
+   - Subsystems: displacement_on_demand, fuel_management, transmission, ignition, emissions, cooling, fuel_injection, fuel_system_air_induction, starting_charging, engine_controls_feedback, exhaust_system
+
+2. **Antilock Braking System** (3 subsystems)
+   - Sensor: `sensor.<vehicle_name>_adv_diag_antilock_braking_system`
+   - Icon: `mdi:car-brake-abs`
+   - Subsystems: abs, traction_control_system, electronic_brake_control_module
+
+3. **StabiliTrak** (1 subsystem)
+   - Sensor: `sensor.<vehicle_name>_adv_diag_stabilitrak`
+   - Icon: `mdi:car-esp`
+   - Subsystems: electronic_stability_control
+
+4. **Air Bag** (4 subsystems)
+   - Sensor: `sensor.<vehicle_name>_adv_diag_air_bag`
+   - Icon: `mdi:airbag`
+   - Subsystems: occupant_restraints, sensing_diagnostic_module, side_air_bag, front_air_bag
+
+5. **Emissions System** (2 subsystems)
+   - Sensor: `sensor.<vehicle_name>_adv_diag_emissions_system`
+   - Icon: `mdi:weather-fog`
+   - Subsystems: exhaust_gas_recirculation, evaporative_emissions
+
+6. **OnStar System** (3 subsystems)
+   - Sensor: `sensor.<vehicle_name>_adv_diag_onstar_system`
+   - Icon: `mdi:car-connected`
+   - Subsystems: onstar, network_communication, body_control_module
+
+7. **Electric Lamp System** (1 subsystem)
+   - Sensor: `sensor.<vehicle_name>_adv_diag_electric_lamp_system`
+   - Icon: `mdi:lightbulb-auto`
+   - Subsystems: lighting
+
+### Sensor Attributes
+
+Each advanced diagnostics sensor includes the following attributes:
+
+- **status_color**: Color-coded status indicator (GREEN, YELLOW, RED)
+- **last_updated**: Timestamp of the last diagnostic update
+- **dtc_count**: Number of diagnostic trouble codes detected
+- **description**: Detailed description of the diagnostic system
+- **Individual Subsystem Attributes**: Each subsystem appears as a separate attribute (e.g., `displacement_on_demand_subsystem`, `fuel_management_subsystem`, etc.) containing:
+  - `name`: Internal subsystem identifier
+  - `label`: Human-readable subsystem name
+  - `description`: Detailed subsystem description
+  - `status`: Current status (OK, CHECK, etc.)
+  - `status_color`: Color-coded status (GREEN, YELLOW, RED)
+  - `dtc_count`: Number of DTCs for this subsystem
+- **subsystems_with_issues**: Array of subsystems that have detected problems (for quick issue identification)
+- **dtcs**: Array of diagnostic trouble codes with details (code, description, severity)
+
+### MQTT Topic
+
+All advanced diagnostics sensors publish their state to: `homeassistant/{VIN}/adv_diag/state`
+
+### Accessing Subsystem Data in Templates
+
+You can access specific subsystem information in Home Assistant templates:
+
+```yaml
+# Check if a specific subsystem has issues
+{{ state_attr('sensor.my_car_adv_diag_engine_transmission', 'fuel_management_subsystem').status }}
+
+# Get the status color of a subsystem
+{{ state_attr('sensor.my_car_adv_diag_engine_transmission', 'fuel_management_subsystem').status_color }}
+
+# Check if any subsystems have issues
+{{ state_attr('sensor.my_car_adv_diag_engine_transmission', 'subsystems_with_issues') | length > 0 }}
+
+# Get total DTC count
+{{ state_attr('sensor.my_car_adv_diag_engine_transmission', 'dtc_count') }}
+```
+
+### Example Lovelace Cards for Advanced Diagnostics
+
+#### Entity Card Showing All Diagnostic Systems
+
+```yaml
+type: entities
+title: Vehicle Diagnostic Systems
+entities:
+  - entity: sensor.<vehicle_name>_adv_diag_engine_transmission
+    secondary_info: last-changed
+  - entity: sensor.<vehicle_name>_adv_diag_antilock_braking_system
+    secondary_info: last-changed
+  - entity: sensor.<vehicle_name>_adv_diag_stabilitrak
+    secondary_info: last-changed
+  - entity: sensor.<vehicle_name>_adv_diag_air_bag
+    secondary_info: last-changed
+  - entity: sensor.<vehicle_name>_adv_diag_emissions_system
+    secondary_info: last-changed
+  - entity: sensor.<vehicle_name>_adv_diag_onstar_system
+    secondary_info: last-changed
+  - entity: sensor.<vehicle_name>_adv_diag_electric_lamp_system
+    secondary_info: last-changed
+state_color: true
+```
+
+#### Conditional Card - Show Only Systems with Issues
+
+```yaml
+type: conditional
+conditions:
+  - condition: template
+    value_template: >-
+      {{ state_attr('sensor.<vehicle_name>_adv_diag_engine_transmission', 'subsystems_with_issues') | length > 0 }}
+card:
+  type: markdown
+  content: >-
+    ## ⚠️ Engine & Transmission Issues Detected
+    
+    **Systems with Problems:**
+    {% for subsystem in state_attr('sensor.<vehicle_name>_adv_diag_engine_transmission', 'subsystems_with_issues') %}
+    - {{ subsystem.label }}: {{ subsystem.status }}
+    {% endfor %}
+    
+    **DTC Count:** {{ state_attr('sensor.<vehicle_name>_adv_diag_engine_transmission', 'dtc_count') }}
+```
+
+#### Glance Card - Quick Status Overview
+
+```yaml
+type: glance
+title: Diagnostic Systems Status
+entities:
+  - entity: sensor.<vehicle_name>_adv_diag_engine_transmission
+    name: Engine
+  - entity: sensor.<vehicle_name>_adv_diag_antilock_braking_system
+    name: ABS
+  - entity: sensor.<vehicle_name>_adv_diag_stabilitrak
+    name: StabiliTrak
+  - entity: sensor.<vehicle_name>_adv_diag_air_bag
+    name: Air Bag
+  - entity: sensor.<vehicle_name>_adv_diag_emissions_system
+    name: Emissions
+  - entity: sensor.<vehicle_name>_adv_diag_onstar_system
+    name: OnStar
+  - entity: sensor.<vehicle_name>_adv_diag_electric_lamp_system
+    name: Lights
+columns: 4
+state_color: true
+```
+
+#### Detailed System Card with Subsystem Breakdown
+
+```yaml
+type: markdown
+title: Engine & Transmission Diagnostics
+content: >-
+  **Status:** {{ states('sensor.<vehicle_name>_adv_diag_engine_transmission') }}
+  
+  **Last Updated:** {{ state_attr('sensor.<vehicle_name>_adv_diag_engine_transmission', 'last_updated') | timestamp_custom('%b %d, %Y %I:%M %p') }}
+  
+  **Total DTCs:** {{ state_attr('sensor.<vehicle_name>_adv_diag_engine_transmission', 'dtc_count') }}
+  
+  ---
+  
+  ### Subsystems:
+  {% set subsystems = ['displacement_on_demand_subsystem', 'fuel_management_subsystem', 'transmission_subsystem', 'ignition_subsystem', 'emissions_subsystem', 'cooling_subsystem', 'fuel_injection_subsystem', 'fuel_system_air_induction_subsystem', 'starting_charging_subsystem', 'engine_controls_feedback_subsystem', 'exhaust_system_subsystem'] %}
+  {% for subsystem_key in subsystems %}
+  {% set subsystem = state_attr('sensor.<vehicle_name>_adv_diag_engine_transmission', subsystem_key) %}
+  - **{{ subsystem.label }}**: {{ subsystem.status }} {% if subsystem.status_color == 'GREEN' %}✅{% elif subsystem.status_color == 'YELLOW' %}⚠️{% else %}❌{% endif %}
+  {% endfor %}
+```
+
+### Automation Example - Alert on Diagnostic Issues
+
+```yaml
+alias: Alert on Vehicle Diagnostic Issues
+description: Send notification when any diagnostic system detects problems
+trigger:
+  - platform: state
+    entity_id:
+      - sensor.<vehicle_name>_adv_diag_engine_transmission
+      - sensor.<vehicle_name>_adv_diag_antilock_braking_system
+      - sensor.<vehicle_name>_adv_diag_stabilitrak
+      - sensor.<vehicle_name>_adv_diag_air_bag
+      - sensor.<vehicle_name>_adv_diag_emissions_system
+      - sensor.<vehicle_name>_adv_diag_onstar_system
+      - sensor.<vehicle_name>_adv_diag_electric_lamp_system
+    to: "CHECK"
+condition: []
+action:
+  - service: notify.mobile_app
+    data:
+      title: "Vehicle Diagnostic Alert"
+      message: >-
+        {{ trigger.to_state.attributes.description }} requires attention.
+        DTCs detected: {{ trigger.to_state.attributes.dtc_count }}
+mode: queued
+max: 10
+```
+
 ## Dynamically Change Polling Frequency Using MQTT
 
 - Uses the value from `ONSTAR_REFRESH` on initial startup
@@ -51,8 +254,6 @@ icon: "mdi:car-electric"
 
 #### Format for sending command options in the payload
 
-- Diagnostics:
-  - `{"command": "diagnostics","options": "OIL LIFE,VEHICLE RANGE"}`
 - Set Charging Profile
   - `{"command": "setChargingProfile","options": {"chargeMode": "RATE_BASED","rateType": "OFFPEAK"}}`
 - Alert
@@ -267,8 +468,7 @@ Commands Implemented in this Program:
 14. `getLocation`
 15. `alertFlash`
 16. `alertHonk`
-17. `diagnostics`
-18. `enginerpm`
+17. `diagnostics` (uses OnStar API v3 - retrieves comprehensive diagnostic data for all vehicle systems. Can be requested on-demand but diagnostic data is not real-time and reflects the last cached state from the the API. Runs automatically during polling. See "Advanced Diagnostics Sensors" section above for details on the 7 diagnostic system sensors automatically created)
 
 ### Lovelace Dashboard
 
