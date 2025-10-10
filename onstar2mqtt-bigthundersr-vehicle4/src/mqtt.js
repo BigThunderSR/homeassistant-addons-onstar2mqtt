@@ -95,10 +95,10 @@ class MQTT {
                 Name: 'diagnostics',
                 Icon: 'mdi:car-info',
             },
-            EngineRPM: {
-                Name: 'enginerpm',
-                Icon: 'mdi:speedometer',
-            },
+            // EngineRPM: {
+            //     Name: 'enginerpm',
+            //     Icon: 'mdi:speedometer',
+            // },
             ChargeOverride: {
                 Name: 'chargeOverride',
                 Icon: 'mdi:ev-station',
@@ -724,6 +724,10 @@ class MQTT {
             case 'FUEL LEVEL STATUS':
                 groupIcon = 'mdi:gas-station';
                 break;
+            case 'BATTERY_STATE_OF_CHARGE_CRITICALLY_LOW':
+            case 'BATTERY STATE OF CHARGE CRITICALLY LOW':
+                groupIcon = 'mdi:battery-alert';
+                break;
             // Add more cases here as needed for other diagnostic groups
         }
         
@@ -731,11 +735,14 @@ class MQTT {
         if (diag.status !== undefined && diag.status !== null) {
             const statusName = `${baseName}_status`;
             const statusTopic = `${this.getBaseTopic(baseSensorType)}/${statusName}/config`;
+            const lastUpdatedFieldName = `${baseName}_last_updated`;
             const statusPayload = {
                 unique_id: `${this.vehicle.vin}-${statusName}`,
                 name: this.addNamePrefix(MQTT.convertFriendlyName(`${diag.name} Status`)),
                 state_topic: this.getStateTopic(diag),
                 value_template: `{{ value_json.${statusName} }}`,
+                json_attributes_topic: this.getStateTopic(diag),
+                json_attributes_template: `{{ {'last_updated': value_json.${lastUpdatedFieldName}} | tojson }}`,
                 icon: groupIcon,
                 availability_topic: this.getAvailabilityTopic(),
                 payload_available: 'true',
@@ -755,11 +762,14 @@ class MQTT {
         if (diag.statusColor !== undefined && diag.statusColor !== null) {
             const colorName = `${baseName}_status_color`;
             const colorTopic = `${this.getBaseTopic(baseSensorType)}/${colorName}/config`;
+            const lastUpdatedFieldName = `${baseName}_last_updated`;
             const colorPayload = {
                 unique_id: `${this.vehicle.vin}-${colorName}`,
                 name: this.addNamePrefix(MQTT.convertFriendlyName(`${diag.name} Status Color`)),
                 state_topic: this.getStateTopic(diag),
                 value_template: `{{ value_json.${colorName} }}`,
+                json_attributes_topic: this.getStateTopic(diag),
+                json_attributes_template: `{{ {'last_updated': value_json.${lastUpdatedFieldName}} | tojson }}`,
                 icon: groupIcon,
                 availability_topic: this.getAvailabilityTopic(),
                 payload_available: 'true',
@@ -779,6 +789,166 @@ class MQTT {
     }
 
     /**
+     * Return MQTT configuration for advanced diagnostic system sensors
+     * @param {DiagnosticSystem} system
+     * @param {string} overallCts - Overall advanced diagnostics timestamp
+     */
+    getAdvancedDiagnosticConfig(system, overallCts) {
+        const baseName = MQTT.convertName(system.systemLabel);
+        const sensorType = 'sensor';
+        const topic = `${this.getBaseTopic(sensorType)}/${baseName}/config`;
+        
+        // Determine icon based on system type
+        let icon = 'mdi:car-info';
+        switch (system.systemLabel) {
+            case 'ENGINE_AND_TRANSMISSION_SYSTEM':
+                icon = 'mdi:engine';
+                break;
+            case 'ANTILOCK_BRAKING_SYSTEM':
+                icon = 'mdi:car-brake-abs';
+                break;
+            case 'STABILITRAK_STABILITY_CONTROL_SYSTEM':
+                icon = 'mdi:car-esp';
+                break;
+            case 'AIRBAG_SYSTEM':
+                icon = 'mdi:airbag';
+                break;
+            case 'EMISSIONS_SYSTEM':
+                icon = 'mdi:smoke';
+                break;
+            case 'ONSTAR_SYSTEM':
+                icon = 'mdi:car-connected';
+                break;
+            case 'ELECTRIC_LAMP_SYSTEM':
+                icon = 'mdi:lightbulb-group';
+                break;
+        }
+        
+        // Build attributes object with subsystem and DTC details
+        const attributes = {
+            status_color: system.systemStatusColor,
+            last_updated: overallCts,
+            dtc_count: system.dtcCount,
+        };
+        
+        // Add system description if available
+        if (system.systemDescription) {
+            attributes.description = system.systemDescription;
+        }
+        
+        // Add each subsystem as individual attributes for easy access in HA
+        if (system.subsystems && system.subsystems.length > 0) {
+            system.subsystems.forEach(subsystem => {
+                const subsystemKey = MQTT.convertName(subsystem.label || subsystem.name);
+                attributes[subsystemKey] = {
+                    name: subsystem.name,
+                    status: subsystem.status,
+                    status_color: subsystem.status_color,
+                    dtc_count: subsystem.dtc_count
+                };
+                // Add description if available
+                if (subsystem.description) {
+                    attributes[subsystemKey].description = subsystem.description;
+                }
+            });
+        }
+        
+        // Keep subsystems_with_issues for backward compatibility and quick issue detection
+        if (system.subsystemsWithIssues && system.subsystemsWithIssues.length > 0) {
+            attributes.subsystems_with_issues = system.subsystemsWithIssues.map(s => ({
+                name: s.subSystemName,
+                status: s.subSystemStatus,
+                status_color: s.subSystemStatusColor
+            }));
+        }
+        
+        // Add DTC details if any
+        if (system.dtcs && system.dtcs.length > 0) {
+            attributes.dtcs = system.dtcs;
+        }
+        
+        const payload = {
+            unique_id: `${this.vehicle.vin}-${baseName}`,
+            name: this.addNamePrefix(system.systemName),
+            state_topic: `homeassistant/${this.vehicle.vin}/adv_diag/state`,
+            value_template: `{{ value_json.${baseName} }}`,
+            json_attributes_topic: `homeassistant/${this.vehicle.vin}/adv_diag/state`,
+            json_attributes_template: `{{ value_json.${baseName}_attr | tojson }}`,
+            icon: icon,
+            availability_topic: this.getAvailabilityTopic(),
+            payload_available: 'true',
+            payload_not_available: 'false',
+            device: {
+                identifiers: [this.vehicle.vin],
+                manufacturer: this.vehicle.make,
+                model: this.vehicle.year + ' ' + this.vehicle.model,
+                name: this.vehicle.toString(),
+                suggested_area: this.vehicle.toString() + ' Sensors',
+            }
+        };
+        
+        return { topic, payload, attributes };
+    }
+
+    /**
+     * Return state payload for advanced diagnostics
+     * @param {AdvancedDiagnostic} advDiag
+     */
+    getAdvancedDiagnosticStatePayload(advDiag) {
+        const state = {};
+        
+        _.forEach(advDiag.diagnosticSystems, system => {
+            const baseName = MQTT.convertName(system.systemLabel);
+            state[baseName] = system.systemStatus;
+            
+            // Store attributes separately for cleaner template rendering
+            state[`${baseName}_attr`] = {
+                status_color: system.systemStatusColor,
+                last_updated: advDiag.cts,
+                dtc_count: system.dtcCount,
+            };
+            
+            // Add system description if available
+            if (system.systemDescription) {
+                state[`${baseName}_attr`].description = system.systemDescription;
+            }
+            
+            // Add each subsystem as individual attributes for easy access in HA
+            if (system.subsystems && system.subsystems.length > 0) {
+                system.subsystems.forEach(subsystem => {
+                    const subsystemKey = MQTT.convertName(subsystem.label || subsystem.name);
+                    state[`${baseName}_attr`][subsystemKey] = {
+                        name: subsystem.name,
+                        status: subsystem.status,
+                        status_color: subsystem.status_color,
+                        dtc_count: subsystem.dtc_count
+                    };
+                    // Add description if available
+                    if (subsystem.description) {
+                        state[`${baseName}_attr`][subsystemKey].description = subsystem.description;
+                    }
+                });
+            }
+            
+            // Keep subsystems_with_issues for backward compatibility and quick issue detection
+            if (system.subsystemsWithIssues && system.subsystemsWithIssues.length > 0) {
+                state[`${baseName}_attr`].subsystems_with_issues = system.subsystemsWithIssues.map(s => ({
+                    name: s.subSystemName,
+                    status: s.subSystemStatus,
+                    status_color: s.subSystemStatusColor
+                }));
+            }
+            
+            // Add DTC details if any
+            if (system.dtcs && system.dtcs.length > 0) {
+                state[`${baseName}_attr`].dtcs = system.dtcs;
+            }
+        });
+        
+        return state;
+    }
+
+    /**
      * Return the state payload for this diagnostic
      * @param {Diagnostic} diag
      */
@@ -791,6 +961,10 @@ class MQTT {
         }
         if (diag.statusColor !== undefined && diag.statusColor !== null) {
             state[`${MQTT.convertName(diag.name)}_status_color`] = diag.statusColor;
+        }
+        // Add group-level cts (timestamp) for use in group status sensors
+        if (diag.cts !== undefined && diag.cts !== null) {
+            state[`${MQTT.convertName(diag.name)}_last_updated`] = diag.cts;
         }
         _.forEach(diag.diagnosticElements, e => {
             // massage the binary_sensor values
@@ -865,6 +1039,10 @@ class MQTT {
             if (e.statusColor !== undefined && e.statusColor !== null) {
                 state[`${MQTT.convertName(e.name)}_status_color`] = e.statusColor;
             }
+            // Add cts (timestamp) field as "last_updated" attribute for each sensor
+            if (e.cts !== undefined && e.cts !== null) {
+                state[`${MQTT.convertName(e.name)}_last_updated`] = e.cts;
+            }
         });
         return state;
     }
@@ -875,6 +1053,27 @@ class MQTT {
         // Generate the unique id from the vin and name
         let unique_id = `${this.vehicle.vin}-${diagEl.name}`
         unique_id = unique_id.replace(/\s+/g, '-').toLowerCase();
+        
+        // Always include last_updated (timestamp from cts field) as an attribute
+        const lastUpdatedFieldName = `${MQTT.convertName(diagEl.name)}_last_updated`;
+        let attributeTemplate;
+        
+        if (attr) {
+            // If custom attributes exist, merge last_updated into them
+            // Extract the object content from the template {{ {...} | tojson }}
+            const match = attr.match(/{{ ({.*}) \| tojson }}/);
+            if (match) {
+                // Parse and add last_updated to the existing attribute object
+                attributeTemplate = `{{ {${match[1].substring(1, match[1].length - 1)}, 'last_updated': value_json.${lastUpdatedFieldName}} | tojson }}`;
+            } else {
+                // Fallback: just use the provided attr (shouldn't happen with current patterns)
+                attributeTemplate = attr;
+            }
+        } else {
+            // No custom attributes, just add last_updated
+            attributeTemplate = `{{ {'last_updated': value_json.${lastUpdatedFieldName}} | tojson }}`;
+        }
+        
         return {
             state_class,
             device_class,
@@ -892,8 +1091,8 @@ class MQTT {
             payload_not_available: 'false',
             state_topic: this.getStateTopic(diag),
             value_template: `{{ value_json.${MQTT.convertName(diagEl.name)} }}`,
-            json_attributes_topic: _.isUndefined(attr) ? undefined : this.getStateTopic(diag),
-            json_attributes_template: attr,
+            json_attributes_topic: this.getStateTopic(diag),
+            json_attributes_template: attributeTemplate,
             unique_id: unique_id,
         };
     }
@@ -1014,6 +1213,8 @@ class MQTT {
                 return this.mapSensorConfigPayload(diag, diagEl, undefined, undefined, undefined, undefined, 'mdi:car-brake-fluid-level');
             case 'WASHER_FLUID_LOW': // String values like "FALSE"/"TRUE"
                 return this.mapSensorConfigPayload(diag, diagEl, undefined, undefined, undefined, undefined, 'mdi:wiper-wash');
+            case 'BATTERY_STATE_OF_CHARGE_CRITICALLY_LOW': // String values like "FALSE"/"TRUE"
+                return this.mapSensorConfigPayload(diag, diagEl, undefined, undefined, undefined, undefined, 'mdi:battery-alert');
             case 'LEFT_FRONT_TIRE_PRESSURE_STATUS': // Tire pressure status strings like "TPM_STATUS_NOMINAL"
                 return this.mapSensorConfigPayload(diag, diagEl, undefined, undefined, undefined, undefined, 'mdi:car-tire-alert');
             case 'LEFT_REAR_TIRE_PRESSURE_STATUS': // Tire pressure status strings
@@ -1114,7 +1315,7 @@ class MQTT {
             case 'BATT SAVER MODE SEV LVL':
             case 'BATT_SAVER_MODE_SEV_LVL':
                 // API v3: Include status and statusColor as attributes
-                return this.mapSensorConfigPayload(diag, diagEl, 'measurement', undefined, undefined, `{{ {'status': value_json.${MQTT.convertName(diagEl.name)}_status, 'status_color': value_json.${MQTT.convertName(diagEl.name)}_status_color} | tojson }}`, 'mdi:battery-alert');
+                return this.mapSensorConfigPayload(diag, diagEl, 'measurement', undefined, undefined, `{{ {'status': value_json.${MQTT.convertName(diagEl.name)}_status, 'status_color': value_json.${MQTT.convertName(diagEl.name)}_status_color} | tojson }}`, 'mdi:battery-arrow-down');
             case 'EOL READ':
             case 'EOL_READ':
                 // API v3: Include status and statusColor as attributes

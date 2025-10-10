@@ -9,6 +9,7 @@ class Diagnostic {
         this.displayName = diagResponse.displayName;
         this.status = diagResponse.status;
         this.statusColor = diagResponse.statusColor;
+        this.cts = diagResponse.cts;  // Group-level timestamp
         // API CHANGE: New API format changes field names
         // Old: diagnosticElement (singular), unit
         // New: diagnosticElements (plural), uom (unit of measure)
@@ -43,13 +44,16 @@ class DiagnosticElement {
      * @param {DiagnosticElement} element
      */
     static convert(element) {
-        const { name, message, unit, value } = element;
+        const { name, message, unit, value, status, statusColor, cts } = element;
         const convertedUnit = Measurement.convertUnit(unit);
         return new DiagnosticElement({
             name: DiagnosticElement.convertName(name, convertedUnit),
             message: message,
             unit: convertedUnit,
-            value: Measurement.convertValue(value, unit)
+            value: Measurement.convertValue(value, unit),
+            status: status,
+            statusColor: statusColor,
+            cts: cts
         })
     }
 
@@ -63,6 +67,7 @@ class DiagnosticElement {
      * @param {string} ele.unit (old API) or ele.uom (new API)
      * @param {string} ele.status (API v3)
      * @param {string} ele.statusColor (API v3)
+     * @param {string} ele.cts (API v3) - timestamp
      */
     constructor(ele) {
         this._name = ele.name;
@@ -73,6 +78,8 @@ class DiagnosticElement {
         // API CHANGE: Capture element-level status and statusColor from API v3
         this.status = ele.status;
         this.statusColor = ele.statusColor;
+        // API CHANGE: Capture element-level cts (timestamp) from API v3
+        this.cts = ele.cts;
     }
 
     get name() {
@@ -100,4 +107,70 @@ class DiagnosticElement {
     }
 }
 
-module.exports = { Diagnostic, DiagnosticElement };
+class AdvancedDiagnostic {
+    constructor(advDiagResponse) {
+        this.advDiagnosticsStatus = advDiagResponse.advDiagnosticsStatus;
+        this.advDiagnosticsStatusColor = advDiagResponse.advDiagnosticsStatusColor;
+        this.recommendedAction = advDiagResponse.recommendedAction;
+        this.cts = advDiagResponse.cts;
+        this.diagnosticSystems = _.map(advDiagResponse.diagnosticSystems || [], 
+            s => new DiagnosticSystem(s));
+    }
+
+    hasSystems() {
+        return this.diagnosticSystems.length >= 1;
+    }
+
+    toString() {
+        let systems = '';
+        _.forEach(this.diagnosticSystems, s => systems += `  ${s.toString()}\n`)
+        return `Advanced Diagnostics (${this.advDiagnosticsStatus}):\n` + systems;
+    }
+}
+
+class DiagnosticSystem {
+    constructor(systemResponse) {
+        this.systemId = systemResponse.systemId;
+        this.systemName = systemResponse.systemName;
+        this.systemLabel = systemResponse.systemLabel;
+        this.systemDescription = systemResponse.systemDescription;
+        this.systemStatus = systemResponse.systemStatus;
+        this.systemStatusColor = systemResponse.systemStatusColor;
+        
+        // Store all subsystems with their full info
+        const subSystems = systemResponse.subSystems || [];
+        this.subsystems = _.map(subSystems, s => ({
+            name: s.subSystemName,
+            label: s.subSystemLabel,
+            description: s.subSystemDescription,
+            status: s.subSystemStatus,
+            status_color: s.subSystemStatusColor,
+            dtc_count: (s.dtcList || []).length
+        }));
+        
+        // Keep track of subsystems with issues for backward compatibility
+        this.subsystemsWithIssues = _.filter(subSystems, 
+            s => s.subSystemStatus !== 'NO_ACTION_REQUIRED' && s.subSystemStatus !== 'NO ACTION REQUIRED');
+        
+        // Count total DTCs across all subsystems
+        this.dtcCount = _.sumBy(subSystems, s => (s.dtcList || []).length);
+        
+        // Store all DTCs for detailed info
+        this.dtcs = _.flatMap(subSystems, s => 
+            _.map(s.dtcList || [], dtc => ({
+                subsystem: s.subSystemName,
+                ...dtc
+            }))
+        );
+    }
+
+    toString() {
+        let issues = this.subsystemsWithIssues.length > 0 
+            ? ` (${this.subsystemsWithIssues.length} subsystem issues)` 
+            : '';
+        let dtcs = this.dtcCount > 0 ? ` [${this.dtcCount} DTCs]` : '';
+        return `${this.systemName}: ${this.systemStatus}${issues}${dtcs}`;
+    }
+}
+
+module.exports = { Diagnostic, DiagnosticElement, AdvancedDiagnostic, DiagnosticSystem };

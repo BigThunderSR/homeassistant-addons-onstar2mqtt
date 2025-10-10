@@ -147,11 +147,11 @@ class Commands {
         return this.onstar.diagnostics({ diagnosticItem });
     }
 
-    async enginerpm({ diagnosticItem = [
-        Commands.CONSTANTS.DIAGNOSTICS.ENGINE_RPM,
-    ] }) {
-        return this.onstar.diagnostics({ diagnosticItem });
-    }
+    // async enginerpm({ diagnosticItem = [
+    //     Commands.CONSTANTS.DIAGNOSTICS.ENGINE_RPM,
+    // ] }) {
+    //     return this.onstar.diagnostics({ diagnosticItem });
+    // }
 
 }
 
