@@ -1036,7 +1036,8 @@ class MQTT {
             if (e.status !== undefined && e.status !== null) {
                 state[`${MQTT.convertName(e.name)}_status`] = e.status;
             }
-            if (e.statusColor !== undefined && e.statusColor !== null) {
+            // Include status_color even if null, so templates can reference it consistently
+            if (e.statusColor !== undefined) {
                 state[`${MQTT.convertName(e.name)}_status_color`] = e.statusColor;
             }
             // Add cts (timestamp) field as "last_updated" attribute for each sensor

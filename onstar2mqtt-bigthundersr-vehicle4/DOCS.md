@@ -231,13 +231,66 @@ mode: single
 
 ## Commands
 
-### Example Script YAML for Running Commands
+### How to Enable Auto-Discovered Buttons
 
 **MQTT button auto discovery is enabled starting at v1.14.0 which sends/triggers the defaults of each command.**
 
-- > Buttons are added disabled by default because it's easy to accidentally press the wrong button and trigger an action at an inopportune time.
-  - > Enable at your own risk and you assume all responsibility for your actions.
-- All available buttons for all vehicles are included for now, so only enable the buttons you need and/or work for your vehicle.
+**⚠️ IMPORTANT DISCLAIMER:**
+
+Buttons are added **disabled by default** because it's easy to accidentally press the wrong button and trigger an action at an inopportune time. **Enable at your own risk and you assume all responsibility for your actions.** Only enable the buttons you need and/or that work for your specific vehicle.
+
+**Steps to Enable Buttons:**
+
+1. Navigate to **Settings → Devices & Services → MQTT** in Home Assistant
+2. Find and click on your **vehicle device** in the list
+3. Scroll down to the **Controls** section where you'll see all the auto-discovered buttons (they will show as "Disabled")
+4. Click on any **button entity** you want to enable
+5. Click the **gear icon** (⚙️) in the top right corner to open entity settings
+6. Toggle the **"Enabled"** switch to ON
+7. Click **"Update"** to save
+8. Repeat for each button you want to enable
+
+**Note:** All available buttons for all vehicle types are included, so only enable the buttons that are compatible with your specific vehicle model.
+
+### Example Script YAML for Running Commands
+
+#### How to Enable Auto-Discovered Buttons in Home Assistant
+
+Since the buttons are created but disabled by default, follow these steps to enable the ones you want to use:
+
+1. **Navigate to MQTT Integration:**
+   - Go to `Settings` → `Devices & Services` → `MQTT`
+
+2. **Find Your Vehicle Device:**
+   - Look for your vehicle device in the MQTT device list (it will be named with your vehicle name)
+   - Click on the device to view all entities
+
+3. **Enable Desired Buttons:**
+   - Scroll through the list of entities to find the buttons (they will have a button icon)
+   - Click on each button entity you want to enable
+   - Click the settings/gear icon in the entity details
+   - Toggle the "Enabled" switch to ON
+   - Click "Update"
+
+4. **Add Enabled Buttons to Dashboard:**
+   - Once enabled, you can add the buttons to your Lovelace dashboard
+   - Use button cards or entity cards to display and use them
+
+**Available Buttons Include:**
+
+- Start Vehicle
+- Cancel Start Vehicle  
+- Lock Door
+- Unlock Door
+- Lock Trunk / Unlock Trunk (if supported by vehicle)
+- Alert / Cancel Alert
+- Flash Lights / Stop Lights
+- Charge Override / Cancel Charge Override (for EVs)
+- Get Location
+- Get Diagnostics
+- And more...
+
+**⚠️ Warning:** Only enable buttons you need and understand. Accidentally pressing the wrong button could trigger unwanted actions on your vehicle.
 
 #### The following isn't strictly necessary starting at v1.14.0, but still available if needed or for sending customized commands
 
@@ -466,9 +519,11 @@ Commands Implemented in this Program:
 12. `chargeOverride`
 13. `cancelChargeOverride`
 14. `getLocation`
-15. `alertFlash`
-16. `alertHonk`
-17. `diagnostics` (uses OnStar API v3 - retrieves comprehensive diagnostic data for all vehicle systems. Can be requested on-demand but diagnostic data is not real-time and reflects the last cached state from the the API. Runs automatically during polling. See "Advanced Diagnostics Sensors" section above for details on the 7 diagnostic system sensors automatically created)
+15. ~~`alertFlash`~~ (deprecated - no longer available in OnStarJS)
+16. ~~`alertHonk`~~ (deprecated - no longer available in OnStarJS)
+17. `flashLights` (uses OnStar API v3 - flash vehicle lights)
+18. `stopLights` (uses OnStar API v3 - stop flashing vehicle lights)
+19. `diagnostics` (uses OnStar API v3 - retrieves comprehensive diagnostic data for all vehicle systems. Can be requested on-demand but diagnostic data is not real-time and reflects the last cached state from the the API. Runs automatically during polling. See "Advanced Diagnostics Sensors" section above for details on the 7 diagnostic system sensors automatically created)
 
 ### Lovelace Dashboard
 
