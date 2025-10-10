@@ -114,9 +114,16 @@ MQTT auto discovery is enabled. For further integrations and screenshots see Doc
     - {"command": "stopLights"}
 
 - **NEW - MQTT Button Auto-Discovery for HA Added Starting at v1.14.0**
-  - Buttons are added disabled by default because it's easy to accidentally press the wrong button and trigger an action at an inopportune time.
-Enable at your own risk and you assume all responsibility for your actions.
+  - **⚠️ IMPORTANT DISCLAIMER:** Buttons are added **disabled by default** because it's easy to accidentally press the wrong button and trigger an action at an inopportune time. **Enable at your own risk and you assume all responsibility for your actions.**
   - All available buttons for all vehicles are included for now, so only enable the buttons you need and/or work for your vehicle.
+  - **How to Enable Buttons in Home Assistant:**
+    1. Go to `Settings` → `Devices & Services` → `MQTT`
+    2. Find your vehicle device and click on it
+    3. Scroll to the **Controls** section where buttons are listed (they will show as "Disabled")
+    4. Click on each button you want to enable
+    5. Click the settings/gear icon (⚙️) and toggle "Enabled" to ON
+    6. Click "Update"
+  - See Documentation page within the add-on for detailed instructions and available button list
 
 ## Helpful Usage Notes
 
