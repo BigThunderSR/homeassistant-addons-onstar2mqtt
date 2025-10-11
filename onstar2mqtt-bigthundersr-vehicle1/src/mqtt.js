@@ -147,22 +147,39 @@ class MQTT {
 
     static determineSensorType(name) {
         switch (name) {
+            // API v1 uses spaces, API v3 uses underscores - support both
             case 'EV CHARGE STATE':
+            case 'EV_CHARGE_STATE':
             case 'EV PLUG STATE':
+            case 'EV_PLUG_STATE':
             case 'PRIORITY CHARGE INDICATOR':
+            case 'PRIORITY_CHARGE_INDICATOR':
             case 'PRIORITY CHARGE STATUS':
+            case 'PRIORITY_CHARGE_STATUS':
             case 'LOC BASED CHARGING HOME LOC STORED':
+            case 'LOC_BASED_CHARGING_HOME_LOC_STORED':
             case 'SCHEDULED CABIN PRECONDTION CUSTOM SET REQ ACTIVE': // There is a typo in the data coming from the API; 'PRECONDTION' is missing an 'i'.
+            case 'SCHEDULED_CABIN_PRECONDTION_CUSTOM_SET_REQ_ACTIVE':
             case 'VEH IN HOME LOCATION':
+            case 'VEH_IN_HOME_LOCATION':
             case 'VEH NOT IN HOME LOC':
+            case 'VEH_NOT_IN_HOME_LOC':
             case 'VEH LOCATION STATUS INVALID':
+            case 'VEH_LOCATION_STATUS_INVALID':
             case 'CABIN PRECOND REQUEST':
+            case 'CABIN_PRECOND_REQUEST':
             case 'PREF CHARGING TIMES SETTING':
+            case 'PREF_CHARGING_TIMES_SETTING':
             case 'LOCATION BASE CHARGE SETTING':
+            case 'LOCATION_BASE_CHARGE_SETTING':
             case 'CABIN PRECONDITIONING REQUEST':
+            case 'CABIN_PRECONDITIONING_REQUEST':
             case 'HIGH VOLTAGE BATTERY PRECONDITIONING STATUS':
+            case 'HIGH_VOLTAGE_BATTERY_PRECONDITIONING_STATUS':
             case 'EXHST PART FLTR WARN ON':
+            case 'EXHST_PART_FLTR_WARN_ON':
             case 'EXHST PART FLTR WARN2 ON':
+            case 'EXHST_PART_FLTR_WARN2_ON':
                 return 'binary_sensor';
             case 'getLocation':
                 return 'device_tracker';
@@ -970,59 +987,91 @@ class MQTT {
             // massage the binary_sensor values
             let value;
             switch (e.name) {
-                case 'EV PLUG STATE': // unplugged/plugged
+                // API v1 uses spaces, API v3 uses underscores - support both
+                case 'EV PLUG STATE': // API v1
+                case 'EV_PLUG_STATE': // API v3: "Disconnect"/"Connect", API v1: "unplugged"/"plugged"
                     // Return null if value is null/undefined to show as unavailable in HA
-                    value = (e.value === null || e.value === undefined) ? null : (e.value.toLowerCase() === 'plugged');
+                    if (e.value === null || e.value === undefined) {
+                        value = null;
+                    } else {
+                        const lowerValue = e.value.toLowerCase();
+                        // API v3 uses "Disconnect"/"Connect", API v1 uses "unplugged"/"plugged"
+                        value = lowerValue === 'connect' || lowerValue === 'connected' || lowerValue === 'plugged';
+                    }
                     break;
-                case 'EV CHARGE STATE': // not_charging/charging
+                case 'EV CHARGE STATE': // API v1
+                case 'EV_CHARGE_STATE': // API v3: "UNCONNECTED"/"CHARGING"/"Active", API v1: "not_charging"/"charging"
                     // Return null if value is null/undefined to show as unavailable in HA
-                    value = (e.value === null || e.value === undefined) ? null : (e.value.toLowerCase() === 'charging');
+                    if (e.value === null || e.value === undefined) {
+                        value = null;
+                    } else {
+                        const lowerValue = e.value.toLowerCase();
+                        // API v3 uses "UNCONNECTED"/"CHARGING"/"Active", API v1 uses "not_charging"/"charging"
+                        value = lowerValue === 'charging' || lowerValue === 'active';
+                    }
                     break;
                 case 'PRIORITY CHARGE INDICATOR': // FALSE/TRUE
+                case 'PRIORITY_CHARGE_INDICATOR':
                     value = e.value === 'TRUE';
                     break;
                 case 'PRIORITY CHARGE STATUS': // NOT_ACTIVE/ACTIVE
+                case 'PRIORITY_CHARGE_STATUS':
                     value = e.value === 'ACTIVE';
                     break;
                 case 'LOC BASED CHARGING HOME LOC STORED': // FALSE/TRUE
+                case 'LOC_BASED_CHARGING_HOME_LOC_STORED':
                     value = e.value === 'TRUE';
                     break;
                 case 'SCHEDULED CABIN PRECONDTION CUSTOM SET REQ ACTIVE': // FALSE/TRUE - There is a typo in the data coming from the API; 'PRECONDTION' is missing an 'i'.
+                case 'SCHEDULED_CABIN_PRECONDTION_CUSTOM_SET_REQ_ACTIVE':
                     value = e.value === 'TRUE';
                     break;
                 case 'VEH IN HOME LOCATION': // FALSE/TRUE
+                case 'VEH_IN_HOME_LOCATION':
                     value = e.value === 'TRUE';
                     break;
                 case 'VEH NOT IN HOME LOC': // FALSE/TRUE
+                case 'VEH_NOT_IN_HOME_LOC':
                     value = e.value === 'TRUE';
                     break;
                 case 'VEH LOCATION STATUS INVALID': // FALSE/TRUE
+                case 'VEH_LOCATION_STATUS_INVALID':
                     value = e.value === 'TRUE';
                     break;
                 case 'CABIN PRECOND REQUEST': // OFF/ON
+                case 'CABIN_PRECOND_REQUEST':
                     value = e.value === 'ON';
                     break;
                 case 'PREF CHARGING TIMES SETTING': // OFF/ON
+                case 'PREF_CHARGING_TIMES_SETTING':
                     value = e.value === 'ON';
                     break;
                 case 'LOCATION BASE CHARGE SETTING': // OFF/ON
+                case 'LOCATION_BASE_CHARGE_SETTING':
                     value = e.value === 'ON';
                     break;
                 case 'CABIN PRECONDITIONING REQUEST': // NO_ACTION/ACTION
+                case 'CABIN_PRECONDITIONING_REQUEST':
                     value = e.value === 'ACTION';
                     break;
                 case 'HIGH VOLTAGE BATTERY PRECONDITIONING STATUS': // DISABLED/ENABLED
+                case 'HIGH_VOLTAGE_BATTERY_PRECONDITIONING_STATUS':
                     value = e.value === 'ENABLED';
                     break;
                 case 'EXHST PART FLTR WARN ON': // FALSE/TRUE
+                case 'EXHST_PART_FLTR_WARN_ON':
                     value = e.value === 'TRUE';
                     break;
                 case 'EXHST PART FLTR WARN2 ON': // FALSE/TRUE
+                case 'EXHST_PART_FLTR_WARN2_ON':
                     value = e.value === 'TRUE';
                     break;
                 default:
                     // Return null for null/undefined values to show as unavailable in HA
                     if (e.value === null || e.value === undefined) {
+                        value = null;
+                    } else if (typeof e.value === 'string' && e.value.toLowerCase() === 'unavailable') {
+                        // API v3 returns "Unavailable" string for some sensors (e.g., CHARGE_VOLTAGE when not charging)
                         value = null;
                     } else {
                         // coerce to number if possible, API uses strings :eyeroll:
@@ -1129,7 +1178,9 @@ class MQTT {
         // TODO: this sucks, find a better way to map these diagnostics and their elements for discovery.
         switch (diagEl.name) {
             // Format: diagnostic, diagnosticElement1, state_class, device_class, attributes
+            // API v1 uses spaces, API v3 uses underscores - support both
             case 'LIFETIME ENERGY USED':
+            case 'LIFETIME_ENERGY_USED':
                 return this.mapSensorConfigPayload(diag, diagEl, 'total_increasing', 'energy', undefined, undefined, 'mdi:lightning-bolt');
             case 'INTERM VOLT BATT VOLT':
                 return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'voltage', undefined, undefined, 'mdi:car-battery');
@@ -1139,6 +1190,8 @@ class MQTT {
                 return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'temperature', undefined, undefined, 'mdi:battery-high');
             case 'AMBIENT AIR TEMPERATURE':
             case 'AMBIENT AIR TEMPERATURE F':
+            case 'AMBIENT_AIR_TEMPERATURE': // API v3
+            case 'AMBIENT_AIR_TEMPERATURE_F': // API v3 Fahrenheit
                 return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'temperature', undefined, undefined, 'mdi:thermometer');
             case 'ENGINE COOLANT TEMP':
             case 'ENGINE COOLANT TEMP F':
@@ -1165,9 +1218,12 @@ class MQTT {
             case 'TIRE PRESSURE RR PSI':
                 return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'pressure', 'Tire Pressure: Right Rear PSI', `{{ {'recommendation': value_json.${MQTT.convertName('TIRE_PRESSURE_PLACARD_REAR_PSI')}, 'message': value_json.${MQTT.convertName('TIRE_PRESSURE_RR_PSI_MESSAGE')}} | tojson }}`, 'mdi:car-tire-alert');
             // binary_sensor, no state_class, has device_class
-            case 'EV PLUG STATE': // unplugged/plugged
+            // API v1 uses spaces, API v3 uses underscores - support both
+            case 'EV PLUG STATE': // API v1
+            case 'EV_PLUG_STATE': // API v3: "Disconnect"/"Connect"/"Connected", API v1: "unplugged"/"plugged"
                 return this.mapBinarySensorConfigPayload(diag, diagEl, undefined, 'plug', undefined, undefined, 'mdi:ev-plug-type1');
-            case 'EV CHARGE STATE': // not_charging/charging
+            case 'EV CHARGE STATE': // API v1
+            case 'EV_CHARGE_STATE': // API v3: "UNCONNECTED"/"CHARGING"/"Active", API v1: "not_charging"/"charging"
                 return this.mapBinarySensorConfigPayload(diag, diagEl, undefined, 'battery_charging', undefined, undefined, 'mdi:battery-charging');
             // binary_sensor, no state_class and no applicable device_class
             case 'PRIORITY CHARGE INDICATOR': // FALSE/TRUE
@@ -1244,6 +1300,8 @@ class MQTT {
                 return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'distance', undefined, undefined, 'mdi:gas-station');
             case 'EV RANGE':
             case 'EV RANGE MI':
+            case 'EV_RANGE': // API v3
+            case 'EV_RANGE_MI': // API v3 Miles
                 return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'distance', undefined, undefined, 'mdi:ev-station');
             case 'LAST TRIP TOTAL DISTANCE':
             case 'LAST TRIP TOTAL DISTANCE MI':
