@@ -971,10 +971,12 @@ class MQTT {
             let value;
             switch (e.name) {
                 case 'EV PLUG STATE': // unplugged/plugged
-                    value = e.value && e.value.toLowerCase() === 'plugged';
+                    // Return null if value is null/undefined to show as unavailable in HA
+                    value = (e.value === null || e.value === undefined) ? null : (e.value.toLowerCase() === 'plugged');
                     break;
                 case 'EV CHARGE STATE': // not_charging/charging
-                    value = e.value && e.value.toLowerCase() === 'charging';
+                    // Return null if value is null/undefined to show as unavailable in HA
+                    value = (e.value === null || e.value === undefined) ? null : (e.value.toLowerCase() === 'charging');
                     break;
                 case 'PRIORITY CHARGE INDICATOR': // FALSE/TRUE
                     value = e.value === 'TRUE';
@@ -1019,10 +1021,14 @@ class MQTT {
                     value = e.value === 'TRUE';
                     break;
                 default:
-                    // coerce to number if possible, API uses strings :eyeroll:
-                    // eslint-disable-next-line no-case-declarations
-                    const num = _.toNumber(e.value);
-                    value = _.isNaN(num) ? e.value : num;
+                    // Return null for null/undefined values to show as unavailable in HA
+                    if (e.value === null || e.value === undefined) {
+                        value = null;
+                    } else {
+                        // coerce to number if possible, API uses strings :eyeroll:
+                        const num = _.toNumber(e.value);
+                        value = _.isNaN(num) ? e.value : num;
+                    }
                     break;
             }
             state[MQTT.convertName(e.name)] = value;
@@ -1203,7 +1209,7 @@ class MQTT {
             case 'LAST_OIL_CHANGE_DATE': // Date string like "2025-09-19"
                 return this.mapSensorConfigPayload(diag, diagEl, undefined, undefined, undefined, undefined, 'mdi:calendar-check');
             case 'ENGINE_AIR_FILTER_LIFE_RMAINING_HMI': // Engine air filter life remaining percentage
-                return this.mapSensorConfigPayload(diag, diagEl, undefined, undefined, undefined, undefined, 'mdi:air-filter');
+                return this.mapSensorConfigPayload(diag, diagEl, 'measurement', undefined, undefined, undefined, 'mdi:air-filter');
             case 'ENGINE_AIR_FILTER_DIAGNOSTICS': // Diagnostic status strings like "NO FAULT"
                 return this.mapSensorConfigPayload(diag, diagEl, undefined, undefined, undefined, undefined, 'mdi:air-filter');
             case 'ENGINE_AIR_FILTER_MONITOR_STATUS': // Monitor status strings like "OK"
