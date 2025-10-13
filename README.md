@@ -58,6 +58,72 @@ As well as many new additional customizations such as log colorization which are
 
 ~~- [OnStar2MQTT for Vehicle 2 Using michaelwoods/onstar2mqtt Build](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/tree/main/onstar2mqtt-michaelwoods-vehicle2)~~
 
+## What's New in v2.0.0
+
+**Important Update:** This version includes OnStar API v3 changes that may affect some sensors.
+
+- As this is a major change, some issues may occur. Please report any problems you encounter by opening an issue on GitHub.
+- Most new sensors have been added. Any remaining sensors will be added in future updates. Current ETA is by the end of December 2025.
+
+**New Features:**
+
+- **OnStar API v3 Support** - Updated to OnStarJS 2.10.0 with full API v3 compatibility
+- **Enhanced Reliability** - Improved handling of OnStar API field naming variations
+
+**What This Means for You:**
+
+- Some sensors that worked with older OnStar API versions may no longer be available or may have different names
+- Sensor entity IDs and names may change in Home Assistant
+- You may need to update Home Assistant automations/dashboards that reference changed sensors
+- Review your dashboards for any broken sensor references after upgrading
+
+### Important: Manual Sensor Cleanup Required
+
+After upgrading to v2.0.0, you will need to **manually remove deprecated sensors** from both your MQTT broker and Home Assistant:
+
+#### Step 1: Delete Retained MQTT Topics from Broker
+
+First, delete the related retained MQTT topics from your MQTT broker to prevent deprecated sensors from being recreated. **Both config and state topics must be removed:**
+
+- **Using MQTT Explorer or similar tool:**
+  - Connect to your MQTT broker
+  - Navigate to `homeassistant/sensor/YOUR_VIN/` and `homeassistant/binary_sensor/YOUR_VIN/`
+  - For each deprecated sensor, delete **both**:
+    - Config topic: `homeassistant/sensor/YOUR_VIN/deprecated_sensor/config`
+    - State topic: `homeassistant/sensor/YOUR_VIN/deprecated_sensor/state`
+
+- **Using mosquitto_pub command:**
+
+  ```bash
+  # Delete config topic
+  mosquitto_pub -h YOUR_MQTT_HOST -u YOUR_MQTT_USER -P YOUR_MQTT_PASS -t "homeassistant/sensor/YOUR_VIN/deprecated_sensor/config" -n -r
+  
+  # Delete state topic
+  mosquitto_pub -h YOUR_MQTT_HOST -u YOUR_MQTT_USER -P YOUR_MQTT_PASS -t "homeassistant/sensor/YOUR_VIN/deprecated_sensor/state" -n -r
+  ```
+
+  (Replace `deprecated_sensor` with each deprecated sensor name, `-n` sends empty payload, `-r` sets retained flag)
+
+#### Step 2: Remove Sensors from Home Assistant
+
+1. **Navigate to Settings → Devices & Services → MQTT**
+2. **Find your vehicle device** in the list
+3. **Review all sensors** and look for any that show as "Unavailable" or "Unknown"
+4. **Delete deprecated sensors** by clicking on each sensor and selecting "Delete"
+
+#### Step 3: Restart Home Assistant
+
+1. **Restart Home Assistant** to ensure all changes take effect
+
+**Why This Cleanup is Necessary:**
+
+- MQTT discovery creates new sensors but doesn't automatically remove old ones
+- Deprecated sensors from API v2 may conflict with new API v3 sensors
+- Old sensors will remain as "ghost" entities until manually removed
+- Retained MQTT topics will cause deleted sensors to be recreated on restart unless also deleted from the broker
+
+**Recommendation:** Test in a sandbox/test environment first if possible, or be prepared to update your Home Assistant configurations after upgrading.
+
 ## Running
 
 Collect the following minimum information:
@@ -66,6 +132,14 @@ Collect the following minimum information:
 1. OnStar login: username, password, PIN, [TOTP Key (Please click link for instructions)](https://github.com/BigThunderSR/OnStarJS?tab=readme-ov-file#new-requirement-as-of-2024-11-19)
 1. Your vehicle's VIN which is easily found in the monthly OnStar diagnostic emails, in your OnStar account or in the official OnStar apps
 1. MQTT server information: hostname, username, password
+
+The default data refresh interval is 30 minutes and can be overridden with `ONSTAR_REFRESH` with values in milliseconds.
+
+**Recall Checking:** Vehicle recall information is automatically checked on startup and every 7 days by default. This can be configured with `ONSTAR_RECALL_REFRESH` (in milliseconds). Recalls can also be checked manually via the "Get Vehicle Recall Info" button in Home Assistant.
+
+**Vehicle Image:** Your vehicle's photo from the manufacturer is automatically downloaded, cached, and published to Home Assistant as an image entity on application startup. The image is base64-encoded for offline viewing and persists even if the manufacturer's URL changes.
+
+**EV Charging Metrics:** For electric vehicles, detailed charging metrics are available on-demand via the "Get EV Charging Metrics" button in Home Assistant. This creates 10 specialized sensors including target charge level, battery capacity, trip consumption, charge mode, charge location status, and discharge settings. See Documentation page within the add-on for full sensor details.
 
 > **NOTE**: Please review [this page](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/discussions/1134) if you do not know how to create directories in Home Assistant
 
@@ -92,6 +166,7 @@ MQTT auto discovery is enabled. For further integrations and screenshots see Doc
 
 - Uses the value from "ONSTAR_REFRESH" on initial startup
 - Change the value dynamically by publishing the new refresh value in milliseconds (ms) as an INT to: "homeassistant/(VIN)/refresh_interval"
+- Added new retained topic of "homeassistant/(VIN)/refresh_interval_current_val" to monitor current refresh value set via MQTT
 
 ### Command Response Status via MQTT
 
@@ -125,6 +200,13 @@ MQTT auto discovery is enabled. For further integrations and screenshots see Doc
 - MQTT_CERT_FILE
 - MQTT_KEY_FILE
 
+### Device Tracker Auto-Discovery
+
+**NEW** - Auto discovery for device_tracker has been enabled starting at v1.12.0
+
+- The device_tracker auto discovery config is published to: "homeassistant/(VIN)/device_tracker/config" and the GPS coordinates are read from the original topic automatically at: "homeassistant/device_tracker/(VIN)/getlocation/state"
+- Also added GPS based speed and direction to the device_tracker attributes
+
 ### Commands with Options via MQTT
 
 **NEW** - Ability to send commands with options using MQTT now works
@@ -150,6 +232,35 @@ MQTT auto discovery is enabled. For further integrations and screenshots see Doc
   5. Click the settings/gear icon (⚙️) and toggle "Enabled" to ON
   6. Click "Update"
 - See Documentation page within the add-on for detailed instructions and available button list
+
+### Command Status Sensors Auto-Discovery
+
+**NEW** - MQTT Auto-Discovery for Command Status Sensors for HA Added Starting at v1.15.0
+
+- Command Status and Timestamp from last command run are published to MQTT auto-discovery topics and are grouped in a MQTT device grouping for all command status sensors for the same vehicle.
+
+### Polling Status Sensors Auto-Discovery
+
+**NEW** - MQTT Auto-Discovery for Polling Status Sensors for HA Added Starting at v1.16.0
+
+- Polling Status, Timestamp, Error Code (if applicable), Success T/F Sensor from last polling cycle and Polling Refresh Interval Time Sensor are published to MQTT auto-discovery topics and are grouped in a MQTT device grouping for all command status sensors for the same vehicle.
+
+### Sensor Status Message Sensors Auto-Discovery
+
+**NEW** - MQTT Auto-Discovery for Sensor Status Message Sensors for HA Added Starting at v1.17.0
+
+- At this point, pretty much every available sensor, button and status is published to MQTT auto-discovery topics
+- Set `MQTT_LIST_ALL_SENSORS_TOGETHER="true"` to group all the sensors under one MQTT device starting at v1.17.0. Default is `"false"`.
+
+### Advanced Diagnostics Sensors (API v3)
+
+**NEW** - Advanced Diagnostics Sensors from OnStar API v3 Added
+
+- 7 diagnostic system sensors with full subsystem details: Engine & Transmission (11 subsystems), Antilock Braking (3), StabiliTrak (1), Air Bag (4), Emissions (2), OnStar (3), Electric Lamp (1)
+- Each sensor includes system status, color-coded status indicators, diagnostic trouble codes (DTCs), and detailed descriptions
+- Individual subsystem attributes for granular monitoring (e.g., displacement_on_demand_subsystem, fuel_management_subsystem)
+- Quick issue detection with subsystems_with_issues array
+- Published to topic: "homeassistant/{VIN}/adv_diag/state"
 
 ## Helpful Usage Notes
 
