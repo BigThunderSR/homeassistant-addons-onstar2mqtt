@@ -102,6 +102,14 @@ class Commands {
         return this.onstar.cancelAlert();
     }
 
+    async flashLights(options = {}) {
+        return this.onstar.flashLights(options);
+    }
+
+    async stopLights() {
+        return this.onstar.stopLights();
+    }
+
     async lockDoor({ delay = 0 }) {
         return this.onstar.lockDoor({ delay });
     }
@@ -118,18 +126,30 @@ class Commands {
         return this.onstar.unlockTrunk({ delay });
     }
 
+    async setChargeLevelTarget(tcl, options = {}) {
+        return this.onstar.setChargeLevelTarget(tcl, options);
+    }
+
+    async stopCharging(options = {}) {
+        return this.onstar.stopCharging(options);
+    }
+
+    // Deprecated - kept for backward compatibility but will be removed in future version
     async chargeOverride({ mode = Commands.CONSTANTS.CHARGE_OVERRIDE.CHARGE_NOW }) {
         return this.onstar.chargeOverride({ mode });
     }
 
+    // Deprecated - kept for backward compatibility but will be removed in future version
     async cancelChargeOverride({ mode = Commands.CONSTANTS.CHARGE_OVERRIDE.CANCEL_OVERRIDE }) {
         return this.onstar.chargeOverride({ mode });
     }
 
+    // Deprecated - kept for backward compatibility but will be removed in future version
     async getChargingProfile() {
         return this.onstar.getChargingProfile();
     }
 
+    // Deprecated - kept for backward compatibility but will be removed in future version
     async setChargingProfile(request) {
         return this.onstar.setChargingProfile(request);
     }
@@ -152,6 +172,22 @@ class Commands {
     // ] }) {
     //     return this.onstar.diagnostics({ diagnosticItem });
     // }
+
+    async getVehicleDetails() {
+        return this.onstar.getVehicleDetails();
+    }
+
+    async getOnstarPlan() {
+        return this.onstar.getOnstarPlan();
+    }
+
+    async getEVChargingMetrics() {
+        return this.onstar.getEVChargingMetrics();
+    }
+
+    async getVehicleRecallInfo() {
+        return this.onstar.getVehicleRecallInfo();
+    }
 
 }
 

@@ -63,6 +63,14 @@ class MQTT {
                 Name: 'cancelAlert',
                 Icon: 'mdi:alert-minus',
             },
+            FlashLights: {
+                Name: 'flashLights',
+                Icon: 'mdi:car-light-alert',
+            },
+            StopLights: {
+                Name: 'stopLights',
+                Icon: 'mdi:car-light-dimmed',
+            },
             LockDoor: {
                 Name: 'lockDoor',
                 Icon: 'mdi:car-door-lock',
@@ -99,21 +107,46 @@ class MQTT {
             //     Name: 'enginerpm',
             //     Icon: 'mdi:speedometer',
             // },
-            ChargeOverride: {
-                Name: 'chargeOverride',
+            SetChargeLevelTarget: {
+                Name: 'setChargeLevelTarget',
+                Icon: 'mdi:battery-charging-80',
+            },
+            StopCharging: {
+                Name: 'stopCharging',
+                Icon: 'mdi:battery-charging-outline',
+            },
+            // Deprecated - kept for backward compatibility but hidden from auto-discovery
+            // ChargeOverride: {
+            //     Name: 'chargeOverride',
+            //     Icon: 'mdi:ev-station',
+            // },
+            // CancelChargeOverride: {
+            //     Name: 'cancelChargeOverride',
+            //     Icon: 'mdi:battery-charging-wireless-alert',
+            // },
+            // GetChargingProfile: {
+            //     Name: 'getChargingProfile',
+            //     Icon: 'mdi:battery-charging-wireless',
+            // },
+            // SetChargingProfile: {
+            //     Name: 'setChargingProfile',
+            //     Icon: 'mdi:battery-sync',
+            // },
+            GetVehicleDetails: {
+                Name: 'getVehicleDetails',
+                Icon: 'mdi:car-info',
+            },
+            GetOnstarPlan: {
+                Name: 'getOnstarPlan',
+                Icon: 'mdi:calendar-check',
+            },
+            GetEVChargingMetrics: {
+                Name: 'getEVChargingMetrics',
                 Icon: 'mdi:ev-station',
             },
-            CancelChargeOverride: {
-                Name: 'cancelChargeOverride',
-                Icon: 'mdi:battery-charging-wireless-alert',
-            },
-            GetChargingProfile: {
-                Name: 'getChargingProfile',
-                Icon: 'mdi:battery-charging-wireless',
-            },
-            SetChargingProfile: {
-                Name: 'setChargingProfile',
-                Icon: 'mdi:battery-sync',
+            GetVehicleRecallInfo: {
+                Name: 'getVehicleRecallInfo',
+                Icon: 'mdi:alert-octagon',
             },
         }
     };
@@ -147,22 +180,39 @@ class MQTT {
 
     static determineSensorType(name) {
         switch (name) {
+            // API v1 uses spaces, API v3 uses underscores - support both
             case 'EV CHARGE STATE':
+            case 'EV_CHARGE_STATE':
             case 'EV PLUG STATE':
+            case 'EV_PLUG_STATE':
             case 'PRIORITY CHARGE INDICATOR':
+            case 'PRIORITY_CHARGE_INDICATOR':
             case 'PRIORITY CHARGE STATUS':
+            case 'PRIORITY_CHARGE_STATUS':
             case 'LOC BASED CHARGING HOME LOC STORED':
+            case 'LOC_BASED_CHARGING_HOME_LOC_STORED':
             case 'SCHEDULED CABIN PRECONDTION CUSTOM SET REQ ACTIVE': // There is a typo in the data coming from the API; 'PRECONDTION' is missing an 'i'.
+            case 'SCHEDULED_CABIN_PRECONDTION_CUSTOM_SET_REQ_ACTIVE':
             case 'VEH IN HOME LOCATION':
+            case 'VEH_IN_HOME_LOCATION':
             case 'VEH NOT IN HOME LOC':
+            case 'VEH_NOT_IN_HOME_LOC':
             case 'VEH LOCATION STATUS INVALID':
+            case 'VEH_LOCATION_STATUS_INVALID':
             case 'CABIN PRECOND REQUEST':
+            case 'CABIN_PRECOND_REQUEST':
             case 'PREF CHARGING TIMES SETTING':
+            case 'PREF_CHARGING_TIMES_SETTING':
             case 'LOCATION BASE CHARGE SETTING':
+            case 'LOCATION_BASE_CHARGE_SETTING':
             case 'CABIN PRECONDITIONING REQUEST':
+            case 'CABIN_PRECONDITIONING_REQUEST':
             case 'HIGH VOLTAGE BATTERY PRECONDITIONING STATUS':
+            case 'HIGH_VOLTAGE_BATTERY_PRECONDITIONING_STATUS':
             case 'EXHST PART FLTR WARN ON':
+            case 'EXHST_PART_FLTR_WARN_ON':
             case 'EXHST PART FLTR WARN2 ON':
+            case 'EXHST_PART_FLTR_WARN2_ON':
                 return 'binary_sensor';
             case 'getLocation':
                 return 'device_tracker';
@@ -949,6 +999,324 @@ class MQTT {
     }
 
     /**
+     * Create config for vehicle recall sensor
+     * @param {Object} recallData - The recall data from getVehicleRecallInfo
+     */
+    getVehicleRecallConfig() {
+        const topic = `${this.prefix}/sensor/${this.instance}/vehicle_recalls/config`;
+        const unique_id = `${this.vehicle.vin}_vehicle_recalls`;
+        
+        const payload = {
+            "device": {
+                "identifiers": [this.vehicle.vin],
+                "manufacturer": this.vehicle.make,
+                "model": this.vehicle.year + ' ' + this.vehicle.model,
+                "name": this.vehicle.toString(),
+                "suggested_area": this.vehicle.toString(),
+            },
+            "availability": {
+                "topic": this.getAvailabilityTopic(),
+                "payload_available": 'true',
+                "payload_not_available": 'false',
+            },
+            "unique_id": unique_id,
+            "name": "Vehicle Recalls",
+            "state_topic": `${this.prefix}/sensor/${this.instance}/vehicle_recalls/state`,
+            "value_template": "{{ value_json.recall_count }}",
+            "icon": "mdi:alert-octagon",
+            "json_attributes_topic": `${this.prefix}/sensor/${this.instance}/vehicle_recalls/state`,
+            "json_attributes_template": "{{ value_json.attributes | tojson }}",
+        };
+
+        return { topic, payload };
+    }
+
+    /**
+     * Create state payload for vehicle recall sensor
+     * @param {Object} recallData - The recall data from getVehicleRecallInfo response
+     */
+    getVehicleRecallStatePayload(recallData) {
+        const recallInfo = _.get(recallData, 'data.vehicleDetails.recallInfo', []);
+        const activeRecalls = recallInfo.filter(r => r.recallStatus === 'A');
+        const incompleteRepairs = recallInfo.filter(r => r.repairStatus === 'incomplete');
+        
+        const state = {
+            recall_count: recallInfo.length,
+            active_recalls_count: activeRecalls.length,
+            incomplete_repairs_count: incompleteRepairs.length,
+            attributes: {
+                has_active_recalls: activeRecalls.length > 0,
+                last_updated: new Date().toISOString(),
+                recalls: recallInfo.map(recall => ({
+                    recall_id: recall.recallId,
+                    title: recall.title,
+                    type: recall.typeDescription,
+                    description: recall.description,
+                    recall_status: recall.recallStatus,
+                    repair_status: recall.repairStatus,
+                    repair_description: recall.repairDescription,
+                    safety_risk: recall.safetyRiskDescription,
+                    completed_date: recall.completedDate
+                }))
+            }
+        };
+
+        return state;
+    }
+
+    /**
+     * Create config for vehicle image entity
+     */
+    getVehicleImageConfig() {
+        const topic = `${this.prefix}/image/${this.instance}/vehicle_image/config`;
+        const unique_id = `${this.vehicle.vin}_vehicle_image`;
+        
+        const payload = {
+            "device": {
+                "identifiers": [this.vehicle.vin],
+                "manufacturer": this.vehicle.make,
+                "model": this.vehicle.year + ' ' + this.vehicle.model,
+                "name": this.vehicle.toString(),
+                "suggested_area": this.vehicle.toString(),
+            },
+            "availability": {
+                "topic": this.getAvailabilityTopic(),
+                "payload_available": 'true',
+                "payload_not_available": 'false',
+            },
+            "unique_id": unique_id,
+            "name": "Vehicle Image",
+            "image_topic": `${this.prefix}/image/${this.instance}/vehicle_image/state`,
+            "image_encoding": "b64",
+            "content_type": "image/jpeg",
+            "icon": "mdi:car-info",
+        };
+
+        return { topic, payload };
+    }
+
+    /**
+     * Create state payload for vehicle image entity
+     * @param {Object} vehicleData - The vehicle data from getAccountVehicles response
+     */
+    getVehicleImageStatePayload(vehicleData) {
+        // Extract imageUrl from the vehicle data, ensuring we return empty string for null/undefined
+        const imageUrl = _.get(vehicleData, 'imageUrl', '');
+        return imageUrl || '';  // Convert null/undefined to empty string
+    }
+
+    /**
+     * Create config and state for EV charging metrics sensors
+     * @param {Object} metricsData - The data from getEVChargingMetrics response
+     */
+    getEVChargingMetricsConfigs(metricsData) {
+        const results = _.get(metricsData, 'data.results[0]', {});
+        const configs = [];
+        
+        // Target Charge Level sensor
+        if (results.tcl !== undefined && results.tcl !== null) {
+            configs.push({
+                topic: `${this.prefix}/sensor/${this.instance}/ev_target_charge_level/config`,
+                payload: {
+                    name: "EV Target Charge Level",
+                    unique_id: `${this.vehicle.vin}_ev_target_charge_level`,
+                    state_topic: `${this.prefix}/sensor/${this.instance}/ev_target_charge_level/state`,
+                    device_class: "battery",
+                    state_class: "measurement",
+                    unit_of_measurement: "%",
+                    icon: "mdi:battery-charging-80",
+                    device: this.getDevicePayload(),
+                    availability: this.getAvailabilityPayload()
+                },
+                state: results.tcl
+            });
+        }
+
+        // Battery Capacity sensor (kWh)
+        if (results.kwh !== undefined && results.kwh !== null) {
+            configs.push({
+                topic: `${this.prefix}/sensor/${this.instance}/ev_battery_capacity/config`,
+                payload: {
+                    name: "EV Battery Capacity",
+                    unique_id: `${this.vehicle.vin}_ev_battery_capacity`,
+                    state_topic: `${this.prefix}/sensor/${this.instance}/ev_battery_capacity/state`,
+                    device_class: "energy_storage",
+                    state_class: "measurement",
+                    unit_of_measurement: "kWh",
+                    icon: "mdi:battery-high",
+                    device: this.getDevicePayload(),
+                    availability: this.getAvailabilityPayload()
+                },
+                state: results.kwh
+            });
+        }
+
+        // Trip Odometer sensor
+        if (results.tripodo !== undefined && results.tripodo !== null) {
+            configs.push({
+                topic: `${this.prefix}/sensor/${this.instance}/ev_trip_odometer/config`,
+                payload: {
+                    name: "EV Trip Odometer",
+                    unique_id: `${this.vehicle.vin}_ev_trip_odometer`,
+                    state_topic: `${this.prefix}/sensor/${this.instance}/ev_trip_odometer/state`,
+                    device_class: "distance",
+                    state_class: "total_increasing",
+                    unit_of_measurement: "km",
+                    icon: "mdi:map-marker-distance",
+                    device: this.getDevicePayload(),
+                    availability: this.getAvailabilityPayload()
+                },
+                state: results.tripodo
+            });
+        }
+
+        // Trip Consumption sensor
+        if (results.tripcons !== undefined && results.tripcons !== null) {
+            configs.push({
+                topic: `${this.prefix}/sensor/${this.instance}/ev_trip_consumption/config`,
+                payload: {
+                    name: "EV Trip Consumption",
+                    unique_id: `${this.vehicle.vin}_ev_trip_consumption`,
+                    state_topic: `${this.prefix}/sensor/${this.instance}/ev_trip_consumption/state`,
+                    state_class: "measurement",
+                    unit_of_measurement: "kWh/100km",
+                    icon: "mdi:speedometer",
+                    device: this.getDevicePayload(),
+                    availability: this.getAvailabilityPayload()
+                },
+                state: results.tripcons
+            });
+        }
+
+        // Lifetime Consumption sensor
+        if (results.lifecons !== undefined && results.lifecons !== null) {
+            configs.push({
+                topic: `${this.prefix}/sensor/${this.instance}/ev_lifetime_consumption/config`,
+                payload: {
+                    name: "EV Lifetime Consumption",
+                    unique_id: `${this.vehicle.vin}_ev_lifetime_consumption`,
+                    state_topic: `${this.prefix}/sensor/${this.instance}/ev_lifetime_consumption/state`,
+                    state_class: "measurement",
+                    unit_of_measurement: "kWh/100km",
+                    icon: "mdi:chart-line",
+                    device: this.getDevicePayload(),
+                    availability: this.getAvailabilityPayload()
+                },
+                state: results.lifecons
+            });
+        }
+
+        // Charge Mode sensor
+        if (results.cmode !== undefined && results.cmode !== null) {
+            configs.push({
+                topic: `${this.prefix}/sensor/${this.instance}/ev_charge_mode/config`,
+                payload: {
+                    name: "EV Charge Mode",
+                    unique_id: `${this.vehicle.vin}_ev_charge_mode`,
+                    state_topic: `${this.prefix}/sensor/${this.instance}/ev_charge_mode/state`,
+                    icon: "mdi:ev-station",
+                    device: this.getDevicePayload(),
+                    availability: this.getAvailabilityPayload()
+                },
+                state: results.cmode
+            });
+        }
+
+        // Charge Location Set binary sensor
+        if (results.clocSet !== undefined && results.clocSet !== null) {
+            configs.push({
+                topic: `${this.prefix}/binary_sensor/${this.instance}/ev_charge_location_set/config`,
+                payload: {
+                    name: "EV Charge Location Set",
+                    unique_id: `${this.vehicle.vin}_ev_charge_location_set`,
+                    state_topic: `${this.prefix}/binary_sensor/${this.instance}/ev_charge_location_set/state`,
+                    payload_on: true,
+                    payload_off: false,
+                    icon: "mdi:map-marker-check",
+                    device: this.getDevicePayload(),
+                    availability: this.getAvailabilityPayload()
+                },
+                state: results.clocSet
+            });
+        }
+
+        // At Charge Location binary sensor
+        if (results.clocAt !== undefined && results.clocAt !== null) {
+            configs.push({
+                topic: `${this.prefix}/binary_sensor/${this.instance}/ev_at_charge_location/config`,
+                payload: {
+                    name: "EV At Charge Location",
+                    unique_id: `${this.vehicle.vin}_ev_at_charge_location`,
+                    state_topic: `${this.prefix}/binary_sensor/${this.instance}/ev_at_charge_location/state`,
+                    payload_on: true,
+                    payload_off: false,
+                    icon: "mdi:map-marker",
+                    device: this.getDevicePayload(),
+                    availability: this.getAvailabilityPayload()
+                },
+                state: results.clocAt
+            });
+        }
+
+        // Discharge Enabled binary sensor
+        if (results.disEnabled !== undefined && results.disEnabled !== null) {
+            configs.push({
+                topic: `${this.prefix}/binary_sensor/${this.instance}/ev_discharge_enabled/config`,
+                payload: {
+                    name: "EV Discharge Enabled",
+                    unique_id: `${this.vehicle.vin}_ev_discharge_enabled`,
+                    state_topic: `${this.prefix}/binary_sensor/${this.instance}/ev_discharge_enabled/state`,
+                    payload_on: true,
+                    payload_off: false,
+                    icon: "mdi:transmission-tower-export",
+                    device: this.getDevicePayload(),
+                    availability: this.getAvailabilityPayload()
+                },
+                state: results.disEnabled
+            });
+        }
+
+        // Discharge Minimum SoC sensor
+        if (results.disMinSoc !== undefined && results.disMinSoc !== null) {
+            configs.push({
+                topic: `${this.prefix}/sensor/${this.instance}/ev_discharge_min_soc/config`,
+                payload: {
+                    name: "EV Discharge Minimum SoC",
+                    unique_id: `${this.vehicle.vin}_ev_discharge_min_soc`,
+                    state_topic: `${this.prefix}/sensor/${this.instance}/ev_discharge_min_soc/state`,
+                    device_class: "battery",
+                    state_class: "measurement",
+                    unit_of_measurement: "%",
+                    icon: "mdi:battery-low",
+                    device: this.getDevicePayload(),
+                    availability: this.getAvailabilityPayload()
+                },
+                state: results.disMinSoc
+            });
+        }
+
+        return configs;
+    }
+
+    getDevicePayload() {
+        return {
+            identifiers: [this.vehicle.vin],
+            manufacturer: this.vehicle.make,
+            model: this.vehicle.year + ' ' + this.vehicle.model,
+            name: this.vehicle.toString(),
+            suggested_area: this.vehicle.toString(),
+        };
+    }
+
+    getAvailabilityPayload() {
+        return {
+            topic: this.getAvailabilityTopic(),
+            payload_available: 'true',
+            payload_not_available: 'false',
+        };
+    }
+
+    /**
      * Return the state payload for this diagnostic
      * @param {Diagnostic} diag
      */
@@ -970,59 +1338,91 @@ class MQTT {
             // massage the binary_sensor values
             let value;
             switch (e.name) {
-                case 'EV PLUG STATE': // unplugged/plugged
+                // API v1 uses spaces, API v3 uses underscores - support both
+                case 'EV PLUG STATE': // API v1
+                case 'EV_PLUG_STATE': // API v3: "Disconnect"/"Connect", API v1: "unplugged"/"plugged"
                     // Return null if value is null/undefined to show as unavailable in HA
-                    value = (e.value === null || e.value === undefined) ? null : (e.value.toLowerCase() === 'plugged');
+                    if (e.value === null || e.value === undefined) {
+                        value = null;
+                    } else {
+                        const lowerValue = e.value.toLowerCase();
+                        // API v3 uses "Disconnect"/"Connect", API v1 uses "unplugged"/"plugged"
+                        value = lowerValue === 'connect' || lowerValue === 'connected' || lowerValue === 'plugged';
+                    }
                     break;
-                case 'EV CHARGE STATE': // not_charging/charging
+                case 'EV CHARGE STATE': // API v1
+                case 'EV_CHARGE_STATE': // API v3: "UNCONNECTED"/"CHARGING"/"Active", API v1: "not_charging"/"charging"
                     // Return null if value is null/undefined to show as unavailable in HA
-                    value = (e.value === null || e.value === undefined) ? null : (e.value.toLowerCase() === 'charging');
+                    if (e.value === null || e.value === undefined) {
+                        value = null;
+                    } else {
+                        const lowerValue = e.value.toLowerCase();
+                        // API v3 uses "UNCONNECTED"/"CHARGING"/"Active", API v1 uses "not_charging"/"charging"
+                        value = lowerValue === 'charging' || lowerValue === 'active';
+                    }
                     break;
                 case 'PRIORITY CHARGE INDICATOR': // FALSE/TRUE
+                case 'PRIORITY_CHARGE_INDICATOR':
                     value = e.value === 'TRUE';
                     break;
                 case 'PRIORITY CHARGE STATUS': // NOT_ACTIVE/ACTIVE
+                case 'PRIORITY_CHARGE_STATUS':
                     value = e.value === 'ACTIVE';
                     break;
                 case 'LOC BASED CHARGING HOME LOC STORED': // FALSE/TRUE
+                case 'LOC_BASED_CHARGING_HOME_LOC_STORED':
                     value = e.value === 'TRUE';
                     break;
                 case 'SCHEDULED CABIN PRECONDTION CUSTOM SET REQ ACTIVE': // FALSE/TRUE - There is a typo in the data coming from the API; 'PRECONDTION' is missing an 'i'.
+                case 'SCHEDULED_CABIN_PRECONDTION_CUSTOM_SET_REQ_ACTIVE':
                     value = e.value === 'TRUE';
                     break;
                 case 'VEH IN HOME LOCATION': // FALSE/TRUE
+                case 'VEH_IN_HOME_LOCATION':
                     value = e.value === 'TRUE';
                     break;
                 case 'VEH NOT IN HOME LOC': // FALSE/TRUE
+                case 'VEH_NOT_IN_HOME_LOC':
                     value = e.value === 'TRUE';
                     break;
                 case 'VEH LOCATION STATUS INVALID': // FALSE/TRUE
+                case 'VEH_LOCATION_STATUS_INVALID':
                     value = e.value === 'TRUE';
                     break;
                 case 'CABIN PRECOND REQUEST': // OFF/ON
+                case 'CABIN_PRECOND_REQUEST':
                     value = e.value === 'ON';
                     break;
                 case 'PREF CHARGING TIMES SETTING': // OFF/ON
+                case 'PREF_CHARGING_TIMES_SETTING':
                     value = e.value === 'ON';
                     break;
                 case 'LOCATION BASE CHARGE SETTING': // OFF/ON
+                case 'LOCATION_BASE_CHARGE_SETTING':
                     value = e.value === 'ON';
                     break;
                 case 'CABIN PRECONDITIONING REQUEST': // NO_ACTION/ACTION
+                case 'CABIN_PRECONDITIONING_REQUEST':
                     value = e.value === 'ACTION';
                     break;
                 case 'HIGH VOLTAGE BATTERY PRECONDITIONING STATUS': // DISABLED/ENABLED
+                case 'HIGH_VOLTAGE_BATTERY_PRECONDITIONING_STATUS':
                     value = e.value === 'ENABLED';
                     break;
                 case 'EXHST PART FLTR WARN ON': // FALSE/TRUE
+                case 'EXHST_PART_FLTR_WARN_ON':
                     value = e.value === 'TRUE';
                     break;
                 case 'EXHST PART FLTR WARN2 ON': // FALSE/TRUE
+                case 'EXHST_PART_FLTR_WARN2_ON':
                     value = e.value === 'TRUE';
                     break;
                 default:
                     // Return null for null/undefined values to show as unavailable in HA
                     if (e.value === null || e.value === undefined) {
+                        value = null;
+                    } else if (typeof e.value === 'string' && e.value.toLowerCase() === 'unavailable') {
+                        // API v3 returns "Unavailable" string for some sensors (e.g., CHARGE_VOLTAGE when not charging)
                         value = null;
                     } else {
                         // coerce to number if possible, API uses strings :eyeroll:
@@ -1129,7 +1529,9 @@ class MQTT {
         // TODO: this sucks, find a better way to map these diagnostics and their elements for discovery.
         switch (diagEl.name) {
             // Format: diagnostic, diagnosticElement1, state_class, device_class, attributes
+            // API v1 uses spaces, API v3 uses underscores - support both
             case 'LIFETIME ENERGY USED':
+            case 'LIFETIME_ENERGY_USED':
                 return this.mapSensorConfigPayload(diag, diagEl, 'total_increasing', 'energy', undefined, undefined, 'mdi:lightning-bolt');
             case 'INTERM VOLT BATT VOLT':
                 return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'voltage', undefined, undefined, 'mdi:car-battery');
@@ -1139,6 +1541,8 @@ class MQTT {
                 return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'temperature', undefined, undefined, 'mdi:battery-high');
             case 'AMBIENT AIR TEMPERATURE':
             case 'AMBIENT AIR TEMPERATURE F':
+            case 'AMBIENT_AIR_TEMPERATURE': // API v3
+            case 'AMBIENT_AIR_TEMPERATURE_F': // API v3 Fahrenheit
                 return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'temperature', undefined, undefined, 'mdi:thermometer');
             case 'ENGINE COOLANT TEMP':
             case 'ENGINE COOLANT TEMP F':
@@ -1148,6 +1552,10 @@ class MQTT {
                 return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'temperature', undefined, undefined, 'mdi:thermostat');
             case 'EV BATTERY LEVEL':
                 return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'battery', undefined, undefined, 'mdi:battery-high');
+            case 'CHARGE STATE': // API v1
+            case 'CHARGE_STATE': // API v3 - EV battery state of charge percentage
+                // API v3: Include status and statusColor as attributes
+                return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'battery', undefined, `{{ {'status': value_json.${MQTT.convertName(diagEl.name)}_status, 'status_color': value_json.${MQTT.convertName(diagEl.name)}_status_color} | tojson }}`, 'mdi:battery-high');
             case 'TIRE PRESSURE LF':
                 return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'pressure', 'Tire Pressure: Left Front', `{{ {'recommendation': value_json.${MQTT.convertName('TIRE_PRESSURE_PLACARD_FRONT')}, 'message': value_json.${MQTT.convertName('TIRE_PRESSURE_LF_MESSAGE')}} | tojson }}`, 'mdi:car-tire-alert');
             case 'TIRE PRESSURE LF PSI':
@@ -1165,9 +1573,12 @@ class MQTT {
             case 'TIRE PRESSURE RR PSI':
                 return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'pressure', 'Tire Pressure: Right Rear PSI', `{{ {'recommendation': value_json.${MQTT.convertName('TIRE_PRESSURE_PLACARD_REAR_PSI')}, 'message': value_json.${MQTT.convertName('TIRE_PRESSURE_RR_PSI_MESSAGE')}} | tojson }}`, 'mdi:car-tire-alert');
             // binary_sensor, no state_class, has device_class
-            case 'EV PLUG STATE': // unplugged/plugged
+            // API v1 uses spaces, API v3 uses underscores - support both
+            case 'EV PLUG STATE': // API v1
+            case 'EV_PLUG_STATE': // API v3: "Disconnect"/"Connect"/"Connected", API v1: "unplugged"/"plugged"
                 return this.mapBinarySensorConfigPayload(diag, diagEl, undefined, 'plug', undefined, undefined, 'mdi:ev-plug-type1');
-            case 'EV CHARGE STATE': // not_charging/charging
+            case 'EV CHARGE STATE': // API v1
+            case 'EV_CHARGE_STATE': // API v3: "UNCONNECTED"/"CHARGING"/"Active", API v1: "not_charging"/"charging"
                 return this.mapBinarySensorConfigPayload(diag, diagEl, undefined, 'battery_charging', undefined, undefined, 'mdi:battery-charging');
             // binary_sensor, no state_class and no applicable device_class
             case 'PRIORITY CHARGE INDICATOR': // FALSE/TRUE
@@ -1244,6 +1655,8 @@ class MQTT {
                 return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'distance', undefined, undefined, 'mdi:gas-station');
             case 'EV RANGE':
             case 'EV RANGE MI':
+            case 'EV_RANGE': // API v3
+            case 'EV_RANGE_MI': // API v3 Miles
                 return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'distance', undefined, undefined, 'mdi:ev-station');
             case 'LAST TRIP TOTAL DISTANCE':
             case 'LAST TRIP TOTAL DISTANCE MI':
