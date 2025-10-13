@@ -210,6 +210,182 @@ mode: queued
 max: 10
 ```
 
+## Vehicle Recall Sensor
+
+The application automatically creates a **recall sensor** that displays vehicle recall information from the manufacturer.
+
+- **Entity**: `sensor.<vehicle_name>_vehicle_recalls`
+- **Icon**: `mdi:alert-octagon`
+- **State**: Total number of recalls
+- **Update Frequency**: Checked on startup and every 7 days (configurable via `ONSTAR_RECALL_REFRESH`)
+- **Manual Check**: Use the "Get Vehicle Recall Info" button
+
+### Attributes
+
+The sensor includes detailed recall information as attributes:
+
+- `recall_count`: Total number of recalls
+- `active_recalls_count`: Number of active recalls
+- `incomplete_repairs_count`: Number of incomplete repairs
+- `has_active_recalls`: Boolean indicating if active recalls exist
+- `last_updated`: Timestamp of last check
+- `recalls`: Array of recall objects with details (ID, title, description, status, etc.)
+
+### Example Lovelace Card
+
+```yaml
+type: entities
+title: Vehicle Recalls
+entities:
+  - entity: sensor.matts_blazer_vehicle_recalls
+    type: attribute
+    attribute: recalls
+    name: Recall Details
+```
+
+## Vehicle Image Entity
+
+The application automatically creates an **image entity** displaying your vehicle's photo from the manufacturer.
+
+- **Entity**: `image.<vehicle_name>_vehicle_image`
+- **Icon**: `mdi:car`
+- **Data**: Base64-encoded image (cached locally, works offline)
+- **Update**: Downloads once on startup, fallback to URL if download fails
+
+### Example Lovelace Cards Using Vehicle Image
+
+```yaml
+# Simple picture card
+type: picture
+image_entity: image.matts_blazer_vehicle_image
+```
+
+```yaml
+# Vehicle dashboard with image
+type: vertical-stack
+cards:
+  - type: picture
+    image_entity: image.matts_blazer_vehicle_image
+  - type: entities
+    entities:
+      - sensor.matts_blazer_odometer
+      - sensor.matts_blazer_fuel_level
+      - sensor.matts_blazer_vehicle_recalls
+```
+
+**Note**: Images are ~50-200KB when base64-encoded. Ensure your MQTT broker supports larger message sizes if you encounter issues.
+
+## EV Charging Metrics Sensors (EV Vehicles Only)
+
+For **electric vehicles**, pressing the **Get EV Charging Metrics** button creates 10 specialized sensors with detailed charging and battery information:
+
+### Sensors Created
+
+1. **EV Target Charge Level** (`sensor.<vehicle_name>_ev_target_charge_level`)
+   - **Unit**: `%` (percentage)
+   - **Icon**: `mdi:battery-charging-80`
+   - **Description**: User's configured charge limit setting (e.g., 80%)
+   - **Device Class**: Battery
+
+2. **EV Battery Capacity** (`sensor.<vehicle_name>_ev_battery_capacity`)
+   - **Unit**: `kWh` (kilowatt-hours)
+   - **Icon**: `mdi:battery-high`
+   - **Description**: Actual usable battery capacity
+   - **Device Class**: Energy Storage
+
+3. **EV Trip Odometer** (`sensor.<vehicle_name>_ev_trip_odometer`)
+   - **Unit**: `km` (kilometers)
+   - **Icon**: `mdi:map-marker-distance`
+   - **Description**: Current trip distance
+   - **Device Class**: Distance
+   - **State Class**: Total Increasing
+
+4. **EV Trip Consumption** (`sensor.<vehicle_name>_ev_trip_consumption`)
+   - **Unit**: `kWh/100km`
+   - **Icon**: `mdi:speedometer`
+   - **Description**: Energy efficiency for current trip
+   - **State Class**: Measurement
+
+5. **EV Lifetime Consumption** (`sensor.<vehicle_name>_ev_lifetime_consumption`)
+   - **Unit**: `kWh/100km`
+   - **Icon**: `mdi:chart-line`
+   - **Description**: Average lifetime energy efficiency
+   - **State Class**: Measurement
+
+6. **EV Charge Mode** (`sensor.<vehicle_name>_ev_charge_mode`)
+   - **Icon**: `mdi:ev-station`
+   - **Description**: Current charging mode (e.g., "immediate")
+   - **Values**: `immediate`, `departure`, etc.
+
+7. **EV Charge Location Set** (`binary_sensor.<vehicle_name>_ev_charge_location_set`)
+   - **Icon**: `mdi:map-marker-check`
+   - **Description**: Whether home charging location is configured
+   - **Values**: `on` (set), `off` (not set)
+
+8. **EV At Charge Location** (`binary_sensor.<vehicle_name>_ev_at_charge_location`)
+   - **Icon**: `mdi:map-marker`
+   - **Description**: Whether vehicle is currently at the configured charging location
+   - **Values**: `on` (at location), `off` (away)
+
+9. **EV Discharge Enabled** (`binary_sensor.<vehicle_name>_ev_discharge_enabled`)
+   - **Icon**: `mdi:transmission-tower-export`
+   - **Description**: Whether vehicle-to-grid discharge is enabled
+   - **Values**: `on` (enabled), `off` (disabled)
+
+10. **EV Discharge Minimum SoC** (`sensor.<vehicle_name>_ev_discharge_min_soc`)
+    - **Unit**: `%` (percentage)
+    - **Icon**: `mdi:battery-low`
+    - **Description**: Minimum battery percentage for discharge operations
+    - **Device Class**: Battery
+
+### Update Frequency
+
+- **On-Demand**: These sensors are created/updated when you press the **Get EV Charging Metrics** button
+- **Complementary**: These provide additional metrics not available in the automatic diagnostics (which refresh every 30 minutes)
+- **Persistent**: Sensor values remain until the next button press
+
+### Example Lovelace Cards
+
+```yaml
+# EV Charging Status Card
+type: entities
+title: EV Charging Info
+entities:
+  - sensor.my_blazer_ev_target_charge_level
+  - sensor.my_blazer_ev_battery_capacity
+  - sensor.my_blazer_ev_charge_mode
+  - binary_sensor.my_blazer_ev_at_charge_location
+  - binary_sensor.my_blazer_ev_charge_location_set
+```
+
+```yaml
+# EV Efficiency Dashboard
+type: vertical-stack
+cards:
+  - type: gauge
+    entity: sensor.my_blazer_ev_target_charge_level
+    name: Target Charge Level
+    min: 0
+    max: 100
+  - type: entities
+    title: Energy Consumption
+    entities:
+      - sensor.my_blazer_ev_trip_consumption
+      - sensor.my_blazer_ev_lifetime_consumption
+      - sensor.my_blazer_ev_trip_odometer
+```
+
+```yaml
+# Vehicle-to-Grid Card
+type: entities
+title: V2G Discharge Settings
+entities:
+  - binary_sensor.my_blazer_ev_discharge_enabled
+  - sensor.my_blazer_ev_discharge_min_soc
+```
+
+**Note**: These sensors are only available for electric vehicles. The Get EV Charging Metrics button will not create sensors for ICE (Internal Combustion Engine) vehicles.
+
 ## Dynamically Change Polling Frequency Using MQTT
 
 - Uses the value from `ONSTAR_REFRESH` on initial startup
@@ -284,11 +460,18 @@ Since the buttons are created but disabled by default, follow these steps to ena
 - Unlock Door
 - Lock Trunk / Unlock Trunk (if supported by vehicle)
 - Alert / Cancel Alert
-- Flash Lights / Stop Lights
-- Charge Override / Cancel Charge Override (for EVs)
+- Flash Lights / Stop Lights (new in OnStarJS 2.12.0)
+- ~~Charge Override / Cancel Charge Override~~ (deprecated - use Set Charge Level Target / Stop Charging instead)
+- Set Charge Level Target (new in OnStarJS 2.12.0 - for EVs)
+- Stop Charging (new in OnStarJS 2.12.0 - for EVs)
+- ~~Get Charging Profile~~ (deprecated - use Get EV Charging Metrics instead)
+- ~~Set Charging Profile~~ (deprecated - use Set Charge Level Target instead)
 - Get Location
 - Get Diagnostics
-- And more...
+- **Get Vehicle Details** (new in OnStarJS 2.12.0)
+- **Get OnStar Plan** (new in OnStarJS 2.12.0)
+- **Get EV Charging Metrics** (new in OnStarJS 2.12.0)
+- **Get Vehicle Recall Info** (new in OnStarJS 2.12.0)
 
 **⚠️ Warning:** Only enable buttons you need and understand. Accidentally pressing the wrong button could trigger unwanted actions on your vehicle.
 
@@ -309,6 +492,11 @@ icon: "mdi:car-electric"
 
 - Set Charging Profile
   - `{"command": "setChargingProfile","options": {"chargeMode": "RATE_BASED","rateType": "OFFPEAK"}}`
+- Set Charge Level Target (set target charge percentage)
+  - `{"command": "setChargeLevelTarget","options": 80}` (sets target to 80%)
+  - Alternative formats also supported:
+    - `{"command": "setChargeLevelTarget","options": {"targetChargeLevel": 80}}`
+    - `{"command": "setChargeLevelTarget","options": {"tcl": 80}}`
 - Alert
   - `{"command": "alert","options": {"action": "Flash"}}`
 
@@ -333,6 +521,53 @@ condition:
 action:
   - service: script.car_start_vehicle
     data: {}
+mode: single
+```
+
+### Set EV Charge Level Target
+
+This example shows how to set the target charge level to 80% for your electric vehicle:
+
+```yaml
+alias: Set EV Charge to 80%
+description: Set target charge level to 80%
+trigger:
+  - platform: time
+    at: "22:00:00"
+action:
+  - service: mqtt.publish
+    data:
+      topic: homeassistant/YOUR_CAR_VIN/command
+      payload: '{"command": "setChargeLevelTarget","options": 80}'
+mode: single
+icon: "mdi:battery-charging-80"
+```
+
+You can also create an input number slider to dynamically set the charge level:
+
+```yaml
+# In configuration.yaml
+input_number:
+  ev_charge_target:
+    name: EV Charge Target
+    min: 50
+    max: 100
+    step: 5
+    unit_of_measurement: "%"
+    icon: mdi:battery-charging
+
+# Automation to set charge level from slider
+alias: Set EV Charge Level from Slider
+description: Set EV charge target based on input slider
+trigger:
+  - platform: state
+    entity_id: input_number.ev_charge_target
+action:
+  - service: mqtt.publish
+    data:
+      topic: homeassistant/YOUR_CAR_VIN/command
+      payload: >
+        {"command": "setChargeLevelTarget","options": {{ states('input_number.ev_charge_target') | int }}}
 mode: single
 ```
 

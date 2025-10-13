@@ -2,6 +2,7 @@ const OnStar = require('onstarjs2').default;
 const mqtt = require('async-mqtt');
 const uuidv4 = require('uuid').v4;
 const _ = require('lodash');
+const axios = require('axios');
 const Vehicle = require('./vehicle');
 const { Diagnostic, AdvancedDiagnostic } = require('./diagnostic');
 const MQTT = require('./mqtt');
@@ -11,6 +12,7 @@ const fs = require('fs');
 //const CircularJSON = require('circular-json');
 let buttonConfigsPublished = '';
 let refreshIntervalConfigPublished = '';
+let cachedVehicleImageBase64 = null; // Cache the downloaded image
 
 const onstarConfig = {
     deviceId: process.env.ONSTAR_DEVICEID || uuidv4(),
@@ -22,6 +24,7 @@ const onstarConfig = {
     tokenLocation: process.env.TOKEN_LOCATION || '',
     checkRequestStatus: _.get(process.env, 'ONSTAR_SYNC', 'true') === 'true',
     refreshInterval: parseInt(process.env.ONSTAR_REFRESH) || (30 * 60 * 1000), // 30 min
+    recallRefreshInterval: parseInt(process.env.ONSTAR_RECALL_REFRESH) || (7 * 24 * 60 * 60 * 1000), // 7 days default
     requestPollingIntervalSeconds: parseInt(process.env.ONSTAR_POLL_INTERVAL) || 6, // 6 sec default
     requestPollingTimeoutSeconds: parseInt(process.env.ONSTAR_POLL_TIMEOUT) || 90, // 60 sec default
     allowCommands: _.get(process.env, 'ONSTAR_ALLOW_COMMANDS', 'true') === 'true'
@@ -439,6 +442,99 @@ const configureMQTT = async (commands, client, mqttHA) => {
                 });
         }
 
+        else if (command === 'setChargeLevelTarget') {
+            // Handle setChargeLevelTarget command with target charge level value
+            let targetChargeLevel;
+
+            if (!options) {
+                logger.error('Options is undefined for setChargeLevelTarget command! A target charge level (0-100) is required.');
+                return;
+            }
+
+            // Support both numeric value and object format
+            if (typeof options === 'number') {
+                targetChargeLevel = options;
+            } else if (typeof options === 'object' && options.targetChargeLevel !== undefined) {
+                targetChargeLevel = options.targetChargeLevel;
+            } else if (typeof options === 'object' && options.tcl !== undefined) {
+                targetChargeLevel = options.tcl;
+            } else {
+                logger.error('Invalid options for setChargeLevelTarget. Expected a number or object with targetChargeLevel/tcl property.');
+                return;
+            }
+
+            logger.info('setChargeLevelTarget command sent:', { targetChargeLevel });
+            logger.warn(`Command Status Topic: ${commandStatusTopic}`);
+            client.publish(commandStatusSensorConfig.topic, JSON.stringify(commandStatusSensorConfig.payload), { retain: true });
+            client.publish(commandStatusSensorTimestampConfig.topic, JSON.stringify(commandStatusSensorTimestampConfig.payload), { retain: true });
+            client.publish(commandStatusTopic,
+                JSON.stringify({
+                    "command": {
+                        "error": {
+                            "message": "Sent",
+                            "response": {
+                                "status": 0,
+                                "statusText": "Sent"
+                            }
+                        }
+                    },
+                    "completionTimestamp": new Date().toISOString()
+                }), { retain: true });
+            
+            // Call the command with targetChargeLevel as first parameter
+            commands[command](targetChargeLevel, {})
+                .then(data => {
+                    const completionTimestamp = new Date().toISOString();
+                    logger.debug(`Completion Timestamp: ${completionTimestamp}`);
+                    logger.warn('setChargeLevelTarget command completed:', { targetChargeLevel });
+                    logger.warn(`Command Status Topic: ${commandStatusTopic}`);
+                    logger.debug('setChargeLevelTarget response:', { data });
+                    client.publish(
+                        commandStatusTopic,
+                        JSON.stringify({
+                            "command": {
+                                "error": {
+                                    "message": "Completed Successfully",
+                                    "response": {
+                                        "status": 0,
+                                        "statusText": "Completed Successfully"
+                                    }
+                                }
+                            },
+                            "completionTimestamp": completionTimestamp
+                        }), { retain: true }
+                    );
+                })
+                .catch((e) => {
+                    if (e instanceof Error) {
+                        const completionTimestamp = new Date().toISOString();
+                        logger.debug(`Completion Timestamp: ${completionTimestamp}`);
+                        const errorPayload = {
+                            error: _.pick(e, [
+                                'message',
+                                'response.status',
+                                'response.statusText',
+                                'response.headers',
+                                'response.data',
+                                'request.method',
+                                'request.body',
+                                'request.contentType',
+                                'request.headers',
+                                'request.url',
+                                'stack'
+                            ])
+                        };
+                        logger.error('setChargeLevelTarget Command Error!', { command, error: errorPayload });
+                        logger.error(`Command Status Topic for Errored Command: ${commandStatusTopic}`);
+                        client.publish(commandStatusTopic,
+                            JSON.stringify({
+                                "command": errorPayload,
+                                "completionTimestamp": completionTimestamp
+                            }), { retain: true });
+                    }
+                });
+        }
+
         else {
             logger.warn('Command sent:', { command }, { options });
             logger.warn(`Command Status Topic: ${commandStatusTopic}`);
@@ -482,6 +578,36 @@ const configureMQTT = async (commands, client, mqttHA) => {
                     const responseData = _.get(data, 'response.data');
                     if (responseData) {
                         logger.warn('Command response data:', { responseData });
+                        
+                        // Handle getVehicleRecallInfo command - create recall sensor
+                        if (command === 'getVehicleRecallInfo') {
+                            const recallConfig = mqttHA.getVehicleRecallConfig();
+                            const recallState = mqttHA.getVehicleRecallStatePayload(data.response);
+                            const recallStateTopic = `${mqttHA.prefix}/sensor/${mqttHA.instance}/vehicle_recalls/state`;
+                            
+                            logger.info('Publishing vehicle recall sensor configuration');
+                            client.publish(recallConfig.topic, JSON.stringify(recallConfig.payload), { retain: true });
+                            logger.info('Publishing vehicle recall sensor state');
+                            client.publish(recallStateTopic, JSON.stringify(recallState), { retain: true });
+                            
+                            logger.info(`Recall sensor updated: ${recallState.recall_count} total recalls, ${recallState.active_recalls_count} active`);
+                        }
+                        
+                        // Handle getEVChargingMetrics command - create EV charging sensors
+                        if (command === 'getEVChargingMetrics') {
+                            const evMetricsConfigs = mqttHA.getEVChargingMetricsConfigs(data.response);
+                            
+                            logger.info(`Publishing ${evMetricsConfigs.length} EV charging metric sensors...`);
+                            evMetricsConfigs.forEach(config => {
+                                // Publish config
+                                client.publish(config.topic, JSON.stringify(config.payload), { retain: true });
+                                // Publish state
+                                client.publish(config.payload.state_topic, JSON.stringify(config.state), { retain: true });
+                            });
+                            
+                            logger.info(`EV charging metrics updated: ${evMetricsConfigs.length} sensors published`);
+                        }
+                        
                         // API v3 uses telemetry.data.position and telemetry.data.velocity
                         const position = _.get(responseData, 'telemetry.data.position');
                         const velocity = _.get(responseData, 'telemetry.data.velocity');
@@ -682,6 +808,135 @@ logger.info('!-- Starting OnStar2MQTT Polling --!');
             }
             publishButtonConfigs();
 
+                        // Publish vehicle image entity
+            async function downloadAndCacheImage(imageUrl) {
+                try {
+                    logger.info('Downloading vehicle image for caching...');
+                    const response = await axios.get(imageUrl, {
+                        responseType: 'arraybuffer',
+                        timeout: 30000, // 30 second timeout
+                        headers: {
+                            'User-Agent': 'OnStar2MQTT/2.1.1'
+                        }
+                    });
+                    
+                    // Convert to base64 (raw format for HA image_topic)
+                    const base64Image = Buffer.from(response.data, 'binary').toString('base64');
+                    
+                    // Cache as raw base64 for HA image entity
+                    cachedVehicleImageBase64 = base64Image;
+                    logger.info(`Vehicle image downloaded and cached (${Math.round(base64Image.length / 1024)}KB)`);
+                    
+                    return cachedVehicleImageBase64;
+                } catch (e) {
+                    logger.error('Failed to download vehicle image:', e.message);
+                    return null;
+                }
+            }
+
+            async function publishVehicleImage() {
+                const imageConfig = mqttHA.getVehicleImageConfig();
+                const imageStateTopic = `${mqttHA.prefix}/image/${mqttHA.instance}/vehicle_image/state`;
+                
+                try {
+                    logger.info('Publishing vehicle image entity...');
+                    const vehiclesRes = await commands.getAccountVehicles();
+                    const vehiclesData = _.get(vehiclesRes, 'data.vehicles') || _.get(vehiclesRes, 'response.data.vehicles');
+                    const currentVehicleData = _.find(vehiclesData, vehicle => 
+                        vehicle.vin.toLowerCase() === onstarConfig.vin.toLowerCase()
+                    );
+                    
+                    if (currentVehicleData && currentVehicleData.imageUrl) {
+                        const imageUrl = mqttHA.getVehicleImageStatePayload(currentVehicleData);
+                        
+                        // Download and cache the image (or use cached version)
+                        let imageData = cachedVehicleImageBase64;
+                        if (!imageData) {
+                            imageData = await downloadAndCacheImage(imageUrl);
+                        }
+                        
+                        // Always publish config to ensure entity exists
+                        await client.publish(imageConfig.topic, JSON.stringify(imageConfig.payload), { retain: true });
+                        
+                        if (imageData) {
+                            // Publish base64 image data for HA to cache locally
+                            await client.publish(imageStateTopic, imageData, { retain: true });
+                            logger.info('Vehicle image published with cached base64 data');
+                        } else {
+                            // Fallback to URL if download failed
+                            await client.publish(imageStateTopic, imageUrl, { retain: true });
+                            logger.warn('Vehicle image published with URL (download failed, using fallback)');
+                        }
+                    } else {
+                        // Publish config anyway so entity exists but mark as unavailable
+                        logger.warn('No vehicle image URL found - entity will be created but marked unavailable');
+                        await client.publish(imageConfig.topic, JSON.stringify(imageConfig.payload), { retain: true });
+                        await client.publish(imageStateTopic, '', { retain: true });
+                    }
+                } catch (e) {
+                    // On error, still create the entity but with empty state
+                    logger.error('Error publishing vehicle image, entity will be created but unavailable:', e);
+                    try {
+                        await client.publish(imageConfig.topic, JSON.stringify(imageConfig.payload), { retain: true });
+                        await client.publish(imageStateTopic, '', { retain: true });
+                    } catch (publishError) {
+                        logger.error('Failed to publish vehicle image entity config:', publishError);
+                    }
+                }
+            }
+            await publishVehicleImage();
+
+            // Publish vehicle recall sensor
+            async function publishVehicleRecalls() {
+                try {
+                    logger.info('Publishing vehicle recall sensor...');
+                    const recallRes = await commands.getVehicleRecallInfo();
+                    
+                    logger.debug('Recall response:', JSON.stringify(recallRes));
+                    
+                    // Try different response paths
+                    const responseData = recallRes?.response || recallRes;
+                    const hasData = _.get(responseData, 'data.vehicleDetails.recallInfo') || 
+                                   _.get(responseData, 'data.dataPresent');
+                    
+                    if (responseData && hasData !== undefined) {
+                        const recallConfig = mqttHA.getVehicleRecallConfig();
+                        const recallState = mqttHA.getVehicleRecallStatePayload(responseData);
+                        const recallStateTopic = `${mqttHA.prefix}/sensor/${mqttHA.instance}/vehicle_recalls/state`;
+                        
+                        // Publish config and state
+                        await client.publish(recallConfig.topic, JSON.stringify(recallConfig.payload), { retain: true });
+                        await client.publish(recallStateTopic, JSON.stringify(recallState), { retain: true });
+                        
+                        logger.info(`Vehicle recall sensor published: ${recallState.recall_count} total recalls, ${recallState.active_recalls_count} active`);
+                    } else {
+                        logger.warn('No recall data received from getVehicleRecallInfo');
+                        const recallConfig = mqttHA.getVehicleRecallConfig();
+                        const emptyState = mqttHA.getVehicleRecallStatePayload({ data: { vehicleDetails: { recallInfo: [] } } });
+                        const recallStateTopic = `${mqttHA.prefix}/sensor/${mqttHA.instance}/vehicle_recalls/state`;
+                        
+                        await client.publish(recallConfig.topic, JSON.stringify(recallConfig.payload), { retain: true });
+                        await client.publish(recallStateTopic, JSON.stringify(emptyState), { retain: true });
+                        logger.info('Vehicle recall sensor created with empty state (no recalls found)');
+                    }
+                } catch (e) {
+                    logger.error('Error publishing vehicle recall sensor:', e);
+                    // Still create the sensor even on error
+                    try {
+                        const recallConfig = mqttHA.getVehicleRecallConfig();
+                        const emptyState = mqttHA.getVehicleRecallStatePayload({ data: { vehicleDetails: { recallInfo: [] } } });
+                        const recallStateTopic = `${mqttHA.prefix}/sensor/${mqttHA.instance}/vehicle_recalls/state`;
+                        
+                        await client.publish(recallConfig.topic, JSON.stringify(recallConfig.payload), { retain: true });
+                        await client.publish(recallStateTopic, JSON.stringify(emptyState), { retain: true });
+                        logger.info('Vehicle recall sensor created with empty state due to error');
+                    } catch (publishError) {
+                        logger.error('Failed to publish vehicle recall sensor config:', publishError);
+                    }
+                }
+            }
+            await publishVehicleRecalls();
+
             const statsRes = await commands.diagnostics({ diagnosticItem: v.getSupported() });
             logger.info('Diagnostic request status', { status: _.get(statsRes, 'status') });
             
@@ -868,6 +1123,40 @@ logger.info('!-- Starting OnStar2MQTT Polling --!');
         logger.info(`Initial refreshInterval: ${onstarConfig.refreshInterval}`);
         client.publish(refreshIntervalCurrentValTopic, onstarConfig.refreshInterval.toString(), { retain: true });
         //client.publish(refreshIntervalTopic, onstarConfig.refreshInterval.toString(), { retain: true });
+
+        // Set up recall checking on a separate interval
+        const checkRecalls = async () => {
+            try {
+                logger.info('Checking vehicle recalls...');
+                const recallData = await commands.getVehicleRecallInfo();
+                
+                if (recallData && recallData.response) {
+                    const recallConfig = mqttHA.getVehicleRecallConfig();
+                    const recallState = mqttHA.getVehicleRecallStatePayload(recallData.response);
+                    const recallStateTopic = `${mqttHA.prefix}/sensor/${mqttHA.instance}/vehicle_recalls/state`;
+                    
+                    await client.publish(recallConfig.topic, JSON.stringify(recallConfig.payload), { retain: true });
+                    await client.publish(recallStateTopic, JSON.stringify(recallState), { retain: true });
+                    
+                    logger.info(`Recall sensor updated: ${recallState.recall_count} total recalls, ${recallState.active_recalls_count} active`);
+                    
+                    if (recallState.active_recalls_count > 0) {
+                        logger.warn(`⚠️  Vehicle has ${recallState.active_recalls_count} active recall(s)!`);
+                    }
+                } else {
+                    logger.warn('No recall data received from getVehicleRecallInfo');
+                }
+            } catch (e) {
+                logger.error('Error checking recalls:', e);
+            }
+        };
+        
+        // Initial recall check on startup
+        await checkRecalls();
+        
+        // Set up periodic recall checking
+        setInterval(checkRecalls, onstarConfig.recallRefreshInterval);
+        logger.info(`Recall check interval set to ${onstarConfig.recallRefreshInterval}ms (${onstarConfig.recallRefreshInterval / (60 * 60 * 1000)} hours)`);
 
         client.on('message', async (topic, message) => {
             if (topic === refreshIntervalTopic) {
