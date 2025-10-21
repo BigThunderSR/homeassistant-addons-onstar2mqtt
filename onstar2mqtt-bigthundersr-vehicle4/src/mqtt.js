@@ -1022,7 +1022,7 @@ class MQTT {
             "unique_id": unique_id,
             "name": "Vehicle Recalls",
             "state_topic": `${this.prefix}/sensor/${this.instance}/vehicle_recalls/state`,
-            "value_template": "{{ value_json.recall_count }}",
+            "value_template": "{{ value_json.unrepaired_active_recall_count }}",
             "icon": "mdi:alert-octagon",
             "json_attributes_topic": `${this.prefix}/sensor/${this.instance}/vehicle_recalls/state`,
             "json_attributes_template": "{{ value_json.attributes | tojson }}",
@@ -1039,13 +1039,21 @@ class MQTT {
         const recallInfo = _.get(recallData, 'data.vehicleDetails.recallInfo', []);
         const activeRecalls = recallInfo.filter(r => r.recallStatus === 'A');
         const incompleteRepairs = recallInfo.filter(r => r.repairStatus === 'incomplete');
+        // Filter for recalls that are (Active, Expired, or Inactive) AND unrepaired
+        // Include expired/inactive recalls because users should be aware of known safety issues
+        // even if they can't currently get them fixed
+        const unrepairedActiveRecalls = recallInfo.filter(r => 
+            (r.recallStatus === 'A' || r.recallStatus === 'E' || r.recallStatus === 'I') && r.repairStatus === 'incomplete'
+        );
         
         const state = {
             recall_count: recallInfo.length,
             active_recalls_count: activeRecalls.length,
             incomplete_repairs_count: incompleteRepairs.length,
+            unrepaired_active_recall_count: unrepairedActiveRecalls.length,
             attributes: {
                 has_active_recalls: activeRecalls.length > 0,
+                has_unrepaired_active_recalls: unrepairedActiveRecalls.length > 0,
                 last_updated: new Date().toISOString(),
                 recalls: recallInfo.map(recall => ({
                     recall_id: recall.recallId,
