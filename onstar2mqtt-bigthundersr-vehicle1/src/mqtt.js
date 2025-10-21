@@ -1800,6 +1800,18 @@ class MQTT {
                 return this.mapSensorConfigPayload(diag, diagEl, 'measurement', undefined, undefined, undefined, 'mdi:card-text');
             case 'EXHST FL LEVL WARN IND': // Diesel Exhaust Fluid Level Warning Indicator
                 return this.mapSensorConfigPayload(diag, diagEl, 'measurement', undefined, undefined, undefined, 'mdi:gauge');
+            // Non-numeric sensors (strings) - no state_class
+            case 'EV_SCHEDULED_CHARGE_START_120V_DAY':
+            case 'EV_SCHEDULED_CHARGE_START_240V_DAY':
+            case 'EV SCHEDULED CHARGE START 120V DAY':
+            case 'EV SCHEDULED CHARGE START 240V DAY':
+                return this.mapSensorConfigPayload(diag, diagEl, undefined, undefined, undefined, undefined, 'mdi:calendar');
+            case 'PRIORITY_CHARGE_REQ_GET':
+            case 'PRIORITY CHARGE REQ GET':
+                return this.mapSensorConfigPayload(diag, diagEl, undefined, undefined, undefined, undefined, 'mdi:battery-charging');
+            case 'CHARGE_ABORT_REASON_PID':
+            case 'CHARGE ABORT REASON PID':
+                return this.mapSensorConfigPayload(diag, diagEl, undefined, undefined, undefined, undefined, 'mdi:alert-circle');
             default:
                 return this.mapSensorConfigPayload(diag, diagEl, 'measurement');
         }
