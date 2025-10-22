@@ -154,6 +154,7 @@ const configureMQTT = async (commands, client, mqttHA) => {
     client.on('message', (topic, message) => {
         logger.debug(`Subscription message: ${topic, message}`);
         const { command, options } = JSON.parse(message);
+        
         const cmd = commands[command];
         if (!cmd) {
             if (topic === mqttHA.getRefreshIntervalTopic()) {
@@ -525,6 +526,306 @@ const configureMQTT = async (commands, client, mqttHA) => {
                             ])
                         };
                         logger.error('setChargeLevelTarget Command Error!', { command, error: errorPayload });
+                        logger.error(`Command Status Topic for Errored Command: ${commandStatusTopic}`);
+                        client.publish(commandStatusTopic,
+                            JSON.stringify({
+                                "command": errorPayload,
+                                "completionTimestamp": completionTimestamp
+                            }), { retain: true });
+                    }
+                });
+        }
+
+        else if (command === 'getVehicleDetails') {
+            // Handle getVehicleDetails command - doesn't take any parameters
+            logger.warn('Command sent:', { command });
+            logger.warn(`Command Status Topic: ${commandStatusTopic}`);
+            client.publish(commandStatusSensorConfig.topic, JSON.stringify(commandStatusSensorConfig.payload), { retain: true });
+            client.publish(commandStatusSensorTimestampConfig.topic, JSON.stringify(commandStatusSensorTimestampConfig.payload), { retain: true });
+            client.publish(commandStatusTopic,
+                JSON.stringify({
+                    "command": {
+                        "error": {
+                            "message": "Sent",
+                            "response": {
+                                "status": 0,
+                                "statusText": "Sent"
+                            }
+                        }
+                    },
+                    "completionTimestamp": new Date().toISOString()
+                }), { retain: true });
+            
+            commands.getVehicleDetails()
+                .then(data => {
+                    const completionTimestamp = new Date().toISOString();
+                    logger.debug(`Completion Timestamp: ${completionTimestamp}`);
+                    logger.warn('getVehicleDetails command completed');
+                    logger.warn(`Command Status Topic: ${commandStatusTopic}`);
+                    
+                    client.publish(
+                        commandStatusTopic,
+                        JSON.stringify({
+                            "command": {
+                                "error": {
+                                    "message": "Completed Successfully",
+                                    "response": {
+                                        "status": 0,
+                                        "statusText": "Completed Successfully"
+                                    }
+                                }
+                            },
+                            "completionTimestamp": completionTimestamp
+                        }), { retain: true }
+                    );
+                    
+                    // API returns data at data.data path (not response.data)
+                    const responseData = _.get(data, 'response.data');
+                    const directData = _.get(data, 'data');
+                    const actualData = responseData || directData;
+                    
+                    if (actualData) {
+                        // Extract vehicle details
+                        const vehicleDetails = actualData.vehicleDetails || actualData;
+                        
+                        const sensorTopic = `${mqttHA.prefix}/sensor/${mqttHA.instance}/vehicle_details/config`;
+                        const stateTopic = `${mqttHA.prefix}/sensor/${mqttHA.instance}/vehicle_details/state`;
+                        
+                        const sensorConfig = {
+                            name: `${mqttHA.vehicle} Vehicle Details`,
+                            unique_id: `${mqttHA.instance}_vehicle_details`,
+                            state_topic: stateTopic,
+                            json_attributes_topic: stateTopic,
+                            value_template: '{{ value_json.state }}',
+                            icon: 'mdi:car-info',
+                            device: mqttHA.getDevicePayload(),
+                            availability: {
+                                topic: mqttHA.getAvailabilityTopic(),
+                                payload_available: 'true',
+                                payload_not_available: 'false'
+                            }
+                        };
+                        
+                        const sensorState = {
+                            state: 'Available',
+                            make: vehicleDetails.make,
+                            model: vehicleDetails.model,
+                            year: vehicleDetails.year,
+                            vin: vehicleDetails.vin,
+                            onstar_capable: vehicleDetails.onstarCapable,
+                            image_url: vehicleDetails.imageUrl,
+                            rpo_codes: vehicleDetails.rpoCodes,
+                            order_date: vehicleDetails.orderDate,
+                            color: vehicleDetails.color,
+                            permissions: vehicleDetails.permissions,
+                            vehicle_commands: vehicleDetails.vehicleCommands,
+                            last_updated: completionTimestamp
+                        };
+                        
+                        // Log all vehicle details
+                        logger.info('=== VEHICLE DETAILS ===');
+                        logger.info(`Make: ${vehicleDetails.make}`);
+                        logger.info(`Model: ${vehicleDetails.model}`);
+                        logger.info(`Year: ${vehicleDetails.year}`);
+                        logger.info(`VIN: ${vehicleDetails.vin}`);
+                        logger.info(`Color: ${vehicleDetails.color || 'N/A'}`);
+                        logger.info(`OnStar Capable: ${vehicleDetails.onstarCapable}`);
+                        logger.info(`Image URL: ${vehicleDetails.imageUrl || 'N/A'}`);
+                        logger.info(`Order Date: ${vehicleDetails.orderDate || 'N/A'}`);
+                        if (vehicleDetails.rpoCodes && vehicleDetails.rpoCodes.length > 0) {
+                            logger.info(`RPO Codes (${vehicleDetails.rpoCodes.length}): ${vehicleDetails.rpoCodes.slice(0, 10).join(', ')}${vehicleDetails.rpoCodes.length > 10 ? '...' : ''}`);
+                        }
+                        if (vehicleDetails.permissions) {
+                            logger.info(`Permissions: ${JSON.stringify(vehicleDetails.permissions)}`);
+                        }
+                        if (vehicleDetails.vehicleCommands) {
+                            logger.info(`Vehicle Commands: ${JSON.stringify(vehicleDetails.vehicleCommands)}`);
+                        }
+                        if (vehicleDetails.vehicleMetaData) {
+                            logger.info(`Vehicle Metadata: ${JSON.stringify(vehicleDetails.vehicleMetaData)}`);
+                        }
+                        if (vehicleDetails.onstarInfo) {
+                            logger.info(`OnStar Info: ${JSON.stringify(vehicleDetails.onstarInfo)}`);
+                        }
+                        logger.info('=======================');
+                        
+                        logger.info('Publishing vehicle details sensor configuration');
+                        client.publish(sensorTopic, JSON.stringify(sensorConfig), { retain: true });
+                        logger.info('Publishing vehicle details sensor state');
+                        client.publish(stateTopic, JSON.stringify(sensorState), { retain: true });
+                    }
+                })
+                .catch((e) => {
+                    if (e instanceof Error) {
+                        const completionTimestamp = new Date().toISOString();
+                        logger.debug(`Completion Timestamp: ${completionTimestamp}`);
+                        const errorPayload = {
+                            error: _.pick(e, [
+                                'message',
+                                'response.status',
+                                'response.statusText',
+                                'response.headers',
+                                'response.data',
+                                'request.method',
+                                'request.body',
+                                'request.contentType',
+                                'request.headers',
+                                'request.url',
+                                'stack'
+                            ])
+                        };
+                        logger.error('getVehicleDetails Command Error!', { error: errorPayload });
+                        logger.error(`Command Status Topic for Errored Command: ${commandStatusTopic}`);
+                        client.publish(commandStatusTopic,
+                            JSON.stringify({
+                                "command": errorPayload,
+                                "completionTimestamp": completionTimestamp
+                            }), { retain: true });
+                    }
+                });
+        }
+
+        else if (command === 'getOnstarPlan') {
+            // Handle getOnstarPlan command - doesn't take any parameters
+            logger.warn('Command sent:', { command });
+            logger.warn(`Command Status Topic: ${commandStatusTopic}`);
+            client.publish(commandStatusSensorConfig.topic, JSON.stringify(commandStatusSensorConfig.payload), { retain: true });
+            client.publish(commandStatusSensorTimestampConfig.topic, JSON.stringify(commandStatusSensorTimestampConfig.payload), { retain: true });
+            client.publish(commandStatusTopic,
+                JSON.stringify({
+                    "command": {
+                        "error": {
+                            "message": "Sent",
+                            "response": {
+                                "status": 0,
+                                "statusText": "Sent"
+                            }
+                        }
+                    },
+                    "completionTimestamp": new Date().toISOString()
+                }), { retain: true });
+            
+            commands.getOnstarPlan()
+                .then(data => {
+                    const completionTimestamp = new Date().toISOString();
+                    logger.debug(`Completion Timestamp: ${completionTimestamp}`);
+                    logger.warn('getOnstarPlan command completed');
+                    logger.warn(`Command Status Topic: ${commandStatusTopic}`);
+                    
+                    client.publish(
+                        commandStatusTopic,
+                        JSON.stringify({
+                            "command": {
+                                "error": {
+                                    "message": "Completed Successfully",
+                                    "response": {
+                                        "status": 0,
+                                        "statusText": "Completed Successfully"
+                                    }
+                                }
+                            },
+                            "completionTimestamp": completionTimestamp
+                        }), { retain: true }
+                    );
+                    
+                    // API returns data at data.data path (not response.data)
+                    const responseData = _.get(data, 'response.data');
+                    const directData = _.get(data, 'data');
+                    const actualData = responseData || directData;
+                    
+                    if (actualData) {
+                        // Extract the data - structure has vehicleDetails with planInfo inside
+                        const vehicleDetails = actualData.vehicleDetails || actualData;
+                        
+                        const sensorTopic = `${mqttHA.prefix}/sensor/${mqttHA.instance}/onstar_plan/config`;
+                        const stateTopic = `${mqttHA.prefix}/sensor/${mqttHA.instance}/onstar_plan/state`;
+                        
+                        // Count active plans - planInfo is inside vehicleDetails
+                        const planInfo = vehicleDetails.planInfo || [];
+                        const activePlans = planInfo.filter(p => p.status === 'Active').length;
+                        
+                        const sensorConfig = {
+                            name: `${mqttHA.vehicle} OnStar Plan`,
+                            unique_id: `${mqttHA.instance}_onstar_plan`,
+                            state_topic: stateTopic,
+                            json_attributes_topic: stateTopic,
+                            value_template: '{{ value_json.state }}',
+                            icon: 'mdi:shield-car',
+                            device: mqttHA.getDevicePayload(),
+                            availability: {
+                                topic: mqttHA.getAvailabilityTopic(),
+                                payload_available: 'true',
+                                payload_not_available: 'false'
+                            }
+                        };
+                        
+                        const sensorState = {
+                            state: `${activePlans} Active`,
+                            make: vehicleDetails.make,
+                            model: vehicleDetails.model,
+                            year: vehicleDetails.year,
+                            active_plans: activePlans,
+                            total_plans: planInfo.length,
+                            plan_info: planInfo,
+                            plan_expiry_info: vehicleDetails.planExpiryInfo || [],
+                            last_updated: completionTimestamp
+                        };
+                        
+                        logger.info('Publishing OnStar plan sensor configuration');
+                        client.publish(sensorTopic, JSON.stringify(sensorConfig), { retain: true });
+                        logger.info('Publishing OnStar plan sensor state');
+                        client.publish(stateTopic, JSON.stringify(sensorState), { retain: true });
+                        
+                        // Log all OnStar plan details
+                        logger.info('=== ONSTAR PLAN DETAILS ===');
+                        logger.info(`Vehicle: ${vehicleDetails.year} ${vehicleDetails.make} ${vehicleDetails.model}`);
+                        logger.info(`Active Plans: ${activePlans} of ${planInfo.length} total`);
+                        logger.info('');
+                        logger.info('All Plans:');
+                        planInfo.forEach((plan, index) => {
+                            logger.info(`  ${index + 1}. ${plan.productCode}`);
+                            logger.info(`     Status: ${plan.status}`);
+                            logger.info(`     Type: ${plan.productType}`);
+                            logger.info(`     Billing: ${plan.billingCadence}`);
+                            logger.info(`     Start Date: ${plan.startDate}`);
+                            logger.info(`     End Date: ${plan.endDate || 'No end date'}`);
+                            logger.info(`     Expiry Date: ${plan.expiryDate || 'N/A'}`);
+                            logger.info(`     Trial: ${plan.isTrial ? 'Yes' : 'No'}`);
+                            logger.info(`     Price Plan: ${plan.pricePlan}`);
+                            if (plan.orderItemTags && plan.orderItemTags.length > 0) {
+                                logger.info(`     Tags: ${plan.orderItemTags.join(', ')}`);
+                            }
+                            logger.info('');
+                        });
+                        if (vehicleDetails.planExpiryInfo && vehicleDetails.planExpiryInfo.length > 0) {
+                            logger.info('Plan Expiry Info:');
+                            vehicleDetails.planExpiryInfo.forEach(expiry => {
+                                logger.info(`  - ${JSON.stringify(expiry)}`);
+                            });
+                        }
+                        logger.info('===========================');
+                    }
+                })
+                .catch((e) => {
+                    if (e instanceof Error) {
+                        const completionTimestamp = new Date().toISOString();
+                        logger.debug(`Completion Timestamp: ${completionTimestamp}`);
+                        const errorPayload = {
+                            error: _.pick(e, [
+                                'message',
+                                'response.status',
+                                'response.statusText',
+                                'response.headers',
+                                'response.data',
+                                'request.method',
+                                'request.body',
+                                'request.contentType',
+                                'request.headers',
+                                'request.url',
+                                'stack'
+                            ])
+                        };
+                        logger.error('getOnstarPlan Command Error!', { error: errorPayload });
                         logger.error(`Command Status Topic for Errored Command: ${commandStatusTopic}`);
                         client.publish(commandStatusTopic,
                             JSON.stringify({
