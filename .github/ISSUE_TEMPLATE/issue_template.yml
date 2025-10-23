@@ -24,7 +24,7 @@ body:
       description: Was this working before and it has since stopped working, is this a net new issue (never worked before), a bug or a feature request?
       multiple: false
       options:
-        - Please select an option
+        - --- Please select an option ---
         - Working before
         - Net new issue
         - Bug      
@@ -65,6 +65,14 @@ body:
       description: |
         If applicable, add sanitized log output (remove any sensitive information) to help explain your problem.
       placeholder: Sanitized log output
+
+  - type: textarea
+    id: getvehicledetails_output
+    attributes:
+      label: Output from Running "GetVehicleDetails" Command
+      description: |
+        For sensor and command errors/issues, please provide the output from running the `GetVehicleDetails` command (remove any sensitive information).
+      placeholder: Output from running "GetVehicleDetails" command
 
   - type: textarea
     id: screenshots
