@@ -45,7 +45,7 @@
     "patchright": "^1.56.1"
   },
   "devDependencies": {
-    "@babel/eslint-parser": "^7.28.4",
+    "@babel/eslint-parser": "^7.28.5",
     "@babel/eslint-plugin": "^7.27.1",
     "@babel/plugin-syntax-class-properties": "^7.12.13",
     "@babel/preset-env": "^7.28.3",
