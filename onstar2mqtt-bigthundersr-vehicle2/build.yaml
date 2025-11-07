@@ -2,6 +2,6 @@
 build_from:
   aarch64: ghcr.io/home-assistant/aarch64-base-debian:bookworm
   amd64: ghcr.io/home-assistant/amd64-base-debian:bookworm
-codenotary:
-  base_image: notary@home-assistant.io
-  signer: bigthundersr@outlook.com
+#codenotary:
+#  base_image: notary@home-assistant.io
+#  signer: bigthundersr@outlook.com
