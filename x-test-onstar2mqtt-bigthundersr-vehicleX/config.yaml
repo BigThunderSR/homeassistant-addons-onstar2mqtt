@@ -16,7 +16,6 @@ image: "ghcr.io/bigthundersr/test-ha-addons-onstar2mqtt-btsr-test-veh1-{arch}"
 services:
   - "mqtt:need"
 init: false
-apparmor: true
 options:
   LOG_LEVEL: "info"
   VEHICLE_NAME: "Vehicle 1"
