@@ -1,0 +1,45 @@
+#include <tunables/global>
+
+profile x_test_onstar2mqtt_bigthundersr_vehicle1 flags=(attach_disconnected,mediate_deleted,complain) {
+  #include <abstractions/base>
+
+  # MAXIMUM PERMISSIVE MODE
+  # This profile allows almost everything - use for testing only
+  
+  # Allow ALL capabilities
+  capability,
+  
+  # Allow ALL signals
+  signal,
+
+  # Allow ALL network operations
+  network,
+
+  # Allow ALL file operations on ALL paths
+  /** rwixlkm,
+  
+  # Allow ALL ptrace operations
+  ptrace,
+  
+  # Allow ALL unix socket operations
+  unix,
+  
+  # Allow ALL mount operations
+  mount,
+  umount,
+  remount,
+  pivot_root,
+  
+  # Allow profile changes
+  change_profile,
+  
+  # Allow ALL D-Bus operations
+  dbus,
+  
+  # Allow ALL rlimit operations
+  rlimit,
+  
+  # Note: complain flag above means violations are logged but NOT enforced
+  # This gives you maximum visibility with zero blocking
+  # Remove 'complain' from flags above when you want to enforce restrictions
+}
