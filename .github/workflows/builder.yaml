@@ -7,8 +7,8 @@ permissions:
 
 env:
   BUILD_ARGS: "--test"
-  #MONITORED_FILES: "build.yaml config.yaml Dockerfile rootfs"
-  MONITORED_FILES: "Dockerfile rootfs"
+  MONITORED_FILES: "build.yaml config.yaml Dockerfile rootfs"
+  #MONITORED_FILES: "Dockerfile rootfs"
 
 on:
   workflow_dispatch:
