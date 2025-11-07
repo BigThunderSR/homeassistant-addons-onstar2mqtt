@@ -2,7 +2,7 @@ name: Z - Do NOT Install - Testing - OnStar2MQTT Home Assistant Add-on (BigThund
 version: 2.2.1
 slug: z_test_onstar2mqtt_bigthundersr_vehicle1
 description: Do NOT Install - Testing - Home Assistant Add On Version of BigThunderSR/onstar2mqtt for Vehicle 1
-codenotary: bigthundersr@outlook.com
+#codenotary: bigthundersr@outlook.com
 #startup: application
 #boot: auto
 arch:
