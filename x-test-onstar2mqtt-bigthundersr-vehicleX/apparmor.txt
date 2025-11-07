@@ -1,45 +1,36 @@
 #include <tunables/global>
 
-profile x_test_onstar2mqtt_bigthundersr_vehicle1 flags=(attach_disconnected,mediate_deleted,complain) {
+profile x_test_onstar2mqtt_bigthundersr_vehicle1 flags=(attach_disconnected,mediate_deleted) {
   #include <abstractions/base>
 
   # MAXIMUM PERMISSIVE MODE
-  # This profile allows almost everything - use for testing only
+  # This profile allows almost everything
   
-  # Allow ALL capabilities
+  # Capabilities
   capability,
   
-  # Allow ALL signals
-  signal,
+  # Signals
+  signal (send) set=(kill,term,int,hup,cont),
+  signal (receive) peer=unconfined,
+  signal (receive) peer=*_x_test_onstar2mqtt_bigthundersr_vehicle1,
 
-  # Allow ALL network operations
-  network,
+  # Network
+  network inet stream,
+  network inet dgram,
+  network inet6 stream,
+  network inet6 dgram,
+  network netlink raw,
+  network unix stream,
+  network unix dgram,
 
-  # Allow ALL file operations on ALL paths
-  /** rwixlkm,
+  # Files - very permissive
+  file,
   
-  # Allow ALL ptrace operations
-  ptrace,
+  # Specific paths with full access
+  /** rwix,
   
-  # Allow ALL unix socket operations
-  unix,
-  
-  # Allow ALL mount operations
-  mount,
-  umount,
-  remount,
-  pivot_root,
-  
-  # Allow profile changes
-  change_profile,
-  
-  # Allow ALL D-Bus operations
-  dbus,
-  
-  # Allow ALL rlimit operations
-  rlimit,
-  
-  # Note: complain flag above means violations are logged but NOT enforced
-  # This gives you maximum visibility with zero blocking
-  # Remove 'complain' from flags above when you want to enforce restrictions
+  # Ptrace
+  ptrace (trace) peer=x_test_onstar2mqtt_bigthundersr_vehicle1,
+  ptrace (read) peer=x_test_onstar2mqtt_bigthundersr_vehicle1,
+  ptrace (trace) peer=unconfined,
 }
