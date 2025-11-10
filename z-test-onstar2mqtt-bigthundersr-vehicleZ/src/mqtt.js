@@ -1514,8 +1514,8 @@ class MQTT {
 
     mapSensorConfigPayload(diag, diagEl, state_class, device_class, name, attr, icon) {
         name = name || MQTT.convertFriendlyName(diagEl.name);
-        // Ignore units that are "NA" or "XXX"
-        const unit = diagEl.unit && !['NA', 'XXX'].includes(diagEl.unit.toUpperCase()) ? diagEl.unit : undefined;
+        // Ignore units that are "NA", "XXX", or "Day" (for day-of-week string sensors)
+        const unit = diagEl.unit && !['NA', 'XXX', 'DAY'].includes(diagEl.unit.toUpperCase()) ? diagEl.unit : undefined;
         return _.extend(
             this.mapBaseConfigPayload(diag, diagEl, state_class, device_class, name, attr, icon),
             { unit_of_measurement: unit });
@@ -1590,9 +1590,12 @@ class MQTT {
                 return this.mapBinarySensorConfigPayload(diag, diagEl, undefined, 'battery_charging', undefined, undefined, 'mdi:battery-charging');
             // binary_sensor, no state_class and no applicable device_class
             case 'PRIORITY CHARGE INDICATOR': // FALSE/TRUE
+            case 'PRIORITY_CHARGE_INDICATOR':
             case 'PRIORITY CHARGE STATUS': // NOT_ACTIVE/ACTIVE
+            case 'PRIORITY_CHARGE_STATUS':
                 return this.mapBinarySensorConfigPayload(diag, diagEl, undefined, undefined, undefined, undefined, 'mdi:battery-charging-high');
             case 'LOC BASED CHARGING HOME LOC STORED': // FALSE/TRUE
+            case 'LOC_BASED_CHARGING_HOME_LOC_STORED':
                 return this.mapBinarySensorConfigPayload(diag, diagEl, undefined, undefined, undefined, undefined, 'mdi:home-lightning-bolt');
             case 'SCHEDULED CABIN PRECONDTION CUSTOM SET REQ ACTIVE': // FALSE/TRUE - There is a typo in the data coming from the API; 'PRECONDTION' is missing an 'i'.
             case 'CABIN PRECOND REQUEST': // OFF/ON
