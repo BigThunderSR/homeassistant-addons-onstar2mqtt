@@ -1,20 +1,20 @@
 #include <tunables/global>
 
-profile x_test_onstar2mqtt_bigthundersr_vehicle1 flags=(attach_disconnected,mediate_deleted) {
+profile onstar2mqtt_addon flags=(attach_disconnected,mediate_deleted) {
   #include <abstractions/base>
 
-  # MAXIMUM PERMISSIVE MODE
-  # This profile allows almost everything
+  # MAXIMUM PERMISSIVE MODE - Home Assistant Compatible
+  # Generic profile for all OnStar2MQTT add-ons
+  # This profile allows almost everything using HA-compatible syntax
   
-  # Capabilities
+  # Capabilities - all of them
   capability,
   
-  # Signals
-  signal (send) set=(kill,term,int,hup,cont),
-  signal (receive) peer=unconfined,
-  signal (receive) peer=*_x_test_onstar2mqtt_bigthundersr_vehicle1,
+  # Signals - send and receive all signals
+  signal (send),
+  signal (receive),
 
-  # Network
+  # Network - all types
   network inet stream,
   network inet dgram,
   network inet6 stream,
@@ -22,15 +22,17 @@ profile x_test_onstar2mqtt_bigthundersr_vehicle1 flags=(attach_disconnected,medi
   network netlink raw,
   network unix stream,
   network unix dgram,
+  network unix seqpacket,
 
   # Files - very permissive
   file,
   
-  # Specific paths with full access
+  # All paths with full permissions
   /** rwix,
   
-  # Ptrace
-  ptrace (trace) peer=x_test_onstar2mqtt_bigthundersr_vehicle1,
-  ptrace (read) peer=x_test_onstar2mqtt_bigthundersr_vehicle1,
-  ptrace (trace) peer=unconfined,
+  # Ptrace for Chromium
+  ptrace (read,trace),
+  
+  # Unix domain sockets
+  unix,
 }
