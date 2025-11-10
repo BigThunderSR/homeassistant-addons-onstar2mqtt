@@ -1,5 +1,22 @@
 # Changelog
 
+## 2.3.0
+
+**New Features:**
+
+**OnStarJS2 v2.13.0 Enhancements:**
+
+- **Enhanced JWT Clock Tolerance Handling** - Improved JWT expiration handling with configurable clock tolerance for IdP-issued tokens with clock skew
+- **Improved JWT Expiration Handling** - Updated JWT expiration decoding to use millisecond precision for more accurate token validation
+- **Browser Launch Improvements** - Updated browser launch arguments for improved performance and stability
+- **Xvfb Cleanup Enhancements** - Improved Xvfb cleanup process with ability to reuse existing Xvfb servers
+
+**Other Updates:**
+
+- Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v2.3.0](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v2.3.0)
+- Update to OnStarJS 2.13.0 with enhanced authentication and token handling
+- Add configuration option for OpenID clock tolerance to handle authentication issues related to clock skew
+
 ## 2.2.1
 
 This is a bug fix and maintenance release focused on improving recall tracking accuracy and fixing issues with vehicle details, OnStar plans, and text EV sensors.

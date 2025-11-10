@@ -59,6 +59,12 @@ configuration:
     name: OnStar Poll Timeout
     description: >-
       From OnStarJS: requestPollingTimeoutSeconds - How long a request will make subsequent status check requests before timing out.
+  OPENID_CLOCK_TOLERANCE_SEC:
+    name: OpenID Clock Tolerance
+    description: >-
+      Clock tolerance in seconds for OpenID authentication. This allows for time differences between the client and server clocks during the authentication process. 
+      Default is 120 seconds. Increase this value if you experience authentication failures due to clock skew between your system and GM's servers.
+      Please do not change this unless you know what you are doing.
   MQTT_HOST:
     name: MQTT Host
     description: >-
