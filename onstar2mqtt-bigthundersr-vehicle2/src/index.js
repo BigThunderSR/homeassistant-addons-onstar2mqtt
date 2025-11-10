@@ -1,5 +1,5 @@
 const OnStar = require('onstarjs2').default;
-const mqtt = require('async-mqtt');
+const mqtt = require('mqtt');
 const uuidv4 = require('uuid').v4;
 const _ = require('lodash');
 const axios = require('axios');
@@ -142,10 +142,47 @@ const connectMQTT = async availabilityTopic => {
     };
     logger.info('Connecting to MQTT:', { url, config: _.omit(config, 'password', 'ca', 'cert', 'key') });
 
-    const client = await mqtt.connectAsync(url, config);
-    logger.info('Connected to MQTT!');
+    // Use Promise wrapper for regular mqtt.connect() with timeout
+    const client = await new Promise((resolve, reject) => {
+        const timeout = global.setTimeout(() => {
+            reject(new Error('MQTT connection timeout'));
+        }, 30000); // 30 second timeout
+        
+        const mqttClient = mqtt.connect(url, config);
+        
+        mqttClient.on('connect', () => {
+            global.clearTimeout(timeout);
+            logger.info('Connected to MQTT!');
+            resolve(mqttClient);
+        });
+        
+        mqttClient.on('error', (error) => {
+            global.clearTimeout(timeout);
+            logger.error('MQTT connection error:', error);
+            reject(error);
+        });
+    });
+    
     return client;
 }
+
+// Helper function to publish with Promise support and timeout (maintaining async-mqtt behavior)
+const publishAsync = (client, topic, payload, options = {}) => {
+    return new Promise((resolve, reject) => {
+        const timeout = global.setTimeout(() => {
+            reject(new Error('MQTT publish timeout'));
+        }, 10000); // 10 second timeout
+        
+        client.publish(topic, payload, options, (error) => {
+            global.clearTimeout(timeout);
+            if (error) {
+                reject(error);
+            } else {
+                resolve();
+            }
+        });
+    });
+};
 
 const configureMQTT = async (commands, client, mqttHA) => {
     if (!onstarConfig.allowCommands)
@@ -254,7 +291,7 @@ const configureMQTT = async (commands, client, mqttHA) => {
                 for (let [topic, state] of states) {
                     logger.info('Publishing message:', { topic, state });
                     publishes.push(
-                        client.publish(topic, JSON.stringify(state), { retain: true })
+                        publishAsync(client, topic, JSON.stringify(state), { retain: true })
                     );
                 }
                 await Promise.all(publishes);
@@ -932,14 +969,12 @@ const configureMQTT = async (commands, client, mqttHA) => {
 
                             logger.debug(vehicle)
 
-                            client.publish(topic, JSON.stringify(locationData), { retain: true })
+                            client.publish(topic, JSON.stringify(locationData), { retain: true });
 
-                            client.publish(deviceTrackerConfigTopic, JSON.stringify(deviceTrackerConfig), { retain: true })
-                                .then(() => {
-                                    logger.warn(`Published device_tracker config to topic: ${deviceTrackerConfigTopic}`);
-                                    logger.warn(`Published location to topic: ${topic}`);
-                                    logger.debug("Device Tracker Config:", deviceTrackerConfig);
-                                })
+                            client.publish(deviceTrackerConfigTopic, JSON.stringify(deviceTrackerConfig), { retain: true });
+                            logger.warn(`Published device_tracker config to topic: ${deviceTrackerConfigTopic}`);
+                            logger.warn(`Published location to topic: ${topic}`);
+                            logger.debug("Device Tracker Config:", deviceTrackerConfig);
                         }
                     }
                 })
@@ -979,7 +1014,24 @@ const configureMQTT = async (commands, client, mqttHA) => {
     });
     const topic = mqttHA.getCommandTopic();
     logger.info(`Subscribed to command topic: ${topic}`);
-    await client.subscribe(topic);
+    
+    // Use Promise wrapper for regular mqtt.subscribe() with timeout
+    await new Promise((resolve, reject) => {
+        const timeout = global.setTimeout(() => {
+            reject(new Error('MQTT subscription timeout'));
+        }, 10000); // 10 second timeout
+        
+        client.subscribe(topic, (error, granted) => {
+            global.clearTimeout(timeout);
+            if (error) {
+                logger.error('MQTT subscription error:', error);
+                reject(error);
+            } else {
+                logger.debug('MQTT subscription successful:', granted);
+                resolve();
+            }
+        });
+    });
 
 };
 
@@ -992,8 +1044,8 @@ logger.info('!-- Starting OnStar2MQTT Polling --!');
         const mqttHA = new MQTT(vehicle, mqttConfig.prefix, mqttConfig.namePrefix);
         const availTopic = mqttHA.getAvailabilityTopic();
         const client = await connectMQTT(availTopic);
-        client.publish(availTopic, 'true', { retain: true })
-            .then(() => logger.debug('Published availability'));
+        client.publish(availTopic, 'true', { retain: true });
+        logger.debug('Published availability');
         await configureMQTT(commands, client, mqttHA);
 
         const configurations = new Map();
@@ -1157,29 +1209,29 @@ logger.info('!-- Starting OnStar2MQTT Polling --!');
                         }
                         
                         // Always publish config to ensure entity exists
-                        await client.publish(imageConfig.topic, JSON.stringify(imageConfig.payload), { retain: true });
+                        await publishAsync(client, imageConfig.topic, JSON.stringify(imageConfig.payload), { retain: true });
                         
                         if (imageData) {
                             // Publish base64 image data for HA to cache locally
-                            await client.publish(imageStateTopic, imageData, { retain: true });
+                            await publishAsync(client, imageStateTopic, imageData, { retain: true });
                             logger.info('Vehicle image published with cached base64 data');
                         } else {
                             // Fallback to URL if download failed
-                            await client.publish(imageStateTopic, imageUrl, { retain: true });
+                            await publishAsync(client, imageStateTopic, imageUrl, { retain: true });
                             logger.warn('Vehicle image published with URL (download failed, using fallback)');
                         }
                     } else {
                         // Publish config anyway so entity exists but mark as unavailable
                         logger.warn('No vehicle image URL found - entity will be created but marked unavailable');
-                        await client.publish(imageConfig.topic, JSON.stringify(imageConfig.payload), { retain: true });
-                        await client.publish(imageStateTopic, '', { retain: true });
+                        await publishAsync(client, imageConfig.topic, JSON.stringify(imageConfig.payload), { retain: true });
+                        await publishAsync(client, imageStateTopic, '', { retain: true });
                     }
                 } catch (e) {
                     // On error, still create the entity but with empty state
                     logger.error('Error publishing vehicle image, entity will be created but unavailable:', e);
                     try {
-                        await client.publish(imageConfig.topic, JSON.stringify(imageConfig.payload), { retain: true });
-                        await client.publish(imageStateTopic, '', { retain: true });
+                        await publishAsync(client, imageConfig.topic, JSON.stringify(imageConfig.payload), { retain: true });
+                        await publishAsync(client, imageStateTopic, '', { retain: true });
                     } catch (publishError) {
                         logger.error('Failed to publish vehicle image entity config:', publishError);
                     }
@@ -1206,8 +1258,8 @@ logger.info('!-- Starting OnStar2MQTT Polling --!');
                         const recallStateTopic = `${mqttHA.prefix}/sensor/${mqttHA.instance}/vehicle_recalls/state`;
                         
                         // Publish config and state
-                        await client.publish(recallConfig.topic, JSON.stringify(recallConfig.payload), { retain: true });
-                        await client.publish(recallStateTopic, JSON.stringify(recallState), { retain: true });
+                        await publishAsync(client, recallConfig.topic, JSON.stringify(recallConfig.payload), { retain: true });
+                        await publishAsync(client, recallStateTopic, JSON.stringify(recallState), { retain: true });
                         
                         logger.info(`Vehicle recall sensor published: ${recallState.recall_count} total recalls, ${recallState.active_recalls_count} active`);
                     } else {
@@ -1216,8 +1268,8 @@ logger.info('!-- Starting OnStar2MQTT Polling --!');
                         const emptyState = mqttHA.getVehicleRecallStatePayload({ data: { vehicleDetails: { recallInfo: [] } } });
                         const recallStateTopic = `${mqttHA.prefix}/sensor/${mqttHA.instance}/vehicle_recalls/state`;
                         
-                        await client.publish(recallConfig.topic, JSON.stringify(recallConfig.payload), { retain: true });
-                        await client.publish(recallStateTopic, JSON.stringify(emptyState), { retain: true });
+                        await publishAsync(client, recallConfig.topic, JSON.stringify(recallConfig.payload), { retain: true });
+                        await publishAsync(client, recallStateTopic, JSON.stringify(emptyState), { retain: true });
                         logger.info('Vehicle recall sensor created with empty state (no recalls found)');
                     }
                 } catch (e) {
@@ -1228,8 +1280,8 @@ logger.info('!-- Starting OnStar2MQTT Polling --!');
                         const emptyState = mqttHA.getVehicleRecallStatePayload({ data: { vehicleDetails: { recallInfo: [] } } });
                         const recallStateTopic = `${mqttHA.prefix}/sensor/${mqttHA.instance}/vehicle_recalls/state`;
                         
-                        await client.publish(recallConfig.topic, JSON.stringify(recallConfig.payload), { retain: true });
-                        await client.publish(recallStateTopic, JSON.stringify(emptyState), { retain: true });
+                        await publishAsync(client, recallConfig.topic, JSON.stringify(recallConfig.payload), { retain: true });
+                        await publishAsync(client, recallStateTopic, JSON.stringify(emptyState), { retain: true });
                         logger.info('Vehicle recall sensor created with empty state due to error');
                     } catch (publishError) {
                         logger.error('Failed to publish vehicle recall sensor config:', publishError);
@@ -1308,7 +1360,7 @@ logger.info('!-- Starting OnStar2MQTT Polling --!');
                     const { payload } = config;
                     logger.info('Publishing message:', { topic, payload });
                     publishes.push(
-                        client.publish(topic, JSON.stringify(payload), { retain: true })
+                        publishAsync(client, topic, JSON.stringify(payload), { retain: true })
                     );
                 }
             }
@@ -1316,7 +1368,7 @@ logger.info('!-- Starting OnStar2MQTT Polling --!');
             for (let [topic, state] of states) {
                 logger.info('Publishing message:', { topic, state });
                 publishes.push(
-                    client.publish(topic, JSON.stringify(state), { retain: true })
+                    publishAsync(client, topic, JSON.stringify(state), { retain: true })
                 );
             }
 
@@ -1339,10 +1391,22 @@ logger.info('!-- Starting OnStar2MQTT Polling --!');
             client.publish(pollingStatusTopicTF, "true", { retain: true });
         };
 
-        const main = async () => run()
-
-            .then(() => logger.info('Updates complete, sleeping.'))
-            .catch((e) => {
+        let isRunning = false;
+        const main = async () => {
+            if (isRunning) {
+                logger.warn('Previous polling operation still running, skipping this interval');
+                return;
+            }
+            
+            isRunning = true;
+            try {
+                logger.debug('Starting main function run()');
+                await run();
+                logger.debug('Main function run() completed successfully');
+                logger.info('Updates complete, sleeping.');
+            } catch (e) {
+                logger.error('Error in main function run():', e);
+                
                 let topicArray;
                 if (!mqttConfig.pollingStatusTopic) {
                     topicArray = _.concat(mqttHA.getPollingStatusTopic(), '/', 'state');
@@ -1399,9 +1463,15 @@ logger.info('!-- Starting OnStar2MQTT Polling --!');
                     logger.error('Error Polling Data:', { error: e });
                     client.publish(pollingStatusTopicTF, "false", { retain: true })
                 }
-            });
+            } finally {
+                isRunning = false;
+            }
+        };
 
-        await main();
+        // Run initial poll after a short delay to avoid overlapping with setup
+        global.setTimeout(() => {
+            main();
+        }, 5000);
 
         let refreshInterval;
         const refreshIntervalTopic = mqttHA.getRefreshIntervalTopic();
@@ -1436,8 +1506,8 @@ logger.info('!-- Starting OnStar2MQTT Polling --!');
                     const recallState = mqttHA.getVehicleRecallStatePayload(recallData.response);
                     const recallStateTopic = `${mqttHA.prefix}/sensor/${mqttHA.instance}/vehicle_recalls/state`;
                     
-                    await client.publish(recallConfig.topic, JSON.stringify(recallConfig.payload), { retain: true });
-                    await client.publish(recallStateTopic, JSON.stringify(recallState), { retain: true });
+                    await publishAsync(client, recallConfig.topic, JSON.stringify(recallConfig.payload), { retain: true });
+                    await publishAsync(client, recallStateTopic, JSON.stringify(recallState), { retain: true });
                     
                     logger.info(`Recall sensor updated: ${recallState.recall_count} total recalls, ${recallState.active_recalls_count} active`);
                     

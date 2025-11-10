@@ -1,6 +1,6 @@
 {
   "name": "onstar2mqtt",
-  "version": "2.2.1",
+  "version": "2.3.0",
   "description": "OnStarJS wrapper for MQTT",
   "main": "src/index.js",
   "scripts": {
@@ -30,14 +30,14 @@
   },
   "homepage": "https://github.com/BigThunderSR/onstar2mqtt#readme",
   "dependencies": {
-    "async-mqtt": "^2.6.3",
+    "mqtt": "^5.14.1",
     "axios": "^1.13.2",
-    "chromium-bidi": "^10.6.1",
+    "chromium-bidi": "^11.0.0",
     "convert-units": "^2.3.4",
     "dotenv": "^17.2.3",
     "jsonwebtoken": "^9.0.2",
     "lodash": "^4.17.21",
-    "onstarjs2": "^2.12.1",
+    "onstarjs2": "^2.13.0",
     "uuid": "^11.1.0",
     "winston": "^3.18.3"
   },
