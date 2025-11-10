@@ -16,6 +16,7 @@
 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v2.3.0](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v2.3.0)
 - Update to OnStarJS 2.13.0 with enhanced authentication and token handling
 - Add configuration option for OpenID clock tolerance to handle authentication issues related to clock skew
+- Add an apparmor profile
 
 ## 2.2.1
 
