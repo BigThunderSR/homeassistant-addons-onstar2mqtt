@@ -277,7 +277,12 @@ cards:
 
 ## EV Charging Metrics Sensors (EV Vehicles Only)
 
-For **electric vehicles**, pressing the **Get EV Charging Metrics** button creates 10 specialized sensors with detailed charging and battery information:
+For **electric vehicles**, pressing the **Get EV Charging Metrics** or **Refresh EV Charging Metrics** button creates 10 specialized sensors with detailed charging and battery information:
+
+**Button Differences:**
+
+- **Get EV Charging Metrics** - Returns cached charging data (faster)
+- **Refresh EV Charging Metrics** - Forces vehicle to generate fresh telemetry before returning (more current, slightly slower)
 
 ### Sensors Created
 
@@ -340,7 +345,7 @@ For **electric vehicles**, pressing the **Get EV Charging Metrics** button creat
 
 ### Update Frequency
 
-- **On-Demand**: These sensors are created/updated when you press the **Get EV Charging Metrics** button
+- **On-Demand**: These sensors are created/updated when you press either the **Get EV Charging Metrics** or **Refresh EV Charging Metrics** button
 - **Complementary**: These provide additional metrics not available in the automatic diagnostics (which refresh every 30 minutes)
 - **Persistent**: Sensor values remain until the next button press
 
@@ -384,7 +389,7 @@ entities:
   - sensor.my_blazer_ev_discharge_min_soc
 ```
 
-**Note**: These sensors are only available for electric vehicles. The Get EV Charging Metrics button will not create sensors for ICE (Internal Combustion Engine) vehicles.
+**Note**: These sensors are only available for electric vehicles. The Get EV Charging Metrics and Refresh EV Charging Metrics buttons will not create sensors for ICE (Internal Combustion Engine) vehicles.
 
 ## Dynamically Change Polling Frequency Using MQTT
 
@@ -471,6 +476,7 @@ Since the buttons are created but disabled by default, follow these steps to ena
 - **Get Vehicle Details** (new in OnStarJS 2.12.0)
 - **Get OnStar Plan** (new in OnStarJS 2.12.0)
 - **Get EV Charging Metrics** (new in OnStarJS 2.12.0)
+- **Refresh EV Charging Metrics** (new in OnStarJS 2.14.0 - live data)
 - **Get Vehicle Recall Info** (new in OnStarJS 2.12.0)
 
 **⚠️ Warning:** Only enable buttons you need and understand. Accidentally pressing the wrong button could trigger unwanted actions on your vehicle.
