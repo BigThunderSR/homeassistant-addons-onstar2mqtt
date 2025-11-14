@@ -1,5 +1,23 @@
 # Changelog
 
+## 2.4.0
+
+**New Features:**
+
+**OnStarJS2 v2.14.0 Enhancements:**
+
+- **New refreshEVChargingMetrics Command** - Added support for manually refreshing EV charging metrics on demand (requires OnStarJS2 2.14.0)
+
+**OnStar2MQTT Enhancements:**
+
+- **Unit Cache Fix for v3 API** - Implemented intelligent unit caching to handle v3 API instability where units intermittently become null, preventing sensor display issues
+
+**Other Updates:**
+
+- Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v2.4.0](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v2.4.0)
+- Update to OnStarJS 2.14.0 with new EV charging refresh capability
+- Add persistent unit cache to disk for improved reliability across restarts
+
 ## 2.3.0
 
 **New Features:**
