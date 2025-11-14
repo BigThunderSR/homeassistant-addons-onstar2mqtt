@@ -144,6 +144,10 @@ class MQTT {
                 Name: 'getEVChargingMetrics',
                 Icon: 'mdi:ev-station',
             },
+            RefreshEVChargingMetrics: {
+                Name: 'refreshEVChargingMetrics',
+                Icon: 'mdi:refresh',
+            },
             GetVehicleRecallInfo: {
                 Name: 'getVehicleRecallInfo',
                 Icon: 'mdi:alert-octagon',

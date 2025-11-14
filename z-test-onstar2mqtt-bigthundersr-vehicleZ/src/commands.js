@@ -185,6 +185,10 @@ class Commands {
         return this.onstar.getEVChargingMetrics();
     }
 
+    async refreshEVChargingMetrics() {
+        return this.onstar.refreshEVChargingMetrics();
+    }
+
     async getVehicleRecallInfo() {
         return this.onstar.getVehicleRecallInfo();
     }
