@@ -496,15 +496,27 @@ icon: "mdi:car-electric"
 
 #### Format for sending command options in the payload
 
-- Set Charging Profile
-  - `{"command": "setChargingProfile","options": {"chargeMode": "RATE_BASED","rateType": "OFFPEAK"}}`
+- ~~Set Charging Profile~~ (deprecated)
+  - ~~`{"command": "setChargingProfile","options": {"chargeMode": "RATE_BASED","rateType": "OFFPEAK"}}`~~
 - Set Charge Level Target (set target charge percentage)
   - `{"command": "setChargeLevelTarget","options": 80}` (sets target to 80%)
   - Alternative formats also supported:
     - `{"command": "setChargeLevelTarget","options": {"targetChargeLevel": 80}}`
     - `{"command": "setChargeLevelTarget","options": {"tcl": 80}}`
-- Alert
-  - `{"command": "alert","options": {"action": "Flash"}}`
+- Stop Charging (stop active charging session)
+  - `{"command": "stopCharging"}`
+- Get EV Charging Metrics (get cached charging data)
+  - `{"command": "getEVChargingMetrics"}`
+- Refresh EV Charging Metrics (force fresh charging telemetry from vehicle)
+  - `{"command": "refreshEVChargingMetrics"}`
+- Get Diagnostics (retrieve all diagnostic data - API v3 returns comprehensive data automatically)
+  - `{"command": "diagnostics"}`
+- Alert (flash or honk)
+  - `{"command": "alert","options": {"action": "Flash"}}` (deprecated - use `flashLights` instead)
+  - `{"command": "alert","options": {"action": "Honk"}}` (deprecated - use vehicle honk if available)
+- Flash Lights / Stop Lights
+  - `{"command": "flashLights"}`
+  - `{"command": "stopLights"}`
 
 ### Trigger Precondition via Calendar
 
@@ -755,16 +767,23 @@ Commands Implemented in this Program:
 7. `unlockDoor`
 8. `lockTrunk` (only available on some vehicles)
 9. `unlockTrunk` (only available on some vehicles)
-10. `getChargingProfile`
-11. `setChargingProfile`
-12. `chargeOverride`
-13. `cancelChargeOverride`
+10. ~~`getChargingProfile`~~ (deprecated - use `getEVChargingMetrics` instead)
+11. ~~`setChargingProfile`~~ (deprecated - use `setChargeLevelTarget` instead)
+12. ~~`chargeOverride`~~ (deprecated - use `setChargeLevelTarget` or `stopCharging` instead)
+13. ~~`cancelChargeOverride`~~ (deprecated - use `setChargeLevelTarget` or `stopCharging` instead)
 14. `getLocation`
-15. ~~`alertFlash`~~ (deprecated - no longer available in OnStarJS)
-16. ~~`alertHonk`~~ (deprecated - no longer available in OnStarJS)
-17. `flashLights` (uses OnStar API v3 - flash vehicle lights)
+15. `alertFlash` (convenience wrapper for `alert` with Flash action - use `flashLights` for API v3)
+16. `alertHonk` (convenience wrapper for `alert` with Honk action)
+17. `flashLights` (uses OnStar API v3 - flash vehicle lights, recommended over alertFlash)
 18. `stopLights` (uses OnStar API v3 - stop flashing vehicle lights)
-19. `diagnostics` (uses OnStar API v3 - retrieves comprehensive diagnostic data for all vehicle systems. Can be requested on-demand but diagnostic data is not real-time and reflects the last cached state from the the API. Runs automatically during polling. See "Advanced Diagnostics Sensors" section above for details on the 7 diagnostic system sensors automatically created)
+19. `diagnostics` (uses OnStar API v3 - retrieves comprehensive diagnostic data for all vehicle systems. Can be requested on-demand but diagnostic data is not real-time and reflects the last cached state from the API. Runs automatically during polling. See "Advanced Diagnostics Sensors" section above for details on the 7 diagnostic system sensors automatically created)
+20. `setChargeLevelTarget` (EV only - set target charge level percentage and options)
+21. `stopCharging` (EV only - stop active charging session)
+22. `getVehicleDetails` (get comprehensive vehicle information including specifications)
+23. `getOnstarPlan` (get OnStar service plan details and status)
+24. `getEVChargingMetrics` (EV only - get cached charging metrics including battery SOC, range, consumption)
+25. `refreshEVChargingMetrics` (EV only - force vehicle to generate fresh charging telemetry and return live data)
+26. `getVehicleRecallInfo` (get active vehicle recall information)
 
 ### Lovelace Dashboard
 
