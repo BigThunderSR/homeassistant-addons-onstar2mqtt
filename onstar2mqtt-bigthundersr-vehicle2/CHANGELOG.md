@@ -1,5 +1,17 @@
 # Changelog
 
+## 2.4.1
+
+**Bug Fixes:**
+
+- **MQTT Availability Fix** - Fixed critical bug where availability status was not restored on reconnection
+- **MQTT Connection Lifecycle** - Improved connection event handling
+
+**Other Updates:**
+
+- Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v2.4.1](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v2.4.1)
+- Update to OnStarJS2 2.14.1
+
 ## 2.4.0
 
 **New Features:**
