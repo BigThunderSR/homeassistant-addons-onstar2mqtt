@@ -150,17 +150,49 @@ const connectMQTT = async availabilityTopic => {
         
         const mqttClient = mqtt.connect(url, config);
         
+        // Set up persistent event handler for availability restoration on every (re)connect
+        // Must be attached BEFORE the first connect event fires
         mqttClient.on('connect', () => {
+            logger.info('MQTT connection established, publishing availability');
+            mqttClient.publish(availabilityTopic, 'true', { retain: true });
+            logger.debug('Published availability=true');
+        });
+        
+        // Use .once() for initial connection to resolve Promise only once
+        mqttClient.once('connect', () => {
             global.clearTimeout(timeout);
             logger.info('Connected to MQTT!');
             resolve(mqttClient);
         });
         
-        mqttClient.on('error', (error) => {
+        // Use .once() for initial connection error to reject Promise only once
+        mqttClient.once('error', (error) => {
             global.clearTimeout(timeout);
-            logger.error('MQTT connection error:', error);
+            logger.error('MQTT initial connection error:', error);
             reject(error);
         });
+    });
+    
+    // Set up persistent error handler for runtime errors (after initial connection)
+    client.on('error', (error) => {
+        logger.error('MQTT runtime error:', error);
+    });
+    
+    // Additional event handlers for connection lifecycle monitoring
+    client.on('reconnect', () => {
+        logger.info('MQTT client attempting to reconnect...');
+    });
+    
+    client.on('close', () => {
+        logger.warn('MQTT connection closed');
+    });
+    
+    client.on('offline', () => {
+        logger.warn('MQTT client is offline');
+    });
+    
+    client.on('disconnect', (packet) => {
+        logger.warn('MQTT client disconnected', { packet });
     });
     
     return client;
@@ -1044,8 +1076,6 @@ logger.info('!-- Starting OnStar2MQTT Polling --!');
         const mqttHA = new MQTT(vehicle, mqttConfig.prefix, mqttConfig.namePrefix);
         const availTopic = mqttHA.getAvailabilityTopic();
         const client = await connectMQTT(availTopic);
-        client.publish(availTopic, 'true', { retain: true });
-        logger.debug('Published availability');
         await configureMQTT(commands, client, mqttHA);
 
         const configurations = new Map();
