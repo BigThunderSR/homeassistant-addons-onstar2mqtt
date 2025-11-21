@@ -6,6 +6,7 @@
 
 - **MQTT Availability Fix** - Fixed critical bug where availability status was not restored on reconnection
 - **MQTT Connection Lifecycle** - Improved connection event handling
+- **Volume Sensor State Class Fix** - Fixed Home Assistant errors for fuel sensors by changing instantaneous volume measurements to use 'volume_storage' device class
 
 **Other Updates:**
 
