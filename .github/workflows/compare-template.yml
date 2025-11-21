@@ -14,12 +14,12 @@ jobs:
 
     steps:
     - name: Checkout downstream project
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
       with:
         path: downstream
 
     - name: Checkout template repository
-      uses: actions/checkout@v5
+      uses: actions/checkout@v6
       with:
         repository: home-assistant/addons-example
         path: template
