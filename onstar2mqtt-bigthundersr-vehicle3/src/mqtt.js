@@ -1684,6 +1684,10 @@ class MQTT {
                 return this.mapSensorConfigPayload(diag, diagEl, 'total_increasing', 'distance', undefined, undefined, 'mdi:counter');
             case 'LIFETIME FUEL USED':
             case 'LIFETIME FUEL USED GAL':
+            case 'LIFETIME FUEL USED L':
+            case 'LIFETIME_FUEL_USED':
+            case 'LIFETIME_FUEL_USED_GAL':
+            case 'LIFETIME_FUEL_USED_L':
                 return this.mapSensorConfigPayload(diag, diagEl, 'total_increasing', 'volume', undefined, undefined, 'mdi:gas-station');
             case 'FUEL AMOUNT':
             case 'FUEL AMOUNT GAL':
@@ -1696,6 +1700,10 @@ class MQTT {
                 return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'volume_storage', undefined, undefined, 'mdi:gas-station');
             case 'FUEL LEVEL IN GAL':
             case 'FUEL LEVEL IN GAL GAL':
+            case 'FUEL LEVEL IN LIT':
+            case 'FUEL LEVEL IN LIT L':
+            case 'FUEL_LEVEL_IN_GAL':
+            case 'FUEL_LEVEL_IN_LIT':
                 return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'volume_storage', undefined, undefined, 'mdi:gas-station');
             // has state_class, no device_class, has message
             case 'OIL LIFE':
@@ -1733,13 +1741,13 @@ class MQTT {
             case 'FUEL_REMAINING':
             case 'FUEL_REMAINING GAL':
             case 'FUEL_REMAINING_GAL':
-                return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'volume', undefined, undefined, 'mdi:gas-station');
+                return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'volume_storage', undefined, undefined, 'mdi:gas-station');
             case 'FUEL USED':
             case 'FUEL USED GAL':
             case 'FUEL_USED':
             case 'FUEL_USED GAL':
             case 'FUEL_USED_GAL':
-                return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'volume', undefined, undefined, 'mdi:gas-station');
+                return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'volume_storage', undefined, undefined, 'mdi:gas-station');
             case 'ENGINE RPM':
             case 'ENGINE_RPM':
                 return this.mapSensorConfigPayload(diag, diagEl, 'measurement', undefined, undefined, undefined, 'mdi:engine');
