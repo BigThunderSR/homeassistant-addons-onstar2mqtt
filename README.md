@@ -14,7 +14,7 @@
 <!-- [![Notarize Assets with CAS](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/actions/workflows/cas_notarize.yml/badge.svg)](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/actions/workflows/cas_notarize.yml)
 [![Authenticate Assets with CAS](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/actions/workflows/cas_authenticate.yml/badge.svg)](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/actions/workflows/cas_authenticate.yml) -->
 
-Home Assistant Add-on of [BigThunderSR/onstar2mqtt](https://github.com/BigThunderSR/onstar2mqtt) which provides the ability to run up to four independent instances if you have up to four vehicles that you would like to connect to.
+Home Assistant Add-on of [BigThunderSR/onstar2mqtt](https://github.com/BigThunderSR/onstar2mqtt) which provides the ability to run up to four independent instances if you have up to four vehicles that you would like to connect to. Please note that only US and Canadian OnStar accounts are known to work with this integration.
 
 [BigThunderSR/onstar2mqtt](https://github.com/BigThunderSR/onstar2mqtt) was originally based on [michaelwoods/onstar2mqtt](https://github.com/michaelwoods/onstar2mqtt) and this add-on was originally based on modifications to [dannysporea/onstar2mqtt-addon](https://github.com/dannysporea/onstar2mqtt-addon)'s HA add-on config and has since been significantly modified/updated from the originals while adding many new capabilities and features over time.
 <!--Add-on documentation: <https://developers.home-assistant.io/docs/add-ons> -->
