@@ -11,15 +11,26 @@
 [![CodeQL](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/actions/workflows/github-code-scanning/codeql/badge.svg)](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/actions/workflows/github-code-scanning/codeql)
 [![Lint](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/actions/workflows/lint.yaml/badge.svg)](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/actions/workflows/lint.yaml)
 [![Builder](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/actions/workflows/builder.yaml/badge.svg)](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/actions/workflows/builder.yaml)
+
 <!-- [![Notarize Assets with CAS](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/actions/workflows/cas_notarize.yml/badge.svg)](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/actions/workflows/cas_notarize.yml)
 [![Authenticate Assets with CAS](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/actions/workflows/cas_authenticate.yml/badge.svg)](https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/actions/workflows/cas_authenticate.yml) -->
 
 Home Assistant Add-on of [BigThunderSR/onstar2mqtt](https://github.com/BigThunderSR/onstar2mqtt) which provides the ability to run up to four independent instances if you have up to four vehicles that you would like to connect to. Please note that only US and Canadian OnStar accounts are known to work with this integration.
 
 [BigThunderSR/onstar2mqtt](https://github.com/BigThunderSR/onstar2mqtt) was originally based on [michaelwoods/onstar2mqtt](https://github.com/michaelwoods/onstar2mqtt) and this add-on was originally based on modifications to [dannysporea/onstar2mqtt-addon](https://github.com/dannysporea/onstar2mqtt-addon)'s HA add-on config and has since been significantly modified/updated from the originals while adding many new capabilities and features over time.
+
 <!--Add-on documentation: <https://developers.home-assistant.io/docs/add-ons> -->
 
 [![Open your Home Assistant instance and show the add add-on repository dialog with a specific repository URL pre-filled.](https://my.home-assistant.io/badges/supervisor_add_addon_repository.svg)](https://my.home-assistant.io/redirect/supervisor_add_addon_repository/?repository_url=https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt)
+
+## Requirements
+
+- **Active OnStar Subscription:** You must have an active and valid OnStar plan to use this add-on. Different features require different plan tiers:
+  - **Remote commands** (start, lock, unlock, etc.) require a plan that includes Remote Access capabilities
+  - **Vehicle diagnostics** require a plan that includes Vehicle Diagnostics capabilities
+  - You can verify your plan status in the official myChevrolet/myGMC/myCadillac/myBuick app or by running the `getOnstarPlan` command
+- **Supported Region:** Only US and Canadian OnStar accounts are known to work with this integration
+- **Valid Credentials:** You need your OnStar username, password, PIN, and TOTP key
 
 ## Add-ons
 
@@ -88,6 +99,7 @@ After upgrading to v2.0.0, you will need to **manually remove deprecated sensors
 First, delete the related retained MQTT topics from your MQTT broker to prevent deprecated sensors from being recreated. **Both config and state topics must be removed:**
 
 - **Using MQTT Explorer or similar tool:**
+
   - Connect to your MQTT broker
   - Navigate to `homeassistant/sensor/YOUR_VIN/` and `homeassistant/binary_sensor/YOUR_VIN/`
   - For each deprecated sensor, delete **both**:
@@ -99,7 +111,7 @@ First, delete the related retained MQTT topics from your MQTT broker to prevent 
   ```bash
   # Delete config topic
   mosquitto_pub -h YOUR_MQTT_HOST -u YOUR_MQTT_USER -P YOUR_MQTT_PASS -t "homeassistant/sensor/YOUR_VIN/deprecated_sensor/config" -n -r
-  
+
   # Delete state topic
   mosquitto_pub -h YOUR_MQTT_HOST -u YOUR_MQTT_USER -P YOUR_MQTT_PASS -t "homeassistant/sensor/YOUR_VIN/deprecated_sensor/state" -n -r
   ```
