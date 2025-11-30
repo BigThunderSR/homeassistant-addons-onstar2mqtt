@@ -8,8 +8,10 @@ const { Diagnostic, AdvancedDiagnostic } = require('./diagnostic');
 const MQTT = require('./mqtt');
 const Commands = require('./commands');
 const logger = require('./logger');
+const { normalizeError } = require('./error-utils');
 const fs = require('fs');
 //const CircularJSON = require('circular-json');
+
 let buttonConfigsPublished = '';
 let refreshIntervalConfigPublished = '';
 let cachedVehicleImageBase64 = null; // Cache the downloaded image
@@ -353,21 +355,8 @@ const configureMQTT = async (commands, client, mqttHA) => {
                         const completionTimestamp = new Date().toISOString();
                         logger.debug(`Completion Timestamp: ${completionTimestamp}`);
                         const errorPayload = {
-                            error: _.pick(e, [
-                                'message',
-                                'response.status',
-                                'response.statusText',
-                                'response.headers',
-                                'response.data',
-                                'request.method',
-                                'request.body',
-                                'request.contentType',
-                                'request.headers',
-                                'request.url',
-                                'stack'
-                            ])
+                            error: normalizeError(e)
                         };
-                        //const errorJson = JSON.stringify(errorPayload);
                         logger.error('Command Error!', { command, error: errorPayload });
                         logger.error(`Command Status Topic for Errored Command: ${commandStatusTopic}`);
                         client.publish(commandStatusTopic,
@@ -486,21 +475,8 @@ const configureMQTT = async (commands, client, mqttHA) => {
                         const completionTimestamp = new Date().toISOString();
                         logger.debug(`Completion Timestamp: ${completionTimestamp}`);
                         const errorPayload = {
-                            error: _.pick(e, [
-                                'message',
-                                'response.status',
-                                'response.statusText',
-                                'response.headers',
-                                'response.data',
-                                'request.method',
-                                'request.body',
-                                'request.contentType',
-                                'request.headers',
-                                'request.url',
-                                'stack'
-                            ])
+                            error: normalizeError(e)
                         };
-                        //const errorJson = JSON.stringify(errorPayload);
                         logger.error('Command Error!', { command, error: errorPayload });
                         logger.error(`Command Status Topic for Errored Command: ${commandStatusTopic}`);
                         client.publish(commandStatusTopic,
@@ -580,19 +556,7 @@ const configureMQTT = async (commands, client, mqttHA) => {
                         const completionTimestamp = new Date().toISOString();
                         logger.debug(`Completion Timestamp: ${completionTimestamp}`);
                         const errorPayload = {
-                            error: _.pick(e, [
-                                'message',
-                                'response.status',
-                                'response.statusText',
-                                'response.headers',
-                                'response.data',
-                                'request.method',
-                                'request.body',
-                                'request.contentType',
-                                'request.headers',
-                                'request.url',
-                                'stack'
-                            ])
+                            error: normalizeError(e)
                         };
                         logger.error('setChargeLevelTarget Command Error!', { command, error: errorPayload });
                         logger.error(`Command Status Topic for Errored Command: ${commandStatusTopic}`);
@@ -729,19 +693,7 @@ const configureMQTT = async (commands, client, mqttHA) => {
                         const completionTimestamp = new Date().toISOString();
                         logger.debug(`Completion Timestamp: ${completionTimestamp}`);
                         const errorPayload = {
-                            error: _.pick(e, [
-                                'message',
-                                'response.status',
-                                'response.statusText',
-                                'response.headers',
-                                'response.data',
-                                'request.method',
-                                'request.body',
-                                'request.contentType',
-                                'request.headers',
-                                'request.url',
-                                'stack'
-                            ])
+                            error: normalizeError(e)
                         };
                         logger.error('getVehicleDetails Command Error!', { error: errorPayload });
                         logger.error(`Command Status Topic for Errored Command: ${commandStatusTopic}`);
@@ -880,19 +832,7 @@ const configureMQTT = async (commands, client, mqttHA) => {
                         const completionTimestamp = new Date().toISOString();
                         logger.debug(`Completion Timestamp: ${completionTimestamp}`);
                         const errorPayload = {
-                            error: _.pick(e, [
-                                'message',
-                                'response.status',
-                                'response.statusText',
-                                'response.headers',
-                                'response.data',
-                                'request.method',
-                                'request.body',
-                                'request.contentType',
-                                'request.headers',
-                                'request.url',
-                                'stack'
-                            ])
+                            error: normalizeError(e)
                         };
                         logger.error('getOnstarPlan Command Error!', { error: errorPayload });
                         logger.error(`Command Status Topic for Errored Command: ${commandStatusTopic}`);
@@ -1018,21 +958,8 @@ const configureMQTT = async (commands, client, mqttHA) => {
                         const completionTimestamp = new Date().toISOString();
                         logger.debug(`Completion Timestamp: ${completionTimestamp}`);
                         const errorPayload = {
-                            error: _.pick(e, [
-                                'message',
-                                'response.status',
-                                'response.statusText',
-                                'response.headers',
-                                'response.data',
-                                'request.method',
-                                'request.body',
-                                'request.contentType',
-                                'request.headers',
-                                'request.url',
-                                'stack'
-                            ])
+                            error: normalizeError(e)
                         };
-                        //const errorJson = JSON.stringify(errorPayload);
                         logger.error('Command Error!', { command, error: errorPayload });
                         logger.error(`Command Status Topic for Errored Command: ${commandStatusTopic}`);
                         client.publish(commandStatusTopic,
@@ -1457,21 +1384,8 @@ logger.info('!-- Starting OnStar2MQTT Polling --!');
 
                 if (e instanceof Error) {
                     const errorPayload = {
-                        error: _.pick(e, [
-                            'message',
-                            'response.status',
-                            'response.statusText',
-                            'response.headers',
-                            'response.data',
-                            'request.method',
-                            'request.body',
-                            'request.contentType',
-                            'request.headers',
-                            'request.url',
-                            'stack'
-                        ])
+                        error: normalizeError(e)
                     };
-                    //const errorJson = JSON.stringify(errorPayload);
                     const completionTimestamp = new Date().toISOString();
                     logger.debug(`Completion Timestamp: ${completionTimestamp}`);
                     client.publish(pollingStatusTopicState,
@@ -1483,14 +1397,20 @@ logger.info('!-- Starting OnStar2MQTT Polling --!');
                     client.publish(pollingStatusTopicTF, "false", { retain: true })
 
                 } else {
-                    //const errorJson = JSON.stringify({ error: e })
                     const completionTimestamp = new Date().toISOString();
+                    // For non-Error objects, wrap in a basic structure
+                    const errorPayload = {
+                        error: {
+                            message: String(e),
+                            response: { status: 0, statusText: 'Unknown Error' }
+                        }
+                    };
                     client.publish(pollingStatusTopicState,
                         JSON.stringify({
-                            ...{ error: e },
+                            ...errorPayload,
                             "completionTimestamp": completionTimestamp
                         }), { retain: true })
-                    logger.error('Error Polling Data:', { error: e });
+                    logger.error('Error Polling Data:', { error: errorPayload });
                     client.publish(pollingStatusTopicTF, "false", { retain: true })
                 }
             } finally {
