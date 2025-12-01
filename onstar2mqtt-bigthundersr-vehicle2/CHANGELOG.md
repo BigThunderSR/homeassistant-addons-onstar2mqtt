@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.4.2
+
+**Bug Fixes:**
+
+- **HA Polling Status Code Fix** - Fix HA polling status code sensor showing unknown for OpenID errors
+
+**Other Updates:**
+
+- Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v2.4.2](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v2.4.2)
+- Update to OnStarJS2 2.14.2
+
 ## 2.4.1
 
 **Bug Fixes:**
@@ -82,7 +93,7 @@ First, delete the related retained MQTT topics from your MQTT broker to prevent 
   ```bash
   # Delete config topic
   mosquitto_pub -h YOUR_MQTT_HOST -u YOUR_MQTT_USER -P YOUR_MQTT_PASS -t "homeassistant/sensor/YOUR_VIN/deprecated_sensor/config" -n -r
-  
+
   # Delete state topic
   mosquitto_pub -h YOUR_MQTT_HOST -u YOUR_MQTT_USER -P YOUR_MQTT_PASS -t "homeassistant/sensor/YOUR_VIN/deprecated_sensor/state" -n -r
   ```
@@ -154,7 +165,7 @@ First, delete the related retained MQTT topics from your MQTT broker to prevent 
   ```bash
   # Delete config topic
   mosquitto_pub -h YOUR_MQTT_HOST -u YOUR_MQTT_USER -P YOUR_MQTT_PASS -t "homeassistant/sensor/YOUR_VIN/deprecated_sensor/config" -n -r
-  
+
   # Delete state topic
   mosquitto_pub -h YOUR_MQTT_HOST -u YOUR_MQTT_USER -P YOUR_MQTT_PASS -t "homeassistant/sensor/YOUR_VIN/deprecated_sensor/state" -n -r
   ```
@@ -230,7 +241,7 @@ First, delete the related retained MQTT topics from your MQTT broker to prevent 
   ```bash
   # Delete config topic
   mosquitto_pub -h YOUR_MQTT_HOST -u YOUR_MQTT_USER -P YOUR_MQTT_PASS -t "homeassistant/sensor/YOUR_VIN/deprecated_sensor/config" -n -r
-  
+
   # Delete state topic
   mosquitto_pub -h YOUR_MQTT_HOST -u YOUR_MQTT_USER -P YOUR_MQTT_PASS -t "homeassistant/sensor/YOUR_VIN/deprecated_sensor/state" -n -r
   ```
@@ -304,7 +315,7 @@ First, delete the related retained MQTT topics from your MQTT broker to prevent 
   ```bash
   # Delete config topic
   mosquitto_pub -h YOUR_MQTT_HOST -u YOUR_MQTT_USER -P YOUR_MQTT_PASS -t "homeassistant/sensor/YOUR_VIN/deprecated_sensor/config" -n -r
-  
+
   # Delete state topic
   mosquitto_pub -h YOUR_MQTT_HOST -u YOUR_MQTT_USER -P YOUR_MQTT_PASS -t "homeassistant/sensor/YOUR_VIN/deprecated_sensor/state" -n -r
   ```
@@ -456,17 +467,17 @@ First, delete the related retained MQTT topics from your MQTT broker to prevent 
 - Remove support for ARMHF, ARMv7 and i386 architectures
 
 ## 1.21.2
-  
+
 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.21.2](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.21.2)
 - Fix for authentication errors
 
 ## 1.21.1
-  
+
 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.21.1](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.21.1)
 - Map Additional EV Sensors and Address Numeric Sensors with Units "XXX"
 
 ## 1.21.0
-  
+
 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.21.0](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.21.0)
 - Add support for new Equinox EV sensors
 - Migrate to NodeJS 22
@@ -579,7 +590,7 @@ First, delete the related retained MQTT topics from your MQTT broker to prevent 
 
 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.15.0](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.15.0)
 - Command Status and Timestamp from last command run are published to MQTT auto-discovery topics and are grouped in a MQTT device grouping for all
-command status sensors for the same vehicle
+  command status sensors for the same vehicle
 - Fix a bug in the alert function command handling
 - Add suggested area for sensor groupings
 
@@ -597,7 +608,7 @@ command status sensors for the same vehicle
 
 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.14.0](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.14.0)
 - Buttons are added disabled by default because it's easy to accidentally press the wrong button and trigger an action at an inopportune time.
-Enable at your own risk and you assume all responsibility for your actions.
+  Enable at your own risk and you assume all responsibility for your actions.
 - All available buttons for all vehicles are included for now, so only enable the buttons you need and/or work for your vehicle.
 - Changed the model displayed in the MQTT device in HA from "Model Year" to "Model Year + Model Name".
 
@@ -745,7 +756,7 @@ Enable at your own risk and you assume all responsibility for your actions.
 ## 1.3.27 - **WARNING!!! - BREAKING CHANGE!!! - MANUAL STEPS REQUIRED TO UPGRADE**
 
 - Before upgrading, please copy/save your add-on config, uninstall the existing add-on, install this new version of the add-on, re-add the previously saved configuration, save the config and re-start Home Assistant before using the add-on.
-- Reason: Changed slug name to use "_" instead of "-" due to breaking change in HA Core 2023.9
+- Reason: Changed slug name to use "\_" instead of "-" due to breaking change in HA Core 2023.9
 
 ## 1.2.27
 
