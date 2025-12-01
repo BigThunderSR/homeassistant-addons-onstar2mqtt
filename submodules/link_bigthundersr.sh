@@ -9,6 +9,7 @@ ln -f ../submodules/bigthundersr/onstar2mqtt/package-lock.json package-lock.json
 
 ln -f ../submodules/bigthundersr/onstar2mqtt/src/commands.js ./src/commands.js
 ln -f ../submodules/bigthundersr/onstar2mqtt/src/diagnostic.js ./src/diagnostic.js
+ln -f ../submodules/bigthundersr/onstar2mqtt/src/error-utils.js ./src/error-utils.js
 ln -f ../submodules/bigthundersr/onstar2mqtt/src/index.js ./src/index.js
 ln -f ../submodules/bigthundersr/onstar2mqtt/src/logger.js ./src/logger.js
 ln -f ../submodules/bigthundersr/onstar2mqtt/src/measurement.js ./src/measurement.js
@@ -28,6 +29,7 @@ ln -f ../submodules/bigthundersr/onstar2mqtt/package-lock.json package-lock.json
 
 ln -f ../submodules/bigthundersr/onstar2mqtt/src/commands.js ./src/commands.js
 ln -f ../submodules/bigthundersr/onstar2mqtt/src/diagnostic.js ./src/diagnostic.js
+ln -f ../submodules/bigthundersr/onstar2mqtt/src/error-utils.js ./src/error-utils.js
 ln -f ../submodules/bigthundersr/onstar2mqtt/src/index.js ./src/index.js
 ln -f ../submodules/bigthundersr/onstar2mqtt/src/logger.js ./src/logger.js
 ln -f ../submodules/bigthundersr/onstar2mqtt/src/measurement.js ./src/measurement.js
@@ -47,6 +49,7 @@ ln -f ../submodules/bigthundersr/onstar2mqtt/package-lock.json package-lock.json
 
 ln -f ../submodules/bigthundersr/onstar2mqtt/src/commands.js ./src/commands.js
 ln -f ../submodules/bigthundersr/onstar2mqtt/src/diagnostic.js ./src/diagnostic.js
+ln -f ../submodules/bigthundersr/onstar2mqtt/src/error-utils.js ./src/error-utils.js
 ln -f ../submodules/bigthundersr/onstar2mqtt/src/index.js ./src/index.js
 ln -f ../submodules/bigthundersr/onstar2mqtt/src/logger.js ./src/logger.js
 ln -f ../submodules/bigthundersr/onstar2mqtt/src/measurement.js ./src/measurement.js
@@ -66,6 +69,7 @@ ln -f ../submodules/bigthundersr/onstar2mqtt/package-lock.json package-lock.json
 
 ln -f ../submodules/bigthundersr/onstar2mqtt/src/commands.js ./src/commands.js
 ln -f ../submodules/bigthundersr/onstar2mqtt/src/diagnostic.js ./src/diagnostic.js
+ln -f ../submodules/bigthundersr/onstar2mqtt/src/error-utils.js ./src/error-utils.js
 ln -f ../submodules/bigthundersr/onstar2mqtt/src/index.js ./src/index.js
 ln -f ../submodules/bigthundersr/onstar2mqtt/src/logger.js ./src/logger.js
 ln -f ../submodules/bigthundersr/onstar2mqtt/src/measurement.js ./src/measurement.js
