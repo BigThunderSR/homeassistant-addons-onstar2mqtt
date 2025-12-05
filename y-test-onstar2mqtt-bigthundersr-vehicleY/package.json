@@ -35,7 +35,7 @@
     "chromium-bidi": "^11.0.1",
     "convert-units": "^2.3.4",
     "dotenv": "^17.2.3",
-    "jsonwebtoken": "^9.0.2",
+    "jsonwebtoken": "^9.0.3",
     "lodash": "^4.17.21",
     "onstarjs2": "^2.14.2",
     "uuid": "^11.1.0",
