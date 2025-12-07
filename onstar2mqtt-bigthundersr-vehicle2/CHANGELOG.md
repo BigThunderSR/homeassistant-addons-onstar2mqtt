@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.4.3
+
+**Build Updates:**
+
+- **Node.js 22 LTS** - Replaced HA base image Node.js 18 with Node.js 22 LTS from NodeSource to meet onstar2mqtt engine requirements and resolve EBADENGINE warnings
+
+**Other Updates:**
+
+- Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v2.4.3](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v2.4.3)
+- Update to OnStarJS2 2.14.3 with improved Xvfb stability for long-running sessions and container restarts
+
 ## 2.4.2
 
 **Bug Fixes:**
@@ -82,6 +93,7 @@ After upgrading to v2.2.1 from v1.x (and in some rare cases, version 2.1.x/2.0.x
 First, delete the related retained MQTT topics from your MQTT broker to prevent deprecated sensors from being recreated. **Both config and state topics must be removed:**
 
 - **Using MQTT Explorer or similar tool:**
+
   - Connect to your MQTT broker
   - Navigate to `homeassistant/sensor/YOUR_VIN/` and `homeassistant/binary_sensor/YOUR_VIN/`
   - For each deprecated sensor, delete **both**:
@@ -154,6 +166,7 @@ After upgrading to v2.2.0 from v1.x (and in some rare cases, version 2.1.x/2.0.x
 First, delete the related retained MQTT topics from your MQTT broker to prevent deprecated sensors from being recreated. **Both config and state topics must be removed:**
 
 - **Using MQTT Explorer or similar tool:**
+
   - Connect to your MQTT broker
   - Navigate to `homeassistant/sensor/YOUR_VIN/` and `homeassistant/binary_sensor/YOUR_VIN/`
   - For each deprecated sensor, delete **both**:
@@ -230,6 +243,7 @@ After upgrading to v2.1.1 from v1.x, you will need to **manually remove deprecat
 First, delete the related retained MQTT topics from your MQTT broker to prevent deprecated sensors from being recreated. **Both config and state topics must be removed:**
 
 - **Using MQTT Explorer or similar tool:**
+
   - Connect to your MQTT broker
   - Navigate to `homeassistant/sensor/YOUR_VIN/` and `homeassistant/binary_sensor/YOUR_VIN/`
   - For each deprecated sensor, delete **both**:
@@ -304,6 +318,7 @@ After upgrading to v2.1.0, you will need to **manually remove deprecated sensors
 First, delete the related retained MQTT topics from your MQTT broker to prevent deprecated sensors from being recreated. **Both config and state topics must be removed:**
 
 - **Using MQTT Explorer or similar tool:**
+
   - Connect to your MQTT broker
   - Navigate to `homeassistant/sensor/YOUR_VIN/` and `homeassistant/binary_sensor/YOUR_VIN/`
   - For each deprecated sensor, delete **both**:
@@ -658,6 +673,7 @@ First, delete the related retained MQTT topics from your MQTT broker to prevent 
 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.12.0](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.12.0)
 
 - Added device_tracker auto discovery by @BigThunderSR in <https://github.com/BigThunderSR/onstar2mqtt/pull/143>
+
   - The device_tracker auto discovery config is published to: "homeassistant/device_tracker/(VIN)/config" and the GPS coordinates are still read from the original topic automatically at: "homeassistant/device_tracker/(VIN)/getlocation/state".
   - Also added GPS based speed and direction to the device_tracker attributes
 
@@ -667,17 +683,20 @@ First, delete the related retained MQTT topics from your MQTT broker to prevent 
 
 - Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v1.11.0](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v1.11.0)
 - New env options for securing connectivity for MQTTS using TLS:
+
   - MQTT_REJECT_UNAUTHORIZED (Default: "true", set to "false" only for testing.)
   - MQTT_CA_FILE
   - MQTT_CERT_FILE
   - MQTT_KEY_FILE
 
 - Automatic creation of pollingStatusTopic
+
   - No longer need to specify MQTT_ONSTAR_POLLING_STATUS_TOPIC as this is now created automatically
     - Format is "homeassistant/(VIN)/polling_status/"
   - If it is explicitly specified, will use the specified value, so does not break backwards compatibility
 
 - Ability to dynamically change polling frequency using MQTT
+
   - Uses the value from "ONSTAR_REFRESH" on initial startup
   - Change the value dynamically by publishing the new refresh value in milliseconds (ms) as an INT to: "homeassistant/(VIN)/refresh_interval"
 
