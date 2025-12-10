@@ -39,7 +39,7 @@
     "lodash": "^4.17.21",
     "onstarjs2": "^2.14.3",
     "uuid": "^11.1.0",
-    "winston": "^3.18.3"
+    "winston": "^3.19.0"
   },
   "overrides": {
     "patchright": "^1.57.0"
