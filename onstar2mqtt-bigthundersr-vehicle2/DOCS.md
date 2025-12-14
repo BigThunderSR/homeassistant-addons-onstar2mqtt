@@ -931,3 +931,37 @@ views:
         columns: 2
 title: Bolt EV
 ```
+
+## Troubleshooting
+
+### Template Variable Warnings in Home Assistant
+
+If you see warnings in your Home Assistant logs like:
+
+```text
+Template variable warning: 'dict object' has no attribute 'lifetime_fuel_economy' when rendering '{{ value_json.lifetime_fuel_economy }}'
+```
+
+or errors like:
+
+```text
+TypeError: Object of type LoggingUndefined is not JSON serializable rendering template for entity...
+```
+
+This is caused by the OnStar API v3 returning **partial data** on some refresh cycles - not all sensor fields are included in every API response.
+
+#### Solution: Enable State Caching
+
+Add the following environment variable to your configuration:
+
+```shell
+ONSTAR_STATE_CACHE=true
+```
+
+This enables a state cache that:
+
+- Merges new API responses with previously cached data
+- Preserves sensor values from previous updates when the API doesn't include them
+- Persists the cache to disk so it survives restarts
+
+**Note:** When first enabling the state cache (or after clearing cache files), you may still see these warnings for a few refresh cycles until the cache builds up with complete data from the API.
