@@ -81,6 +81,7 @@ As well as many new additional customizations such as log colorization which are
 - **OnStar API v3 Support** - Updated to OnStarJS 2.14.0+ with full API v3 compatibility
 - **Enhanced Reliability** - Improved handling of OnStar API field naming variations
 - **Unit Stability Fix** - Automatic caching of sensor units to handle API instability where units intermittently return as null, preventing Home Assistant unit conversion errors
+- **State Cache (Optional)** - Enable `ONSTAR_STATE_CACHE: true` to merge partial API responses with cached data, preventing Home Assistant template warnings when the API returns incomplete data on refresh cycles
 - **New EV Commands** - Added refreshEVChargingMetrics for live charging data, setChargeLevelTarget, stopCharging, and comprehensive EV metrics
 
 **What This Means for You:**
