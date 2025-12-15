@@ -1,5 +1,5 @@
 name: OnStar2MQTT Home Assistant Add-on (BigThunderSR) for Vehicle 3
-version: 2.4.3
+version: 2.5.0
 slug: onstar2mqtt_bigthundersr_vehicle3
 description: Home Assistant Add On Version of BigThunderSR/onstar2mqtt for Vehicle 3
 #codenotary: bigthundersr@outlook.com
@@ -31,6 +31,7 @@ options:
   ONSTAR_RECALL_REFRESH: 604800000
   ONSTAR_POLL_INTERVAL: 6
   ONSTAR_POLL_TIMEOUT: 90
+  ONSTAR_STATE_CACHE: false
   OPENID_CLOCK_TOLERANCE_SEC: 120
   MQTT_HOST: ""
   MQTT_USERNAME: ""
@@ -59,6 +60,7 @@ schema:
   ONSTAR_RECALL_REFRESH: int
   ONSTAR_POLL_INTERVAL: int
   ONSTAR_POLL_TIMEOUT: int
+  ONSTAR_STATE_CACHE: bool
   OPENID_CLOCK_TOLERANCE_SEC: int
   MQTT_HOST: str
   MQTT_USERNAME: str

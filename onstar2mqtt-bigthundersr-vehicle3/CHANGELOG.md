@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.5.0
+
+**New Features:**
+
+- **Optional State Cache** - Enable with `ONSTAR_STATE_CACHE: true` to merge partial API responses with cached data, preventing Home Assistant template warnings when the API returns incomplete data on refresh cycles. Note: On first run with an empty cache, you may still see template warnings until the cache builds up over a few refresh cycles
+
+**Other Updates:**
+
+- Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v2.5.0](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v2.5.0)
+- Update to OnStarJS2 2.15.0 with proactive Xvfb cleanup and diagnostics for improved browser automation reliability
+
 ## 2.4.3
 
 **Build Updates:**

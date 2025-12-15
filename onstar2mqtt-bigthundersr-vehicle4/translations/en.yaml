@@ -59,6 +59,12 @@ configuration:
     name: OnStar Poll Timeout
     description: >-
       From OnStarJS: requestPollingTimeoutSeconds - How long a request will make subsequent status check requests before timing out.
+  ONSTAR_STATE_CACHE:
+    name: OnStar State Cache
+    description: >-
+      Enable state caching to merge partial API responses with cached data, preventing Home Assistant template warnings when the API returns incomplete data on refresh cycles.
+      Note: On first run with an empty cache, you may still see template warnings until the cache builds up over a few refresh cycles.
+      Default is "false".
   OPENID_CLOCK_TOLERANCE_SEC:
     name: OpenID Clock Tolerance
     description: >-
