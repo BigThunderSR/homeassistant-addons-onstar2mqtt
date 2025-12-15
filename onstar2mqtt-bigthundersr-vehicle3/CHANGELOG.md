@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.5.1
+
+**Bug Fixes:**
+
+- **Missing Environment Variables** - Add missing exports for `ONSTAR_RECALL_REFRESH`, `ONSTAR_STATE_CACHE`, and `OPENID_CLOCK_TOLERANCE_SEC` in run.sh to properly pass configuration to the application
+
 ## 2.5.0
 
 **New Features:**
