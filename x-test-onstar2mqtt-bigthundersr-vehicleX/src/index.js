@@ -4,7 +4,7 @@ const uuidv4 = require('uuid').v4;
 const _ = require('lodash');
 const axios = require('axios');
 const Vehicle = require('./vehicle');
-const { Diagnostic, AdvancedDiagnostic } = require('./diagnostic');
+const { Diagnostic, AdvancedDiagnostic, mergeState } = require('./diagnostic');
 const MQTT = require('./mqtt');
 const Commands = require('./commands');
 const logger = require('./logger');
@@ -319,7 +319,9 @@ const configureMQTT = async (commands, client, mqttHA) => {
                     }
                     const topic = mqttHA.getStateTopic(s);
                     const payload = mqttHA.getStatePayload(s);
-                    states.set(topic, payload);
+                    // Merge with cached state to preserve fields from previous updates
+                    const mergedPayload = mergeState(topic, payload);
+                    states.set(topic, mergedPayload);
                 }
                 const publishes = [];
                 for (let [topic, state] of states) {
@@ -1293,7 +1295,9 @@ logger.info('!-- Starting OnStar2MQTT Polling --!');
 
                 const topic = mqttHA.getStateTopic(s);
                 const payload = mqttHA.getStatePayload(s);
-                states.set(topic, payload);
+                // Merge with cached state to preserve fields from previous updates
+                const mergedPayload = mergeState(topic, payload);
+                states.set(topic, mergedPayload);
             }
             
             // API CHANGE: Configure and publish advanced diagnostics sensors (API v3)
@@ -1305,7 +1309,9 @@ logger.info('!-- Starting OnStar2MQTT Polling --!');
                 
                 const advStateTopic = `homeassistant/${v.vin}/adv_diag/state`;
                 const advStatePayload = mqttHA.getAdvancedDiagnosticStatePayload(advancedDiagnostic);
-                states.set(advStateTopic, advStatePayload);
+                // Merge with cached state to preserve fields from previous updates
+                const mergedAdvPayload = mergeState(advStateTopic, advStatePayload);
+                states.set(advStateTopic, mergedAdvPayload);
             }
             
             const publishes = [];

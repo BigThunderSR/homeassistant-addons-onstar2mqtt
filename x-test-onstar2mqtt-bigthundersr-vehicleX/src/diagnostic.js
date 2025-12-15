@@ -9,12 +9,19 @@ const logger = require('./logger');
 // Maps diagnostic element name to last known valid unit
 const unitCache = new Map();
 
+// State cache to handle v3 API instability where partial data is returned
+// Maps MQTT topic -> last known complete state object
+// Enable with: ONSTAR_STATE_CACHE=true
+const stateCache = new Map();
+const STATE_CACHE_ENABLED = (process.env.ONSTAR_STATE_CACHE || 'false').toLowerCase() === 'true';
+
 // Cache file location - supports custom path via environment variable for Docker volumes
 // Include VIN in filename to avoid collisions when running multiple instances
 // Fallback to TOKEN_LOCATION for HA Add-on users (keeps cache with tokens)
 const CACHE_DIR = process.env.UNIT_CACHE_DIR || process.env.TOKEN_LOCATION || process.cwd();
 const VIN = process.env.ONSTAR_VIN || 'default';
 const CACHE_FILE = path.join(CACHE_DIR, `.unit_cache_${VIN}.json`);
+const STATE_CACHE_FILE = path.join(CACHE_DIR, `.state_cache_${VIN}.json`);
 
 // Load cache from disk on module initialization
 function loadCacheFromDisk() {
@@ -24,6 +31,7 @@ function loadCacheFromDisk() {
             fs.mkdirSync(CACHE_DIR, { recursive: true });
         }
         
+        // Load unit cache
         if (fs.existsSync(CACHE_FILE)) {
             const data = fs.readFileSync(CACHE_FILE, 'utf8');
             const cached = JSON.parse(data);
@@ -32,12 +40,26 @@ function loadCacheFromDisk() {
             });
             logger.info(`Loaded ${unitCache.size} cached units from disk (${CACHE_FILE})`);
         }
+        
+        // Load state cache (if enabled)
+        if (STATE_CACHE_ENABLED && fs.existsSync(STATE_CACHE_FILE)) {
+            const data = fs.readFileSync(STATE_CACHE_FILE, 'utf8');
+            const cached = JSON.parse(data);
+            Object.entries(cached).forEach(([topic, state]) => {
+                stateCache.set(topic, state);
+            });
+            logger.info(`State cache: Loaded ${stateCache.size} cached topics from disk (${STATE_CACHE_FILE})`);
+        } else if (STATE_CACHE_ENABLED) {
+            logger.info('State cache: No existing cache file found, starting fresh');
+        } else {
+            logger.debug('State cache is disabled (ONSTAR_STATE_CACHE=false)');
+        }
     } catch (error) {
-        logger.warn(`Failed to load unit cache from disk (${CACHE_FILE}):`, error.message);
+        logger.warn(`Failed to load cache from disk:`, error.message);
     }
 }
 
-// Save cache to disk immediately
+// Save unit cache to disk immediately
 function saveCacheToDisk() {
     try {
         const data = {};
@@ -48,6 +70,23 @@ function saveCacheToDisk() {
         logger.debug(`Saved ${unitCache.size} cached units to disk (${CACHE_FILE})`);
     } catch (error) {
         logger.warn(`Failed to save unit cache to disk (${CACHE_FILE}):`, error.message);
+    }
+}
+
+// Save state cache to disk
+function saveStateCacheToDisk() {
+    if (!STATE_CACHE_ENABLED) {
+        return;
+    }
+    try {
+        const data = {};
+        stateCache.forEach((state, topic) => {
+            data[topic] = state;
+        });
+        fs.writeFileSync(STATE_CACHE_FILE, JSON.stringify(data, null, 2), 'utf8');
+        logger.debug(`State cache: Saved ${stateCache.size} topics to disk`);
+    } catch (error) {
+        logger.warn(`State cache: Failed to save to disk (${STATE_CACHE_FILE}):`, error.message);
     }
 }
 
@@ -279,11 +318,111 @@ function clearUnitCache(deleteDiskCache = false) {
     }
 }
 
+// ============================================================================
+// State Cache Functions
+// ============================================================================
+
+/**
+ * Merge new state with cached state for a given topic.
+ * New values overwrite cached values, but missing fields are preserved from cache.
+ * 
+ * @param {string} topic - The MQTT topic for this state
+ * @param {object} newState - The new state payload from the API
+ * @returns {object} - The merged state with all known fields
+ */
+function mergeState(topic, newState) {
+    if (!STATE_CACHE_ENABLED) {
+        // Cache disabled - return new state as-is
+        return newState;
+    }
+    
+    const cachedState = stateCache.get(topic) || {};
+    
+    // Merge: cached values are preserved, new values overwrite
+    // This ensures we keep fields from previous updates that aren't in current update
+    const mergedState = { ...cachedState, ...newState };
+    
+    // Track merge metadata
+    mergedState._cache_last_merge = new Date().toISOString();
+    
+    // Count how many fields came from cache vs new
+    const cachedFields = Object.keys(cachedState).filter(k => !k.startsWith('_cache_'));
+    const newFields = Object.keys(newState).filter(k => !k.startsWith('_cache_'));
+    const preservedCount = cachedFields.filter(k => !newFields.includes(k)).length;
+    
+    if (preservedCount > 0) {
+        logger.info(`State cache: Topic ${topic} - merged ${newFields.length} new fields, preserved ${preservedCount} cached fields`);
+    }
+    
+    // Update cache
+    stateCache.set(topic, mergedState);
+    
+    // Persist to disk
+    saveStateCacheToDisk();
+    
+    return mergedState;
+}
+
+/**
+ * Get the current cached state for a topic (for debugging/inspection)
+ * 
+ * @param {string} topic - The MQTT topic
+ * @returns {object|undefined} - The cached state or undefined
+ */
+function getCachedState(topic) {
+    return stateCache.get(topic);
+}
+
+/**
+ * Clear the state cache (useful for testing or manual reset)
+ * @param {boolean} deleteDiskCache - Whether to also delete the disk cache file
+ */
+function clearStateCache(deleteDiskCache = true) {
+    stateCache.clear();
+    if (STATE_CACHE_ENABLED && deleteDiskCache) {
+        try {
+            if (fs.existsSync(STATE_CACHE_FILE)) {
+                fs.unlinkSync(STATE_CACHE_FILE);
+                logger.info('State cache: Cleared cache and removed cache file');
+            }
+        } catch (error) {
+            logger.warn('State cache: Failed to remove cache file:', error.message);
+        }
+    }
+}
+
+/**
+ * Check if state caching is enabled
+ * @returns {boolean}
+ */
+function isStateCacheEnabled() {
+    return STATE_CACHE_ENABLED;
+}
+
+/**
+ * Get state cache statistics (for debugging)
+ * @returns {object}
+ */
+function getStateCacheStats() {
+    return {
+        enabled: STATE_CACHE_ENABLED,
+        topicCount: stateCache.size,
+        cacheFile: STATE_CACHE_FILE,
+        topics: Array.from(stateCache.keys())
+    };
+}
+
 module.exports = { 
     Diagnostic, 
     DiagnosticElement, 
     AdvancedDiagnostic, 
     DiagnosticSystem,
     getUnitCacheStats,
-    clearUnitCache
+    clearUnitCache,
+    // State cache exports
+    mergeState,
+    getCachedState,
+    clearStateCache,
+    isStateCacheEnabled,
+    getStateCacheStats
 };
