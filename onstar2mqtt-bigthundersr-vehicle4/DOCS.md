@@ -16,31 +16,37 @@ Starting with the API v3 implementation, the application now provides detailed d
 ### Diagnostic Systems Available
 
 1. **Engine & Transmission** (11 subsystems)
+
    - Sensor: `sensor.<vehicle_name>_adv_diag_engine_transmission`
    - Icon: `mdi:engine`
    - Subsystems: displacement_on_demand, fuel_management, transmission, ignition, emissions, cooling, fuel_injection, fuel_system_air_induction, starting_charging, engine_controls_feedback, exhaust_system
 
 2. **Antilock Braking System** (3 subsystems)
+
    - Sensor: `sensor.<vehicle_name>_adv_diag_antilock_braking_system`
    - Icon: `mdi:car-brake-abs`
    - Subsystems: abs, traction_control_system, electronic_brake_control_module
 
 3. **StabiliTrak** (1 subsystem)
+
    - Sensor: `sensor.<vehicle_name>_adv_diag_stabilitrak`
    - Icon: `mdi:car-esp`
    - Subsystems: electronic_stability_control
 
 4. **Air Bag** (4 subsystems)
+
    - Sensor: `sensor.<vehicle_name>_adv_diag_air_bag`
    - Icon: `mdi:airbag`
    - Subsystems: occupant_restraints, sensing_diagnostic_module, side_air_bag, front_air_bag
 
 5. **Emissions System** (2 subsystems)
+
    - Sensor: `sensor.<vehicle_name>_adv_diag_emissions_system`
    - Icon: `mdi:weather-fog`
    - Subsystems: exhaust_gas_recirculation, evaporative_emissions
 
 6. **OnStar System** (3 subsystems)
+
    - Sensor: `sensor.<vehicle_name>_adv_diag_onstar_system`
    - Icon: `mdi:car-connected`
    - Subsystems: onstar, network_communication, body_control_module
@@ -127,12 +133,12 @@ card:
   type: markdown
   content: >-
     ## ⚠️ Engine & Transmission Issues Detected
-    
+
     **Systems with Problems:**
     {% for subsystem in state_attr('sensor.<vehicle_name>_adv_diag_engine_transmission', 'subsystems_with_issues') %}
     - {{ subsystem.label }}: {{ subsystem.status }}
     {% endfor %}
-    
+
     **DTC Count:** {{ state_attr('sensor.<vehicle_name>_adv_diag_engine_transmission', 'dtc_count') }}
 ```
 
@@ -167,13 +173,13 @@ type: markdown
 title: Engine & Transmission Diagnostics
 content: >-
   **Status:** {{ states('sensor.<vehicle_name>_adv_diag_engine_transmission') }}
-  
+
   **Last Updated:** {{ state_attr('sensor.<vehicle_name>_adv_diag_engine_transmission', 'last_updated') | timestamp_custom('%b %d, %Y %I:%M %p') }}
-  
+
   **Total DTCs:** {{ state_attr('sensor.<vehicle_name>_adv_diag_engine_transmission', 'dtc_count') }}
-  
+
   ---
-  
+
   ### Subsystems:
   {% set subsystems = ['displacement_on_demand_subsystem', 'fuel_management_subsystem', 'transmission_subsystem', 'ignition_subsystem', 'emissions_subsystem', 'cooling_subsystem', 'fuel_injection_subsystem', 'fuel_system_air_induction_subsystem', 'starting_charging_subsystem', 'engine_controls_feedback_subsystem', 'exhaust_system_subsystem'] %}
   {% for subsystem_key in subsystems %}
@@ -287,18 +293,21 @@ For **electric vehicles**, pressing the **Get EV Charging Metrics** or **Refresh
 ### Sensors Created
 
 1. **EV Target Charge Level** (`sensor.<vehicle_name>_ev_target_charge_level`)
+
    - **Unit**: `%` (percentage)
    - **Icon**: `mdi:battery-charging-80`
    - **Description**: User's configured charge limit setting (e.g., 80%)
    - **Device Class**: Battery
 
 2. **EV Battery Capacity** (`sensor.<vehicle_name>_ev_battery_capacity`)
+
    - **Unit**: `kWh` (kilowatt-hours)
    - **Icon**: `mdi:battery-high`
    - **Description**: Actual usable battery capacity
    - **Device Class**: Energy Storage
 
 3. **EV Trip Odometer** (`sensor.<vehicle_name>_ev_trip_odometer`)
+
    - **Unit**: `km` (kilometers)
    - **Icon**: `mdi:map-marker-distance`
    - **Description**: Current trip distance
@@ -306,33 +315,39 @@ For **electric vehicles**, pressing the **Get EV Charging Metrics** or **Refresh
    - **State Class**: Total Increasing
 
 4. **EV Trip Consumption** (`sensor.<vehicle_name>_ev_trip_consumption`)
+
    - **Unit**: `kWh/100km`
    - **Icon**: `mdi:speedometer`
    - **Description**: Energy efficiency for current trip
    - **State Class**: Measurement
 
 5. **EV Lifetime Consumption** (`sensor.<vehicle_name>_ev_lifetime_consumption`)
+
    - **Unit**: `kWh/100km`
    - **Icon**: `mdi:chart-line`
    - **Description**: Average lifetime energy efficiency
    - **State Class**: Measurement
 
 6. **EV Charge Mode** (`sensor.<vehicle_name>_ev_charge_mode`)
+
    - **Icon**: `mdi:ev-station`
    - **Description**: Current charging mode (e.g., "immediate")
    - **Values**: `immediate`, `departure`, etc.
 
 7. **EV Charge Location Set** (`binary_sensor.<vehicle_name>_ev_charge_location_set`)
+
    - **Icon**: `mdi:map-marker-check`
    - **Description**: Whether home charging location is configured
    - **Values**: `on` (set), `off` (not set)
 
 8. **EV At Charge Location** (`binary_sensor.<vehicle_name>_ev_at_charge_location`)
+
    - **Icon**: `mdi:map-marker`
    - **Description**: Whether vehicle is currently at the configured charging location
    - **Values**: `on` (at location), `off` (away)
 
 9. **EV Discharge Enabled** (`binary_sensor.<vehicle_name>_ev_discharge_enabled`)
+
    - **Icon**: `mdi:transmission-tower-export`
    - **Description**: Whether vehicle-to-grid discharge is enabled
    - **Values**: `on` (enabled), `off` (disabled)
@@ -440,13 +455,16 @@ Buttons are added **disabled by default** because it's easy to accidentally pres
 Since the buttons are created but disabled by default, follow these steps to enable the ones you want to use:
 
 1. **Navigate to MQTT Integration:**
+
    - Go to `Settings` → `Devices & Services` → `MQTT`
 
 2. **Find Your Vehicle Device:**
+
    - Look for your vehicle device in the MQTT device list (it will be named with your vehicle name)
    - Click on the device to view all entities
 
 3. **Enable Desired Buttons:**
+
    - Scroll through the list of entities to find the buttons (they will have a button icon)
    - Click on each button entity you want to enable
    - Click the settings/gear icon in the entity details
@@ -460,7 +478,7 @@ Since the buttons are created but disabled by default, follow these steps to ena
 **Available Buttons Include:**
 
 - Start Vehicle
-- Cancel Start Vehicle  
+- Cancel Start Vehicle
 - Lock Door
 - Unlock Door
 - Lock Trunk / Unlock Trunk (if supported by vehicle)
@@ -494,8 +512,22 @@ mode: single
 icon: "mdi:car-electric"
 ```
 
+```yaml
+alias: Car - Start Vehicle with Cabin Temperature
+sequence:
+  - service: mqtt.publish
+    data:
+      topic: homeassistant/YOUR_CAR_VIN/command
+      payload: '{"command": "startVehicle","options": {"cabinTemperature": 21}}'
+mode: single
+icon: "mdi:car-electric"
+```
+
 #### Format for sending command options in the payload
 
+- Start Vehicle with Cabin Temperature (for EVs with preconditioning)
+  - `{"command": "startVehicle","options": {"cabinTemperature": 21}}` (temperature in Celsius)
+  - Note: Temperature is rounded to whole number; feature requires vehicle support
 - ~~Set Charging Profile~~ (deprecated)
   - ~~`{"command": "setChargingProfile","options": {"chargeMode": "RATE_BASED","rateType": "OFFPEAK"}}`~~
 - Set Charge Level Target (set target charge percentage)
@@ -759,7 +791,7 @@ mode: single
 Commands Implemented in this Program:
 
 1. `getAccountVehicles`
-2. `startVehicle`
+2. `startVehicle` (supports optional `cabinTemperature` in Celsius for EVs with preconditioning)
 3. `cancelStartVehicle`
 4. `alert`
 5. `cancelAlert`
