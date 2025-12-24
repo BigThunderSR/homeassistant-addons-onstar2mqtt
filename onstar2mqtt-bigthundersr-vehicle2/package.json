@@ -35,7 +35,6 @@
     "convert-units": "^2.3.4",
     "dotenv": "^17.2.3",
     "jsonwebtoken": "^9.0.3",
-    "lodash": "^4.17.21",
     "mqtt": "^5.14.1",
     "onstarjs2": "^2.15.0",
     "uuid": "^11.1.0",

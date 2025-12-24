@@ -1,5 +1,3 @@
-const _ = require('lodash');
-
 class Vehicle {
     constructor(vehicle) {
         this.make = vehicle.make;
@@ -11,13 +9,12 @@ class Vehicle {
         // Old API: vehicle.commands.command was an array of supported commands
         // New API: commands object is not present in vehicle response
         // Maintaining backward compatibility by checking if commands exist
-        const commands = _.get(vehicle, 'commands.command');
+        const commands = vehicle?.commands?.command;
         
         if (commands) {
             // Old API format - extract supported diagnostics from commands
-            const diagCmd = _.find(commands, cmd => cmd.name === 'diagnostics');
-            this.supportedDiagnostics = _.get(diagCmd,
-                'commandData.supportedDiagnostics.supportedDiagnostic');
+            const diagCmd = commands.find(cmd => cmd.name === 'diagnostics');
+            this.supportedDiagnostics = diagCmd?.commandData?.supportedDiagnostics?.supportedDiagnostic;
             this.supportedCommands = commands;
         } else {
             // New API format - commands are handled separately
@@ -34,7 +31,7 @@ class Vehicle {
         if (this.supportedDiagnostics === null) {
             return true;
         }
-        return _.includes(this.supportedDiagnostics, diag);
+        return this.supportedDiagnostics.includes(diag);
     }
 
     getSupported(diags = []) {
@@ -47,7 +44,7 @@ class Vehicle {
         if (diags.length === 0) {
             return this.supportedDiagnostics;
         }
-        return _.intersection(this.supportedDiagnostics, diags);
+        return this.supportedDiagnostics.filter(d => diags.includes(d));
     }
 
     toString() {
