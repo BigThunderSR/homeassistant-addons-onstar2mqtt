@@ -1,4 +1,3 @@
-const _ = require('lodash');
 const fs = require('fs');
 const path = require('path');
 
@@ -105,16 +104,15 @@ class Diagnostic {
         // Old: diagnosticElement (singular), unit
         // New: diagnosticElements (plural), uom (unit of measure)
         // Try new format first, fallback to old format for backward compatibility
-        const elements = diagResponse.diagnosticElements || diagResponse.diagnosticElement;
+        const elements = diagResponse.diagnosticElements || diagResponse.diagnosticElement || [];
         // API CHANGE: New API v3 includes fields without units (like percentages, status codes)
         // Include elements that have a value, even if they don't have a unit
-        const validEle = _.filter(
-            elements,
-            d => _.has(d, 'value')  // Just check if value exists
+        const validEle = elements.filter(
+            d => 'value' in d  // Just check if value exists
         );
-        this.diagnosticElements = _.map(validEle, e => new DiagnosticElement(e));
-        const converted = _.map(_.filter(this.diagnosticElements, e => e.isConvertible),
-            e => DiagnosticElement.convert(e));
+        this.diagnosticElements = validEle.map(e => new DiagnosticElement(e));
+        const converted = this.diagnosticElements.filter(e => e.isConvertible)
+            .map(e => DiagnosticElement.convert(e));
         this.diagnosticElements.push(...converted);
     }
 
@@ -124,7 +122,7 @@ class Diagnostic {
 
     toString() {
         let elements = '';
-        _.forEach(this.diagnosticElements, e => elements += `  ${e.toString()}\n`)
+        this.diagnosticElements.forEach(e => elements += `  ${e.toString()}\n`)
         return `${this.name}:\n` + elements;
     }
 }
@@ -149,7 +147,7 @@ class DiagnosticElement {
     }
 
     static convertName(name, unit) {
-        return `${name} ${_.replace(_.toUpper(unit), /\W/g, '')}`;
+        return `${name} ${unit.toUpperCase().replace(/\W/g, '')}`;
     }
 
     /**
@@ -224,7 +222,7 @@ class AdvancedDiagnostic {
         this.advDiagnosticsStatusColor = advDiagResponse.advDiagnosticsStatusColor;
         this.recommendedAction = advDiagResponse.recommendedAction;
         this.cts = advDiagResponse.cts;
-        this.diagnosticSystems = _.map(advDiagResponse.diagnosticSystems || [], 
+        this.diagnosticSystems = (advDiagResponse.diagnosticSystems || []).map(
             s => new DiagnosticSystem(s));
     }
 
@@ -234,7 +232,7 @@ class AdvancedDiagnostic {
 
     toString() {
         let systems = '';
-        _.forEach(this.diagnosticSystems, s => systems += `  ${s.toString()}\n`)
+        this.diagnosticSystems.forEach(s => systems += `  ${s.toString()}\n`)
         return `Advanced Diagnostics (${this.advDiagnosticsStatus}):\n` + systems;
     }
 }
@@ -250,7 +248,7 @@ class DiagnosticSystem {
         
         // Store all subsystems with their full info
         const subSystems = systemResponse.subSystems || [];
-        this.subsystems = _.map(subSystems, s => ({
+        this.subsystems = subSystems.map(s => ({
             name: s.subSystemName,
             label: s.subSystemLabel,
             description: s.subSystemDescription,
@@ -260,15 +258,15 @@ class DiagnosticSystem {
         }));
         
         // Keep track of subsystems with issues for backward compatibility
-        this.subsystemsWithIssues = _.filter(subSystems, 
+        this.subsystemsWithIssues = subSystems.filter(
             s => s.subSystemStatus !== 'NO_ACTION_REQUIRED' && s.subSystemStatus !== 'NO ACTION REQUIRED');
         
         // Count total DTCs across all subsystems
-        this.dtcCount = _.sumBy(subSystems, s => (s.dtcList || []).length);
+        this.dtcCount = subSystems.reduce((sum, s) => sum + (s.dtcList || []).length, 0);
         
         // Store all DTCs for detailed info
-        this.dtcs = _.flatMap(subSystems, s => 
-            _.map(s.dtcList || [], dtc => ({
+        this.dtcs = subSystems.flatMap(s => 
+            (s.dtcList || []).map(dtc => ({
                 subsystem: s.subSystemName,
                 ...dtc
             }))

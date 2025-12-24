@@ -1,5 +1,9 @@
-const _ = require('lodash');
 const convert = require('convert-units');
+
+// Helper function to round to specified decimals
+function round(num, decimals = 0) {
+    return Math.round(num * Math.pow(10, decimals)) / Math.pow(10, decimals);
+}
 
 class Measurement {
     static CONVERTIBLE_UNITS = [
@@ -19,7 +23,7 @@ class Measurement {
     constructor(value, unit) {
         this.value = value;
         this.unit = Measurement.correctUnitName(unit);
-        this.isConvertible = _.includes(Measurement.CONVERTIBLE_UNITS, this.unit);
+        this.isConvertible = Measurement.CONVERTIBLE_UNITS.includes(this.unit);
     }
 
     /**
@@ -81,36 +85,36 @@ class Measurement {
     static convertValue(value, unit) {
         switch (unit) {
             case '°C':
-                value = _.round(convert(value).from('C').to('F'));
+                value = round(convert(value).from('C').to('F'));
                 break;
             case 'km':
-                value = _.round(convert(value).from('km').to('mi'), 1);
+                value = round(convert(value).from('km').to('mi'), 1);
                 break;
             case 'kPa':
-                value = _.round(convert(value).from('kPa').to('psi'), 1);
+                value = round(convert(value).from('kPa').to('psi'), 1);
                 break;
             case 'km/L(e)':
                 // km/L =  (1.609344 / 3.785411784) * MPG
-                value = _.round(value / (1.609344 / 3.785411784), 1);
+                value = round(value / (1.609344 / 3.785411784), 1);
                 break;
             case 'km/L':
                 // km/L =  (1.609344 / 3.785411784) * MPG
-                value = _.round(value / (1.609344 / 3.785411784), 1);
+                value = round(value / (1.609344 / 3.785411784), 1);
                 break;
             // API CHANGE: New API may use L/100km - convert to MPG
             case 'L/100km':
                 // L/100km to MPG = 235.214583 / L/100km
-                value = _.round(235.214583 / value, 1);
+                value = round(235.214583 / value, 1);
                 break;
             case 'L':
-                value = _.round(value / 3.785411784, 1);
+                value = round(value / 3.785411784, 1);
                 //case 'lit':
-                //    value = _.round(value / 3.785411784, 1);
+                //    value = round(value / 3.785411784, 1);
 
                 break;
             // API CHANGE: PSI is already in target unit, no conversion needed
             case 'psi':
-                value = _.round(value, 1);
+                value = round(value, 1);
                 break;
         }
         return value;

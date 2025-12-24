@@ -1,7 +1,6 @@
 const OnStar = require('onstarjs2').default;
 const mqtt = require('mqtt');
 const uuidv4 = require('uuid').v4;
-const _ = require('lodash');
 const axios = require('axios');
 const Vehicle = require('./vehicle');
 const { Diagnostic, AdvancedDiagnostic, mergeState } = require('./diagnostic');
@@ -24,12 +23,12 @@ const onstarConfig = {
     onStarTOTP: process.env.ONSTAR_TOTP,
     onStarPin: process.env.ONSTAR_PIN,
     tokenLocation: process.env.TOKEN_LOCATION || '',
-    checkRequestStatus: _.get(process.env, 'ONSTAR_SYNC', 'true') === 'true',
+    checkRequestStatus: (process.env?.ONSTAR_SYNC ?? 'true') === 'true',
     refreshInterval: parseInt(process.env.ONSTAR_REFRESH) || (30 * 60 * 1000), // 30 min
     recallRefreshInterval: parseInt(process.env.ONSTAR_RECALL_REFRESH) || (7 * 24 * 60 * 60 * 1000), // 7 days default
     requestPollingIntervalSeconds: parseInt(process.env.ONSTAR_POLL_INTERVAL) || 6, // 6 sec default
     requestPollingTimeoutSeconds: parseInt(process.env.ONSTAR_POLL_TIMEOUT) || 90, // 60 sec default
-    allowCommands: _.get(process.env, 'ONSTAR_ALLOW_COMMANDS', 'true') === 'true'
+    allowCommands: (process.env?.ONSTAR_ALLOW_COMMANDS ?? 'true') === 'true'
 };
 
 const onstarRequiredProperties = {
@@ -101,23 +100,22 @@ const init = () => new Commands(OnStar.create(onstarConfig));
 const getVehicles = async commands => {
     logger.info('Requesting vehicles');
     const vehiclesRes = await commands.getAccountVehicles();
-    logger.info('Vehicle request status:', { status: _.get(vehiclesRes, 'status') });
+    logger.info('Vehicle request status:', { status: vehiclesRes?.status });
     // DEBUG: Log the full response to see the actual structure
     logger.debug('Full vehicles response:', { vehiclesRes });
     // API CHANGE: New API format returns vehicles directly in data.vehicles array
     // Old path: response.data.vehicles.vehicle (nested structure)
     // New path: data.vehicles (direct array, no response wrapper in new API)
-    const vehicles = _.map(
-        _.get(vehiclesRes, 'data.vehicles') || _.get(vehiclesRes, 'response.data.vehicles'),
+    const vehicles = (vehiclesRes?.data?.vehicles || vehiclesRes?.response?.data?.vehicles)?.map(
         v => new Vehicle(v)
     );
-    logger.debug('Vehicle request response:', { vehicles: _.map(vehicles, v => v.toString()) });
+    logger.debug('Vehicle request response:', { vehicles: vehicles.map(v => v.toString()) });
     return vehicles;
 }
 
 const getCurrentVehicle = async commands => {
     const vehicles = await getVehicles(commands);
-    const currentVeh = _.find(vehicles, v => v.vin.toLowerCase() === onstarConfig.vin.toLowerCase());
+    const currentVeh = vehicles.find(v => v.vin.toLowerCase() === onstarConfig.vin.toLowerCase());
     if (!currentVeh) {
         throw new Error(`Configured vehicle VIN ${onstarConfig.vin} not available in account vehicles`);
     }
@@ -142,7 +140,7 @@ const connectMQTT = async availabilityTopic => {
         key: mqttConfig.key,
         will: { topic: availabilityTopic, payload: 'false', retain: true }
     };
-    logger.info('Connecting to MQTT:', { url, config: _.omit(config, 'password', 'ca', 'cert', 'key') });
+    logger.info('Connecting to MQTT:', { url, config: { username: config.username, rejectUnauthorized: config.rejectUnauthorized, will: config.will } });
 
     // Use Promise wrapper for regular mqtt.connect() with timeout
     const client = await new Promise((resolve, reject) => {
@@ -237,8 +235,7 @@ const configureMQTT = async (commands, client, mqttHA) => {
             }
         }
 
-        const topicArray = _.concat({ topic }, '/', { command }.command, '/', 'state');
-        const commandStatusTopic = topicArray.map(item => item.topic || item).join('');
+        const commandStatusTopic = [topic, '/', command, '/', 'state'].join('');
 
         const commandStatusSensorConfig = mqttHA.createCommandStatusSensorConfigPayload(command, mqttConfig.listAllSensorsTogether);
         logger.debug("Command Status Sensor Config:", commandStatusSensorConfig);
@@ -276,19 +273,19 @@ const configureMQTT = async (commands, client, mqttHA) => {
                 }
                 logger.debug("Diagnostic Item:", diagnosticItem)
                 const statsRes = await commands[command]({ diagnosticItem });
-                logger.info('Diagnostic request status', { status: _.get(statsRes, 'status') });
+                logger.info('Diagnostic request status', { status: statsRes?.status });
                 logger.info('Diagnostic response keys:', Object.keys(statsRes || {}));
-                logger.info('Diagnostic response.data keys:', Object.keys(_.get(statsRes, 'response.data') || {}));
+                logger.info('Diagnostic response.data keys:', Object.keys(statsRes?.response?.data || {}));
                 
                 // API CHANGE: New API v3 format changes diagnostic response structure completely
                 // Old path: response.data.commandResponse.body.diagnosticResponse (array)
                 // New path: response.data.diagnostics (array within HealthStatusResponse object)
                 // New structure has response.data as HealthStatusResponse with diagnostics array
-                let diagnosticResponses = _.get(statsRes, 'response.data.commandResponse.body.diagnosticResponse');
+                let diagnosticResponses = statsRes?.response?.data?.commandResponse?.body?.diagnosticResponse;
                 
                 // If old path doesn't exist, try new API v3 path
                 if (!diagnosticResponses) {
-                    diagnosticResponses = _.get(statsRes, 'response.data.diagnostics');
+                    diagnosticResponses = statsRes?.response?.data?.diagnostics;
                     logger.warn('Using API v3 path: response.data.diagnostics');
                 } else {
                     logger.warn('Using API v2 path: response.data.commandResponse.body.diagnosticResponse');
@@ -300,8 +297,7 @@ const configureMQTT = async (commands, client, mqttHA) => {
                 }
                 // Make sure the response is always an array
                 const diagArray = Array.isArray(diagnosticResponses) ? diagnosticResponses : [diagnosticResponses];
-                const stats = _.map(
-                    diagArray,
+                const stats = diagArray.map(
                     (d, index) => {
                         logger.debug('Diagnostic Array', { ...d, number: index + 1 });
                         const diag = new Diagnostic({ ...d, number: index + 1 });
@@ -310,7 +306,7 @@ const configureMQTT = async (commands, client, mqttHA) => {
                     }
                 );
                 logger.debug('stats', stats);
-                logger.debug('Diagnostic request response:', { stats: _.map(stats, s => s.toString()) });
+                logger.debug('Diagnostic request response:', { stats: stats.map(s => s.toString()) });
                 for (const s of stats) {
                     // configure once, then set or update states
                     for (const d of s.diagnosticElements) {
@@ -464,7 +460,7 @@ const configureMQTT = async (commands, client, mqttHA) => {
                             "completionTimestamp": completionTimestamp
                         }), { retain: true }
                     );
-                    const responseData = _.get(data, 'response.data');
+                    const responseData = data?.response?.data;
                     if (responseData) {
                         logger.warn('Command response data:', { responseData });
                     }
@@ -615,8 +611,8 @@ const configureMQTT = async (commands, client, mqttHA) => {
                     );
                     
                     // API returns data at data.data path (not response.data)
-                    const responseData = _.get(data, 'response.data');
-                    const directData = _.get(data, 'data');
+                    const responseData = data?.response?.data;
+                    const directData = data?.data;
                     const actualData = responseData || directData;
                     
                     if (actualData) {
@@ -752,8 +748,8 @@ const configureMQTT = async (commands, client, mqttHA) => {
                     );
                     
                     // API returns data at data.data path (not response.data)
-                    const responseData = _.get(data, 'response.data');
-                    const directData = _.get(data, 'data');
+                    const responseData = data?.response?.data;
+                    const directData = data?.data;
                     const actualData = responseData || directData;
                     
                     if (actualData) {
@@ -887,7 +883,7 @@ const configureMQTT = async (commands, client, mqttHA) => {
                             "completionTimestamp": completionTimestamp
                         }), { retain: true }
                     );
-                    const responseData = _.get(data, 'response.data');
+                    const responseData = data?.response?.data;
                     if (responseData) {
                         logger.warn('Command response data:', { responseData });
                         
@@ -921,8 +917,8 @@ const configureMQTT = async (commands, client, mqttHA) => {
                         }
                         
                         // API v3 uses telemetry.data.position and telemetry.data.velocity
-                        const position = _.get(responseData, 'telemetry.data.position');
-                        const velocity = _.get(responseData, 'telemetry.data.velocity');
+                        const position = responseData?.telemetry?.data?.position;
+                        const velocity = responseData?.telemetry?.data?.velocity;
                         if (position && position.lat && position.lng) {
                             const topic = mqttHA.getStateTopic({ name: command });
                             const deviceTrackerConfigTopic = mqttHA.getDeviceTrackerConfigTopic();
@@ -1011,9 +1007,9 @@ logger.info('!-- Starting OnStar2MQTT Polling --!');
         const run = async () => {
             let topicArray;
             if (!mqttConfig.pollingStatusTopic) {
-                topicArray = _.concat(mqttHA.getPollingStatusTopic(), '/', 'state');
+                topicArray = [mqttHA.getPollingStatusTopic(), '/', 'state'].join('');
             } else {
-                topicArray = _.concat(mqttConfig.pollingStatusTopic, '/', 'state');
+                topicArray = [mqttConfig.pollingStatusTopic, '/', 'state'].join('');
             }
             const pollingStatusTopicState = topicArray.map(item => item.topic || item).join('');
             logger.info(`pollingStatusTopicState: ${pollingStatusTopicState}`);
@@ -1046,9 +1042,9 @@ logger.info('!-- Starting OnStar2MQTT Polling --!');
 
             let topicArrayTF;
             if (!mqttConfig.pollingStatusTopic) {
-                topicArrayTF = _.concat(mqttHA.getPollingStatusTopic(), '/', 'lastpollsuccessful');
+                topicArrayTF = [mqttHA.getPollingStatusTopic(), '/', 'lastpollsuccessful'].join('');
             } else {
-                topicArrayTF = _.concat(mqttConfig.pollingStatusTopic, '/', 'lastpollsuccessful');
+                topicArrayTF = [mqttConfig.pollingStatusTopic, '/', 'lastpollsuccessful'].join('');
             }
             const pollingStatusTopicTF = topicArrayTF.map(item => item.topic || item).join('');
             logger.info(`pollingStatusTopicTF, ${pollingStatusTopicTF}`);
@@ -1153,8 +1149,8 @@ logger.info('!-- Starting OnStar2MQTT Polling --!');
                 try {
                     logger.info('Publishing vehicle image entity...');
                     const vehiclesRes = await commands.getAccountVehicles();
-                    const vehiclesData = _.get(vehiclesRes, 'data.vehicles') || _.get(vehiclesRes, 'response.data.vehicles');
-                    const currentVehicleData = _.find(vehiclesData, vehicle => 
+                    const vehiclesData = vehiclesRes?.data?.vehicles || vehiclesRes?.response?.data?.vehicles;
+                    const currentVehicleData = vehiclesData?.find(vehicle => 
                         vehicle.vin.toLowerCase() === onstarConfig.vin.toLowerCase()
                     );
                     
@@ -1208,8 +1204,8 @@ logger.info('!-- Starting OnStar2MQTT Polling --!');
                     
                     // Try different response paths
                     const responseData = recallRes?.response || recallRes;
-                    const hasData = _.get(responseData, 'data.vehicleDetails.recallInfo') || 
-                                   _.get(responseData, 'data.dataPresent');
+                    const hasData = responseData?.data?.vehicleDetails?.recallInfo || 
+                                   responseData?.data?.dataPresent;
                     
                     if (responseData && hasData !== undefined) {
                         const recallConfig = mqttHA.getVehicleRecallConfig();
@@ -1250,27 +1246,26 @@ logger.info('!-- Starting OnStar2MQTT Polling --!');
             await publishVehicleRecalls();
 
             const statsRes = await commands.diagnostics({ diagnosticItem: v.getSupported() });
-            logger.info('Diagnostic request status', { status: _.get(statsRes, 'status') });
+            logger.info('Diagnostic request status', { status: statsRes?.status });
             
             // API CHANGE: New API v3 format changes diagnostic response structure
             // Old path: response.data.commandResponse.body.diagnosticResponse (array)
             // New path: response.data.diagnostics (array within HealthStatusResponse object)
-            let diagnosticResponses = _.get(statsRes, 'response.data.commandResponse.body.diagnosticResponse');
+            let diagnosticResponses = statsRes?.response?.data?.commandResponse?.body?.diagnosticResponse;
             
             // If old path doesn't exist, try new API v3 path  
             if (!diagnosticResponses) {
-                diagnosticResponses = _.get(statsRes, 'response.data.diagnostics');
+                diagnosticResponses = statsRes?.response?.data?.diagnostics;
             }
             
-            const stats = _.map(
-                diagnosticResponses,
+            const stats = diagnosticResponses?.map(
                 d => new Diagnostic(d)
             );
-            logger.debug('Diagnostic request response:', { stats: _.map(stats, s => s.toString()) });
+            logger.debug('Diagnostic request response:', { stats: stats?.map(s => s.toString()) || [] });
 
             // API CHANGE: Process advanced diagnostics from API v3
             let advancedDiagnostic = null;
-            const advDiagnosticsResponse = _.get(statsRes, 'response.data.advDiagnostics');
+            const advDiagnosticsResponse = statsRes?.response?.data?.advDiagnostics;
             if (advDiagnosticsResponse && advDiagnosticsResponse.diagnosticSystems) {
                 advancedDiagnostic = new AdvancedDiagnostic(advDiagnosticsResponse);
                 logger.debug('Advanced diagnostic response:', { advDiag: advancedDiagnostic.toString() });
@@ -1372,18 +1367,18 @@ logger.info('!-- Starting OnStar2MQTT Polling --!');
                 
                 let topicArray;
                 if (!mqttConfig.pollingStatusTopic) {
-                    topicArray = _.concat(mqttHA.getPollingStatusTopic(), '/', 'state');
+                    topicArray = [mqttHA.getPollingStatusTopic(), '/', 'state'].join('');
                 } else {
-                    topicArray = _.concat(mqttConfig.pollingStatusTopic, '/', 'state');
+                    topicArray = [mqttConfig.pollingStatusTopic, '/', 'state'].join('');
                 }
                 const pollingStatusTopicState = topicArray.map(item => item.topic || item).join('');
                 logger.debug('pollingStatusTopicState', { pollingStatusTopicState });
 
                 let topicArrayTF;
                 if (!mqttConfig.pollingStatusTopic) {
-                    topicArrayTF = _.concat(mqttHA.getPollingStatusTopic(), '/', 'lastpollsuccessful');
+                    topicArrayTF = [mqttHA.getPollingStatusTopic(), '/', 'lastpollsuccessful'].join('');
                 } else {
-                    topicArrayTF = _.concat(mqttConfig.pollingStatusTopic, '/', 'lastpollsuccessful');
+                    topicArrayTF = [mqttConfig.pollingStatusTopic, '/', 'lastpollsuccessful'].join('');
                 }
                 const pollingStatusTopicTF = topicArrayTF.map(item => item.topic || item).join('');
                 logger.debug('pollingStatusTopicTF', { pollingStatusTopicTF });

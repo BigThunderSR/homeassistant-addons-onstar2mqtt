@@ -1,5 +1,3 @@
-const _ = require('lodash');
-
 /**
  * Normalizes errors from different sources (Axios, OpenID-client, etc.) into a consistent format.
  * Handles:
@@ -55,7 +53,8 @@ const normalizeError = (e) => {
     
     // Include request info if available (Axios-style)
     if (e.request) {
-        normalized.request = _.pick(e.request, ['method', 'body', 'contentType', 'headers', 'url']);
+        const { method, body, contentType, headers, url } = e.request;
+        normalized.request = { method, body, contentType, headers, url };
     }
     if (e.config) {
         // Axios stores request info in config

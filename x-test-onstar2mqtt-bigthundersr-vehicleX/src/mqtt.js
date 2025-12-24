@@ -1,4 +1,3 @@
-const _ = require('lodash');
 const commands = require('./commands');
 
 /**
@@ -175,11 +174,12 @@ class MQTT {
     }
 
     static convertName(name) {
-        return _.toLower(_.replace(name, / /g, '_'));
+        return name ? name.replace(/ /g, '_').toLowerCase() : '';
     }
 
     static convertFriendlyName(name) {
-        return _.startCase(_.lowerCase(name));
+        // Convert snake_case or spaces to Title Case
+        return name ? name.split(/[_ ]+/).map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ') : '';
     }
 
     static determineSensorType(name) {
@@ -951,7 +951,7 @@ class MQTT {
     getAdvancedDiagnosticStatePayload(advDiag) {
         const state = {};
         
-        _.forEach(advDiag.diagnosticSystems, system => {
+        advDiag.diagnosticSystems?.forEach(system => {
             const baseName = MQTT.convertName(system.systemLabel);
             state[baseName] = system.systemStatus;
             
@@ -1040,7 +1040,7 @@ class MQTT {
      * @param {Object} recallData - The recall data from getVehicleRecallInfo response
      */
     getVehicleRecallStatePayload(recallData) {
-        const recallInfo = _.get(recallData, 'data.vehicleDetails.recallInfo', []);
+        const recallInfo = recallData?.data?.vehicleDetails?.recallInfo ?? [];
         const activeRecalls = recallInfo.filter(r => r.recallStatus === 'A');
         const incompleteRepairs = recallInfo.filter(r => r.repairStatus === 'incomplete');
         // Filter for recalls that are (Active, Expired, or Inactive) AND unrepaired
@@ -1113,7 +1113,7 @@ class MQTT {
      */
     getVehicleImageStatePayload(vehicleData) {
         // Extract imageUrl from the vehicle data, ensuring we return empty string for null/undefined
-        const imageUrl = _.get(vehicleData, 'imageUrl', '');
+        const imageUrl = vehicleData?.imageUrl ?? '';
         return imageUrl || '';  // Convert null/undefined to empty string
     }
 
@@ -1122,7 +1122,7 @@ class MQTT {
      * @param {Object} metricsData - The data from getEVChargingMetrics response
      */
     getEVChargingMetricsConfigs(metricsData) {
-        const results = _.get(metricsData, 'data.results[0]', {});
+        const results = metricsData?.data?.results?.[0] ?? {};
         const configs = [];
         
         // Target Charge Level sensor
@@ -1346,7 +1346,7 @@ class MQTT {
         if (diag.cts !== undefined && diag.cts !== null) {
             state[`${MQTT.convertName(diag.name)}_last_updated`] = diag.cts;
         }
-        _.forEach(diag.diagnosticElements, e => {
+        diag.diagnosticElements?.forEach(e => {
             // massage the binary_sensor values
             let value;
             switch (e.name) {
@@ -1438,8 +1438,8 @@ class MQTT {
                         value = null;
                     } else {
                         // coerce to number if possible, API uses strings :eyeroll:
-                        const num = _.toNumber(e.value);
-                        value = _.isNaN(num) ? e.value : num;
+                        const num = Number(e.value);
+                        value = Number.isNaN(num) ? e.value : num;
                     }
                     break;
             }
@@ -1520,14 +1520,14 @@ class MQTT {
         name = name || MQTT.convertFriendlyName(diagEl.name);
         // Ignore units that are "NA", "XXX", or "Day" (for day-of-week string sensors)
         const unit = diagEl.unit && !['NA', 'XXX', 'DAY'].includes(diagEl.unit.toUpperCase()) ? diagEl.unit : undefined;
-        return _.extend(
+        return Object.assign(
             this.mapBaseConfigPayload(diag, diagEl, state_class, device_class, name, attr, icon),
             { unit_of_measurement: unit });
     }
 
     mapBinarySensorConfigPayload(diag, diagEl, state_class, device_class, name, attr, icon) {
         name = name || MQTT.convertFriendlyName(diagEl.name);
-        return _.extend(
+        return Object.assign(
             this.mapBaseConfigPayload(diag, diagEl, state_class, device_class, name, attr, icon),
             { payload_on: true, payload_off: false });
     }
