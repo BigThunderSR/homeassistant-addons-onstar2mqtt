@@ -1007,9 +1007,9 @@ logger.info('!-- Starting OnStar2MQTT Polling --!');
         const run = async () => {
             let topicArray;
             if (!mqttConfig.pollingStatusTopic) {
-                topicArray = [mqttHA.getPollingStatusTopic(), '/', 'state'].join('');
+                topicArray = [mqttHA.getPollingStatusTopic(), '/', 'state'];
             } else {
-                topicArray = [mqttConfig.pollingStatusTopic, '/', 'state'].join('');
+                topicArray = [mqttConfig.pollingStatusTopic, '/', 'state'];
             }
             const pollingStatusTopicState = topicArray.map(item => item.topic || item).join('');
             logger.info(`pollingStatusTopicState: ${pollingStatusTopicState}`);
@@ -1042,9 +1042,9 @@ logger.info('!-- Starting OnStar2MQTT Polling --!');
 
             let topicArrayTF;
             if (!mqttConfig.pollingStatusTopic) {
-                topicArrayTF = [mqttHA.getPollingStatusTopic(), '/', 'lastpollsuccessful'].join('');
+                topicArrayTF = [mqttHA.getPollingStatusTopic(), '/', 'lastpollsuccessful'];
             } else {
-                topicArrayTF = [mqttConfig.pollingStatusTopic, '/', 'lastpollsuccessful'].join('');
+                topicArrayTF = [mqttConfig.pollingStatusTopic, '/', 'lastpollsuccessful'];
             }
             const pollingStatusTopicTF = topicArrayTF.map(item => item.topic || item).join('');
             logger.info(`pollingStatusTopicTF, ${pollingStatusTopicTF}`);
@@ -1367,18 +1367,18 @@ logger.info('!-- Starting OnStar2MQTT Polling --!');
                 
                 let topicArray;
                 if (!mqttConfig.pollingStatusTopic) {
-                    topicArray = [mqttHA.getPollingStatusTopic(), '/', 'state'].join('');
+                    topicArray = [mqttHA.getPollingStatusTopic(), '/', 'state'];
                 } else {
-                    topicArray = [mqttConfig.pollingStatusTopic, '/', 'state'].join('');
+                    topicArray = [mqttConfig.pollingStatusTopic, '/', 'state'];
                 }
                 const pollingStatusTopicState = topicArray.map(item => item.topic || item).join('');
                 logger.debug('pollingStatusTopicState', { pollingStatusTopicState });
 
                 let topicArrayTF;
                 if (!mqttConfig.pollingStatusTopic) {
-                    topicArrayTF = [mqttHA.getPollingStatusTopic(), '/', 'lastpollsuccessful'].join('');
+                    topicArrayTF = [mqttHA.getPollingStatusTopic(), '/', 'lastpollsuccessful'];
                 } else {
-                    topicArrayTF = [mqttConfig.pollingStatusTopic, '/', 'lastpollsuccessful'].join('');
+                    topicArrayTF = [mqttConfig.pollingStatusTopic, '/', 'lastpollsuccessful'];
                 }
                 const pollingStatusTopicTF = topicArrayTF.map(item => item.topic || item).join('');
                 logger.debug('pollingStatusTopicTF', { pollingStatusTopicTF });
