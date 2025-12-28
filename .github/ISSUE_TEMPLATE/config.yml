@@ -1,9 +1,8 @@
 blank_issues_enabled: false
-issue_templates:
-  - name: Submit an Issue
-    description: Open an issue to report a bug or request a feature.
-    template: issue_template.yml
 contact_links:
-  - name: Create an Issue
+  - name: "⚠️ Using Standalone Docker Version? (NOT Home Assistant Add-on)"
+    url: https://github.com/BigThunderSR/onstar2mqtt/issues/new
+    about: "If you're using the standalone Docker container version (docker run/docker-compose), please submit your issue in the BigThunderSR/onstar2mqtt repository instead."
+  - name: "✅ Submit Issue for Home Assistant Add-on Version"
     url: https://github.com/BigThunderSR/homeassistant-addons-onstar2mqtt/issues/new?template=issue_template.yml
-    about: Use this template for creating issues.
+    about: "Use this if you installed onstar2mqtt as a Home Assistant add-on from this repository."
