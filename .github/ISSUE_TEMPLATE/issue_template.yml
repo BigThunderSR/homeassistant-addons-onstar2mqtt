@@ -83,7 +83,8 @@ body:
     attributes:
       label: Sanitized Log Output
       description: |
-        If applicable, add sanitized log output (remove any sensitive information) to help explain your problem.
+        If applicable, add sanitized log output to help explain your problem.
+        **IMPORTANT: Remove VIN, username, password, PIN, tokens, and location data before posting.**
       placeholder: Sanitized log output
 
   - type: textarea
@@ -100,6 +101,11 @@ body:
       label: Screenshots
       description: If applicable, add screenshots to help explain your problem.
       placeholder: Add screenshots
+
+  - type: markdown
+    attributes:
+      value: |
+        ## Environment Information
 
   - type: input
     id: ha_version
@@ -131,11 +137,9 @@ body:
   - type: input
     id: other_environment_details
     attributes:
-      label: Other Relevant Environment Details
-      description: Any other relevant environment details
-      placeholder: Other Environment Details
-    validations:
-      required: true
+      label: Other Environment Details
+      description: Any other relevant environment details (e.g., MQTT broker type, network setup, reverse proxy)
+      placeholder: Other environment details
 
   - type: textarea
     id: additional
