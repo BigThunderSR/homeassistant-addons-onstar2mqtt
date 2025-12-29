@@ -29,6 +29,15 @@ body:
         - label: "I'm using the Home Assistant Add-on version (not the standalone Docker version)"
           required: true
 
+  - type: input
+    id: addon_version
+    attributes:
+      label: Version of the Add-on
+      description: e.g. 1.20.0
+      placeholder: Version of the Add-on
+    validations:
+      required: true
+
   - type: dropdown
     id: type
     attributes:
@@ -122,15 +131,6 @@ body:
       label: Type of Home Assistant Installation
       description: e.g. Home Assistant OS, Home Assistant Supervised, Home Assistant Container, Home Assistant Core, Home Assistant VM
       placeholder: Type of Home Assistant Installation
-    validations:
-      required: true
-
-  - type: input
-    id: addon_version
-    attributes:
-      label: Version of the Add-on
-      description: e.g. 1.20.0
-      placeholder: Version of the Add-on
     validations:
       required: true
 
