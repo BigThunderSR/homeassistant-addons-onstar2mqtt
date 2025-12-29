@@ -1,6 +1,6 @@
 name: Submit an Issue
 description: Open an issue to report a bug or request a feature.
-title: "[Issue]: <Please replace with a clear and concise title>" 
+title: "[Issue]: <Please replace with a clear and concise title>"
 
 body:
   - type: markdown
@@ -10,9 +10,9 @@ body:
         
         This repository supports the **Home Assistant Add-on** version of onstar2mqtt.
         
-        **You're in the right place if you:**
-        - Installed onstar2mqtt from the Home Assistant Add-on Store
-        - Are running onstar2mqtt as a Home Assistant Supervisor add-on
+        **You're in the right place if you are:**
+        - Using onstar2mqtt from the Home Assistant Add-on Store
+        - Running onstar2mqtt as a Home Assistant Supervisor add-on
         
         **If you're using the standalone Docker version** (`docker run` or `docker-compose`), please submit your issue at [BigThunderSR/onstar2mqtt](https://github.com/BigThunderSR/onstar2mqtt/issues/new) instead — that repo is specifically for the Docker container version.
         
