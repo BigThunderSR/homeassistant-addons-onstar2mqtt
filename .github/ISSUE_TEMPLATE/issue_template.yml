@@ -29,29 +29,28 @@ body:
         - label: "I'm using the Home Assistant Add-on version (not the standalone Docker version)"
           required: true
 
+  - type: dropdown
+    id: type
+    attributes:
+      label: Type of Issue
+      description: What type of issue are you reporting?
+      multiple: false
+      options:
+        - --- Please select an option ---
+        - Bug (regression - was working before)
+        - Bug (never worked)
+        - Feature Request / Enhancement
+        - Documentation
+        - Other
+    validations:
+      required: true
+
   - type: textarea
     id: description
     attributes:
       label: Describe the Issue
       description: A clear and concise description of what the issue is.
       placeholder: Describe the issue
-    validations:
-      required: true
-
-  - type: dropdown
-    id: type
-    attributes:
-      label: Type of Issue
-      description: Was this working before and it has since stopped working, is this a net new issue (never worked before), a bug or a feature request?
-      multiple: false
-      options:
-        - --- Please select an option ---
-        - Working before
-        - Net new issue
-        - Bug      
-        - Feature request          
-        - Enhancement          
-        - Other
     validations:
       required: true
 
