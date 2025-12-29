@@ -33,7 +33,7 @@ body:
     id: addon_version
     attributes:
       label: Version of the Add-on
-      description: e.g. 1.20.0
+      description: e.g. 2.5.1 - Check the add-on details page in Home Assistant
       placeholder: Version of the Add-on
     validations:
       required: true
