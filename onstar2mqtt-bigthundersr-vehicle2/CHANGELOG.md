@@ -1,5 +1,18 @@
 # Changelog
 
+## 2.5.2
+
+**Bug Fixes:**
+
+- **EV Charging Metrics Sensor Update** - Fix HA sensors not updating when refreshEVChargingMetrics command is used
+- **topicArray.map Crash** - Resolve crash from lodash removal
+- **OnStarJS2 2.15.1** - Prevent unnecessary retry when auth code already captured via CDP
+
+**Other Updates:**
+
+- Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v2.5.2](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v2.5.2)
+- Remove lodash dependency, replaced with native JavaScript
+
 ## 2.5.1
 
 **Bug Fixes:**
