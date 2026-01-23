@@ -901,8 +901,8 @@ const configureMQTT = async (commands, client, mqttHA) => {
                             logger.info(`Recall sensor updated: ${recallState.recall_count} total recalls, ${recallState.active_recalls_count} active`);
                         }
                         
-                        // Handle getEVChargingMetrics command - create EV charging sensors
-                        if (command === 'getEVChargingMetrics') {
+                        // Handle getEVChargingMetrics and refreshEVChargingMetrics commands - create EV charging sensors
+                        if (command === 'getEVChargingMetrics' || command === 'refreshEVChargingMetrics') {
                             const evMetricsConfigs = mqttHA.getEVChargingMetricsConfigs(data.response);
                             
                             logger.info(`Publishing ${evMetricsConfigs.length} EV charging metric sensors...`);
