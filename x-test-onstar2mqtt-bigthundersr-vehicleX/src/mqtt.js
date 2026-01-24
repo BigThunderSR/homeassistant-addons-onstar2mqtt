@@ -1307,7 +1307,89 @@ class MQTT {
             });
         }
 
+        // Ignition state binary sensor
+        if (results.ign !== undefined && results.ign !== null) {
+            const ignOn = String(results.ign).toLowerCase() === 'on';
+            configs.push({
+                topic: `${this.prefix}/binary_sensor/${this.instance}/ev_ignition/config`,
+                payload: {
+                    name: "EV Ignition",
+                    unique_id: `${this.vehicle.vin}_ev_ignition`,
+                    state_topic: `${this.prefix}/binary_sensor/${this.instance}/ev_ignition/state`,
+                    payload_on: true,
+                    payload_off: false,
+                    device_class: "running",
+                    icon: "mdi:key-variant",
+                    device: this.getDevicePayload(),
+                    availability: this.getAvailabilityPayload()
+                },
+                state: ignOn
+            });
+        }
+
         return configs;
+    }
+
+    /**
+     * Map EV charging metrics to existing diagnostic sensor state updates.
+     * This allows refreshEVChargingMetrics to update the existing diagnostic sensors
+     * (like HIGH_VOLTAGE_BATTERY) without creating duplicate sensors.
+     * 
+     * @param {Object} metricsData - The data from getEVChargingMetrics or refreshEVChargingMetrics response
+     * @returns {Array} Array of {topic, stateUpdates} for updating existing diagnostic states
+     */
+    getEVChargingMetricsDiagnosticUpdates(metricsData) {
+        const results = metricsData?.data?.results?.[0] ?? {};
+        const updates = [];
+        
+        // Map EV metrics to HIGH_VOLTAGE_BATTERY diagnostic elements
+        const hvbUpdates = {};
+        
+        // soc -> charge_state (battery percentage)
+        if (results.soc !== undefined && results.soc !== null) {
+            hvbUpdates['charge_state'] = results.soc;
+        }
+        
+        // ravg -> ev_range (range in km)
+        if (results.ravg !== undefined && results.ravg !== null) {
+            hvbUpdates['ev_range'] = results.ravg;
+        }
+        
+        // cstate -> ev_charge_state (charging status as boolean)
+        if (results.cstate !== undefined && results.cstate !== null) {
+            const lowerValue = String(results.cstate).toLowerCase();
+            const isCharging = lowerValue === 'charging' || lowerValue === 'active';
+            hvbUpdates['ev_charge_state'] = isCharging;
+        }
+        
+        // cplug -> ev_plug_state (plug connected as boolean)
+        if (results.cplug !== undefined && results.cplug !== null) {
+            const lowerValue = String(results.cplug).toLowerCase();
+            const isPlugged = lowerValue === 'plugged' || lowerValue === 'connect' || lowerValue === 'connected';
+            hvbUpdates['ev_plug_state'] = isPlugged;
+        }
+        
+        // temp -> ambient_air_temperature
+        if (results.temp !== undefined && results.temp !== null) {
+            hvbUpdates['ambient_air_temperature'] = results.temp;
+        }
+        
+        if (Object.keys(hvbUpdates).length > 0) {
+            updates.push({
+                topic: `${this.getBaseTopic('sensor')}/high_voltage_battery/state`,
+                stateUpdates: hvbUpdates
+            });
+        }
+        
+        // odo -> odo_read (separate ODOMETER diagnostic topic)
+        if (results.odo !== undefined && results.odo !== null) {
+            updates.push({
+                topic: `${this.getBaseTopic('sensor')}/odometer/state`,
+                stateUpdates: { odo_read: results.odo }
+            });
+        }
+        
+        return updates;
     }
 
     getDevicePayload() {
