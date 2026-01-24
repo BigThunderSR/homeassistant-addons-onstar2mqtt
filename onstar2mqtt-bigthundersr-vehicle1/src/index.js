@@ -3,7 +3,7 @@ const mqtt = require('mqtt');
 const uuidv4 = require('uuid').v4;
 const axios = require('axios');
 const Vehicle = require('./vehicle');
-const { Diagnostic, AdvancedDiagnostic, mergeState } = require('./diagnostic');
+const { Diagnostic, AdvancedDiagnostic, mergeState, getCachedState, isStateCacheEnabled } = require('./diagnostic');
 const MQTT = require('./mqtt');
 const Commands = require('./commands');
 const logger = require('./logger');
@@ -14,6 +14,10 @@ const fs = require('fs');
 let buttonConfigsPublished = '';
 let refreshIntervalConfigPublished = '';
 let cachedVehicleImageBase64 = null; // Cache the downloaded image
+
+// In-memory tracking of diagnostic state for EV metrics updates
+// Used when state cache is disabled to enable merging without overwriting
+const diagnosticStateTracker = new Map();
 
 const onstarConfig = {
     deviceId: process.env.ONSTAR_DEVICEID || uuidv4(),
@@ -318,6 +322,8 @@ const configureMQTT = async (commands, client, mqttHA) => {
                     // Merge with cached state to preserve fields from previous updates
                     const mergedPayload = mergeState(topic, payload);
                     states.set(topic, mergedPayload);
+                    // Also track in local Map for EV metrics updates (works regardless of cache setting)
+                    diagnosticStateTracker.set(topic, mergedPayload);
                 }
                 const publishes = [];
                 for (let [topic, state] of states) {
@@ -862,7 +868,7 @@ const configureMQTT = async (commands, client, mqttHA) => {
                     "completionTimestamp": new Date().toISOString()
                 }), { retain: true });
             commandFn(options || {})
-                .then(data => {
+                .then(async data => {
                     // refactor the response handling for commands - Done!
                     const completionTimestamp = new Date().toISOString();
                     logger.debug(`Completion Timestamp: ${completionTimestamp}`);
@@ -906,14 +912,58 @@ const configureMQTT = async (commands, client, mqttHA) => {
                             const evMetricsConfigs = mqttHA.getEVChargingMetricsConfigs(data.response);
                             
                             logger.info(`Publishing ${evMetricsConfigs.length} EV charging metric sensors...`);
-                            evMetricsConfigs.forEach(config => {
+                            
+                            // Use Promise.all with publishAsync to ensure all publishes complete
+                            // This ensures sensors update immediately when refreshEVChargingMetrics is called
+                            const evPublishes = [];
+                            for (const config of evMetricsConfigs) {
                                 // Publish config
-                                client.publish(config.topic, JSON.stringify(config.payload), { retain: true });
-                                // Publish state
-                                client.publish(config.payload.state_topic, JSON.stringify(config.state), { retain: true });
-                            });
+                                evPublishes.push(publishAsync(client, config.topic, JSON.stringify(config.payload), { retain: true }));
+                                // Publish state - convert state to string for MQTT
+                                const stateValue = typeof config.state === 'boolean' ? config.state : String(config.state);
+                                evPublishes.push(publishAsync(client, config.payload.state_topic, stateValue, { retain: true }));
+                            }
+                            await Promise.all(evPublishes);
                             
                             logger.info(`EV charging metrics updated: ${evMetricsConfigs.length} sensors published`);
+                            
+                            // Also update existing diagnostic sensors with fresh EV data
+                            // This ensures sensors like CHARGE_STATE, EV_RANGE update immediately
+                            // Only update sensors that already exist (were published by diagnostics)
+                            const diagUpdates = mqttHA.getEVChargingMetricsDiagnosticUpdates(data.response);
+                            if (diagUpdates.length > 0) {
+                                const diagPublishes = [];
+                                let updateCount = 0;
+                                for (const update of diagUpdates) {
+                                    // Get existing state: prefer stateCache if enabled, fallback to local tracker
+                                    const existingState = isStateCacheEnabled() 
+                                        ? getCachedState(update.topic)
+                                        : diagnosticStateTracker.get(update.topic);
+                                    
+                                    // Only update if the diagnostic sensor exists (was published by diagnostics)
+                                    // This prevents orphan data for vehicles without HIGH_VOLTAGE_BATTERY diagnostic
+                                    if (!existingState) {
+                                        logger.debug(`Skipping EV metric update for ${update.topic} - diagnostic sensor not configured`);
+                                        continue;
+                                    }
+                                    
+                                    // Merge new values into existing state
+                                    const mergedState = { ...existingState, ...update.stateUpdates };
+                                    
+                                    // Update trackers for future merges
+                                    if (isStateCacheEnabled()) {
+                                        mergeState(update.topic, mergedState);
+                                    }
+                                    diagnosticStateTracker.set(update.topic, mergedState);
+                                    
+                                    diagPublishes.push(publishAsync(client, update.topic, JSON.stringify(mergedState), { retain: true }));
+                                    updateCount++;
+                                }
+                                if (updateCount > 0) {
+                                    await Promise.all(diagPublishes);
+                                    logger.info(`Updated ${updateCount} diagnostic sensor(s) with fresh EV metrics`);
+                                }
+                            }
                         }
                         
                         // API v3 uses telemetry.data.position and telemetry.data.velocity
@@ -1293,6 +1343,8 @@ logger.info('!-- Starting OnStar2MQTT Polling --!');
                 // Merge with cached state to preserve fields from previous updates
                 const mergedPayload = mergeState(topic, payload);
                 states.set(topic, mergedPayload);
+                // Also track in local Map for EV metrics updates (works regardless of cache setting)
+                diagnosticStateTracker.set(topic, mergedPayload);
             }
             
             // API CHANGE: Configure and publish advanced diagnostics sensors (API v3)
