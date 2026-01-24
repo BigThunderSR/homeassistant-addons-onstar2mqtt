@@ -1,6 +1,6 @@
 # Changelog
 
-## 2.5.2a - Test Build. DO NOT Install!!!
+## 2.5.2b - Test Build. DO NOT Install!!!
 
 - Testing
 
