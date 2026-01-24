@@ -919,8 +919,8 @@ const configureMQTT = async (commands, client, mqttHA) => {
                             for (const config of evMetricsConfigs) {
                                 // Publish config
                                 evPublishes.push(publishAsync(client, config.topic, JSON.stringify(config.payload), { retain: true }));
-                                // Publish state - convert state to string for MQTT
-                                const stateValue = typeof config.state === 'boolean' ? config.state : String(config.state);
+                                // Publish state - MQTT requires string, convert all types including booleans
+                                const stateValue = String(config.state);
                                 evPublishes.push(publishAsync(client, config.payload.state_topic, stateValue, { retain: true }));
                             }
                             await Promise.all(evPublishes);
