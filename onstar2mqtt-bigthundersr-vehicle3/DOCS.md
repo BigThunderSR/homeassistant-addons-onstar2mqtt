@@ -283,12 +283,16 @@ cards:
 
 ## EV Charging Metrics Sensors (EV Vehicles Only)
 
-For **electric vehicles**, pressing the **Get EV Charging Metrics** or **Refresh EV Charging Metrics** button creates 10 specialized sensors with detailed charging and battery information:
+For **electric vehicles**, pressing the **Get EV Charging Metrics** or **Refresh EV Charging Metrics** button creates 11 specialized sensors with detailed charging and battery information:
 
 **Button Differences:**
 
 - **Get EV Charging Metrics** - Returns cached charging data (faster)
 - **Refresh EV Charging Metrics** - Forces vehicle to generate fresh telemetry before returning (more current, slightly slower)
+
+**Instant Diagnostic Sensor Updates (v2.6.0):**
+
+In addition to creating the EV-specific sensors below, these commands now also immediately update the corresponding diagnostic sensors (battery level, EV range, charge state, plug state, ambient temperature, odometer). Previously, you had to wait for the next polling cycle to see updates in diagnostic sensors.
 
 ### Sensors Created
 
@@ -357,6 +361,12 @@ For **electric vehicles**, pressing the **Get EV Charging Metrics** or **Refresh
     - **Icon**: `mdi:battery-low`
     - **Description**: Minimum battery percentage for discharge operations
     - **Device Class**: Battery
+
+11. **EV Ignition** (`binary_sensor.<vehicle_name>_ev_ignition`) _(New in v2.6.0)_
+    - **Icon**: `mdi:key-variant`
+    - **Description**: Whether the vehicle ignition is on
+    - **Device Class**: Running
+    - **Values**: `on` (ignition on), `off` (ignition off)
 
 ### Update Frequency
 
