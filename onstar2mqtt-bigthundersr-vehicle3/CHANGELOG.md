@@ -1,5 +1,20 @@
 # Changelog
 
+## 2.6.0
+
+**New Features:**
+
+- **EV Charging Metrics in Diagnostics** - Update diagnostic sensors with EV charging metrics data
+- **EV Ignition Sensor** - New binary sensor for ignition state from EV charging metrics
+
+**Bug Fixes:**
+
+- **Boolean State Values** - Convert boolean state values to string for MQTT publishing
+
+**Other Updates:**
+
+- Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v2.6.0](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v2.6.0)
+
 ## 2.5.2
 
 **Bug Fixes:**
