@@ -35,7 +35,7 @@
     "convert-units": "^2.3.4",
     "dotenv": "^17.2.3",
     "jsonwebtoken": "^9.0.3",
-    "mqtt": "^5.14.1",
+    "mqtt": "^5.15.0",
     "onstarjs2": "^2.15.1",
     "uuid": "^11.1.0",
     "winston": "^3.19.0"
