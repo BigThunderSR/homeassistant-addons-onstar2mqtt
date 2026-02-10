@@ -33,7 +33,7 @@
     "axios": "^1.13.4",
     "chromium-bidi": "^13.0.1",
     "convert-units": "^2.3.4",
-    "dotenv": "^17.2.3",
+    "dotenv": "^17.2.4",
     "jsonwebtoken": "^9.0.3",
     "mqtt": "^5.14.1",
     "onstarjs2": "^2.15.1",
