@@ -16,37 +16,31 @@ Starting with the API v3 implementation, the application now provides detailed d
 ### Diagnostic Systems Available
 
 1. **Engine & Transmission** (11 subsystems)
-
    - Sensor: `sensor.<vehicle_name>_adv_diag_engine_transmission`
    - Icon: `mdi:engine`
    - Subsystems: displacement_on_demand, fuel_management, transmission, ignition, emissions, cooling, fuel_injection, fuel_system_air_induction, starting_charging, engine_controls_feedback, exhaust_system
 
 2. **Antilock Braking System** (3 subsystems)
-
    - Sensor: `sensor.<vehicle_name>_adv_diag_antilock_braking_system`
    - Icon: `mdi:car-brake-abs`
    - Subsystems: abs, traction_control_system, electronic_brake_control_module
 
 3. **StabiliTrak** (1 subsystem)
-
    - Sensor: `sensor.<vehicle_name>_adv_diag_stabilitrak`
    - Icon: `mdi:car-esp`
    - Subsystems: electronic_stability_control
 
 4. **Air Bag** (4 subsystems)
-
    - Sensor: `sensor.<vehicle_name>_adv_diag_air_bag`
    - Icon: `mdi:airbag`
    - Subsystems: occupant_restraints, sensing_diagnostic_module, side_air_bag, front_air_bag
 
 5. **Emissions System** (2 subsystems)
-
    - Sensor: `sensor.<vehicle_name>_adv_diag_emissions_system`
    - Icon: `mdi:weather-fog`
    - Subsystems: exhaust_gas_recirculation, evaporative_emissions
 
 6. **OnStar System** (3 subsystems)
-
    - Sensor: `sensor.<vehicle_name>_adv_diag_onstar_system`
    - Icon: `mdi:car-connected`
    - Subsystems: onstar, network_communication, body_control_module
@@ -283,7 +277,7 @@ cards:
 
 ## EV Charging Metrics Sensors (EV Vehicles Only)
 
-For **electric vehicles**, pressing the **Get EV Charging Metrics** or **Refresh EV Charging Metrics** button creates 11 specialized sensors with detailed charging and battery information:
+For **electric vehicles**, pressing the **Get EV Charging Metrics** or **Refresh EV Charging Metrics** button creates 19 specialized sensors with detailed charging and battery information:
 
 **Button Differences:**
 
@@ -297,21 +291,18 @@ In addition to creating the EV-specific sensors below, these commands now also i
 ### Sensors Created
 
 1. **EV Target Charge Level** (`sensor.<vehicle_name>_ev_target_charge_level`)
-
    - **Unit**: `%` (percentage)
    - **Icon**: `mdi:battery-charging-80`
    - **Description**: User's configured charge limit setting (e.g., 80%)
    - **Device Class**: Battery
 
 2. **EV Battery Capacity** (`sensor.<vehicle_name>_ev_battery_capacity`)
-
    - **Unit**: `kWh` (kilowatt-hours)
    - **Icon**: `mdi:battery-high`
    - **Description**: Actual usable battery capacity
    - **Device Class**: Energy Storage
 
 3. **EV Trip Odometer** (`sensor.<vehicle_name>_ev_trip_odometer`)
-
    - **Unit**: `km` (kilometers)
    - **Icon**: `mdi:map-marker-distance`
    - **Description**: Current trip distance
@@ -319,39 +310,33 @@ In addition to creating the EV-specific sensors below, these commands now also i
    - **State Class**: Total Increasing
 
 4. **EV Trip Consumption** (`sensor.<vehicle_name>_ev_trip_consumption`)
-
    - **Unit**: `kWh/100km`
    - **Icon**: `mdi:speedometer`
    - **Description**: Energy efficiency for current trip
    - **State Class**: Measurement
 
 5. **EV Lifetime Consumption** (`sensor.<vehicle_name>_ev_lifetime_consumption`)
-
    - **Unit**: `kWh/100km`
    - **Icon**: `mdi:chart-line`
    - **Description**: Average lifetime energy efficiency
    - **State Class**: Measurement
 
 6. **EV Charge Mode** (`sensor.<vehicle_name>_ev_charge_mode`)
-
    - **Icon**: `mdi:ev-station`
    - **Description**: Current charging mode (e.g., "immediate")
    - **Values**: `immediate`, `departure`, etc.
 
 7. **EV Charge Location Set** (`binary_sensor.<vehicle_name>_ev_charge_location_set`)
-
    - **Icon**: `mdi:map-marker-check`
    - **Description**: Whether home charging location is configured
    - **Values**: `on` (set), `off` (not set)
 
 8. **EV At Charge Location** (`binary_sensor.<vehicle_name>_ev_at_charge_location`)
-
    - **Icon**: `mdi:map-marker`
    - **Description**: Whether vehicle is currently at the configured charging location
    - **Values**: `on` (at location), `off` (away)
 
 9. **EV Discharge Enabled** (`binary_sensor.<vehicle_name>_ev_discharge_enabled`)
-
    - **Icon**: `mdi:transmission-tower-export`
    - **Description**: Whether vehicle-to-grid discharge is enabled
    - **Values**: `on` (enabled), `off` (disabled)
@@ -367,6 +352,71 @@ In addition to creating the EV-specific sensors below, these commands now also i
     - **Description**: Whether the vehicle ignition is on
     - **Device Class**: Running
     - **Values**: `on` (ignition on), `off` (ignition off)
+
+12. **EV Charging Battery Level** (`sensor.<vehicle_name>_ev_charging_battery_level`) _(New in v2.7.0)_
+    - **Unit**: `%` (percentage)
+    - **Icon**: `mdi:battery-high`
+    - **Description**: Battery state of charge from EV charging metrics. Especially useful for Connected Access plans where diagnostics returns 403.
+    - **Device Class**: Battery
+    - **State Class**: Measurement
+
+13. **EV Charging Lifetime Energy** (`sensor.<vehicle_name>_ev_charging_lifetime_energy`) _(New in v2.7.0)_
+    - **Unit**: `kWh` (kilowatt-hours)
+    - **Icon**: `mdi:lightning-bolt`
+    - **Description**: Meter-reported lifetime energy consumed. Supports long-term statistics for tracking electricity consumption over time.
+    - **Device Class**: Energy
+    - **State Class**: Total Increasing
+
+14. **EV Charging Range** (`sensor.<vehicle_name>_ev_charging_range`) _(New in v2.7.0)_
+    - **Unit**: `km` (kilometers)
+    - **Icon**: `mdi:map-marker-distance`
+    - **Description**: Estimated range based on average consumption
+    - **Device Class**: Distance
+    - **State Class**: Measurement
+
+15. **EV Charging State** (`sensor.<vehicle_name>_ev_charging_state`) _(New in v2.7.0)_
+    - **Icon**: `mdi:ev-station`
+    - **Description**: Charging state as a raw string value (e.g., "ACTIVE", "UNCONNECTED", "CHARGING")
+    - **Values**: `ACTIVE`, `UNCONNECTED`, `CHARGING`, etc.
+
+16. **EV Charging Plug State** (`sensor.<vehicle_name>_ev_charging_plug_state`) _(New in v2.7.0)_
+    - **Icon**: `mdi:ev-plug-type1`
+    - **Description**: Plug state as a raw string value (e.g., "plugged", "unplugged")
+    - **Values**: `plugged`, `unplugged`, etc.
+
+17. **EV Charging Odometer** (`sensor.<vehicle_name>_ev_charging_odometer`) _(New in v2.7.0)_
+    - **Unit**: `km` (kilometers)
+    - **Icon**: `mdi:counter`
+    - **Description**: Vehicle odometer reading from EV charging metrics
+    - **Device Class**: Distance
+    - **State Class**: Total Increasing
+
+18. **EV Charging Temperature** (`sensor.<vehicle_name>_ev_charging_temperature`) _(New in v2.7.0)_
+    - **Unit**: `°C` (degrees Celsius)
+    - **Icon**: `mdi:thermometer`
+    - **Description**: Outside temperature reported by the vehicle
+    - **Device Class**: Temperature
+    - **State Class**: Measurement
+
+19. **EV Charging ETA** (`sensor.<vehicle_name>_ev_charging_eta`) _(New in v2.7.0)_
+    - **Icon**: `mdi:clock-end`
+    - **Description**: Estimated time when charging will complete (ISO 8601 timestamp)
+    - **Device Class**: Timestamp
+
+### Note on Sensor Overlap
+
+If your vehicle's **diagnostics** command works (i.e., you have a full OnStar plan), 4 of the new `ev_charging_*` sensors will show the same data as existing diagnostic sensors:
+
+| EV Charging Metrics Sensor  | Diagnostic Sensor                    | Data              |
+| --------------------------- | ------------------------------------ | ----------------- |
+| `ev_charging_battery_level` | `ev_battery_level`                   | Battery %         |
+| `ev_charging_range`         | `ev_range`                           | Range in km       |
+| `ev_charging_odometer`      | `odometer` group                     | Odometer in km    |
+| `ev_charging_temperature`   | `hybrid_battery_minimum_temperature` | Temperature in °C |
+
+This is expected and harmless — they publish to separate MQTT topics and do not interfere with each other. The remaining 4 new sensors (`ev_charging_lifetime_energy`, `ev_charging_eta`, `ev_charging_state`, `ev_charging_plug_state`) provide data that diagnostics either does not have or presents differently (e.g., diagnostics converts charge/plug state to boolean, while EV metrics preserves the raw string like "ACTIVE" or "plugged").
+
+For **Connected Access plan** users whose diagnostics returns 403, these 8 sensors are the **only** source of battery level, range, and charging status data.
 
 ### Update Frequency
 
@@ -386,6 +436,21 @@ entities:
   - sensor.my_blazer_ev_charge_mode
   - binary_sensor.my_blazer_ev_at_charge_location
   - binary_sensor.my_blazer_ev_charge_location_set
+```
+
+```yaml
+# EV Battery & Range Dashboard (works with Connected Access plans)
+type: entities
+title: EV Battery Info
+entities:
+  - sensor.my_bolt_ev_ev_charging_battery_level
+  - sensor.my_bolt_ev_ev_charging_range
+  - sensor.my_bolt_ev_ev_charging_lifetime_energy
+  - sensor.my_bolt_ev_ev_charging_state
+  - sensor.my_bolt_ev_ev_charging_plug_state
+  - sensor.my_bolt_ev_ev_charging_eta
+  - sensor.my_bolt_ev_ev_charging_temperature
+  - sensor.my_bolt_ev_ev_charging_odometer
 ```
 
 ```yaml
@@ -465,16 +530,13 @@ Buttons are added **disabled by default** because it's easy to accidentally pres
 Since the buttons are created but disabled by default, follow these steps to enable the ones you want to use:
 
 1. **Navigate to MQTT Integration:**
-
    - Go to `Settings` → `Devices & Services` → `MQTT`
 
 2. **Find Your Vehicle Device:**
-
    - Look for your vehicle device in the MQTT device list (it will be named with your vehicle name)
    - Click on the device to view all entities
 
 3. **Enable Desired Buttons:**
-
    - Scroll through the list of entities to find the buttons (they will have a button icon)
    - Click on each button entity you want to enable
    - Click the settings/gear icon in the entity details

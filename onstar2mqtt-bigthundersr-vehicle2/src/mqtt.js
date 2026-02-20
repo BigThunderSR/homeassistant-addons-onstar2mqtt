@@ -1307,6 +1307,155 @@ class MQTT {
             });
         }
 
+        // Battery Level (SoC) sensor
+        // Published as standalone sensor so it's available even when diagnostics returns 403
+        // Uses ev_charging_ prefix to avoid topic collision with diagnostic EV_BATTERY_LEVEL element
+        if (results.soc !== undefined && results.soc !== null) {
+            configs.push({
+                topic: `${this.prefix}/sensor/${this.instance}/ev_charging_battery_level/config`,
+                payload: {
+                    name: "EV Charging Battery Level",
+                    unique_id: `${this.vehicle.vin}_ev_charging_battery_level`,
+                    state_topic: `${this.prefix}/sensor/${this.instance}/ev_charging_battery_level/state`,
+                    device_class: "battery",
+                    state_class: "measurement",
+                    unit_of_measurement: "%",
+                    icon: "mdi:battery-high",
+                    device: this.getDevicePayload(),
+                    availability: this.getAvailabilityPayload()
+                },
+                state: results.soc
+            });
+        }
+
+        // Lifetime Energy (meter kWh) sensor
+        if (results.meterkwh !== undefined && results.meterkwh !== null) {
+            configs.push({
+                topic: `${this.prefix}/sensor/${this.instance}/ev_charging_lifetime_energy/config`,
+                payload: {
+                    name: "EV Charging Lifetime Energy",
+                    unique_id: `${this.vehicle.vin}_ev_charging_lifetime_energy`,
+                    state_topic: `${this.prefix}/sensor/${this.instance}/ev_charging_lifetime_energy/state`,
+                    device_class: "energy",
+                    state_class: "total_increasing",
+                    unit_of_measurement: "kWh",
+                    icon: "mdi:lightning-bolt",
+                    device: this.getDevicePayload(),
+                    availability: this.getAvailabilityPayload()
+                },
+                state: results.meterkwh
+            });
+        }
+
+        // Estimated Range sensor
+        // Uses ev_charging_ prefix to avoid topic collision with diagnostic EV_RANGE element
+        if (results.ravg !== undefined && results.ravg !== null) {
+            configs.push({
+                topic: `${this.prefix}/sensor/${this.instance}/ev_charging_range/config`,
+                payload: {
+                    name: "EV Charging Range",
+                    unique_id: `${this.vehicle.vin}_ev_charging_range`,
+                    state_topic: `${this.prefix}/sensor/${this.instance}/ev_charging_range/state`,
+                    device_class: "distance",
+                    state_class: "measurement",
+                    unit_of_measurement: "km",
+                    icon: "mdi:map-marker-distance",
+                    device: this.getDevicePayload(),
+                    availability: this.getAvailabilityPayload()
+                },
+                state: results.ravg
+            });
+        }
+
+        // Charge State sensor (raw string value: ACTIVE, UNCONNECTED, CHARGING, etc.)
+        // Uses ev_charging_ prefix to avoid topic collision with diagnostic EV_CHARGE_STATE binary_sensor
+        if (results.cstate !== undefined && results.cstate !== null) {
+            configs.push({
+                topic: `${this.prefix}/sensor/${this.instance}/ev_charging_state/config`,
+                payload: {
+                    name: "EV Charging State",
+                    unique_id: `${this.vehicle.vin}_ev_charging_state`,
+                    state_topic: `${this.prefix}/sensor/${this.instance}/ev_charging_state/state`,
+                    icon: "mdi:ev-station",
+                    device: this.getDevicePayload(),
+                    availability: this.getAvailabilityPayload()
+                },
+                state: results.cstate
+            });
+        }
+
+        // Plug State sensor (raw string value: plugged, unplugged, etc.)
+        // Uses ev_charging_ prefix to avoid topic collision with diagnostic EV_PLUG_STATE binary_sensor
+        if (results.cplug !== undefined && results.cplug !== null) {
+            configs.push({
+                topic: `${this.prefix}/sensor/${this.instance}/ev_charging_plug_state/config`,
+                payload: {
+                    name: "EV Charging Plug State",
+                    unique_id: `${this.vehicle.vin}_ev_charging_plug_state`,
+                    state_topic: `${this.prefix}/sensor/${this.instance}/ev_charging_plug_state/state`,
+                    icon: "mdi:ev-plug-type1",
+                    device: this.getDevicePayload(),
+                    availability: this.getAvailabilityPayload()
+                },
+                state: results.cplug
+            });
+        }
+
+        // Odometer sensor
+        if (results.odo !== undefined && results.odo !== null) {
+            configs.push({
+                topic: `${this.prefix}/sensor/${this.instance}/ev_charging_odometer/config`,
+                payload: {
+                    name: "EV Charging Odometer",
+                    unique_id: `${this.vehicle.vin}_ev_charging_odometer`,
+                    state_topic: `${this.prefix}/sensor/${this.instance}/ev_charging_odometer/state`,
+                    device_class: "distance",
+                    state_class: "total_increasing",
+                    unit_of_measurement: "km",
+                    icon: "mdi:counter",
+                    device: this.getDevicePayload(),
+                    availability: this.getAvailabilityPayload()
+                },
+                state: results.odo
+            });
+        }
+
+        // Temperature sensor
+        if (results.temp !== undefined && results.temp !== null) {
+            configs.push({
+                topic: `${this.prefix}/sensor/${this.instance}/ev_charging_temperature/config`,
+                payload: {
+                    name: "EV Charging Temperature",
+                    unique_id: `${this.vehicle.vin}_ev_charging_temperature`,
+                    state_topic: `${this.prefix}/sensor/${this.instance}/ev_charging_temperature/state`,
+                    device_class: "temperature",
+                    state_class: "measurement",
+                    unit_of_measurement: "°C",
+                    icon: "mdi:thermometer",
+                    device: this.getDevicePayload(),
+                    availability: this.getAvailabilityPayload()
+                },
+                state: results.temp
+            });
+        }
+
+        // Charge ETA (estimated completion time) sensor
+        if (results.ceta !== undefined && results.ceta !== null) {
+            configs.push({
+                topic: `${this.prefix}/sensor/${this.instance}/ev_charging_eta/config`,
+                payload: {
+                    name: "EV Charging ETA",
+                    unique_id: `${this.vehicle.vin}_ev_charging_eta`,
+                    state_topic: `${this.prefix}/sensor/${this.instance}/ev_charging_eta/state`,
+                    device_class: "timestamp",
+                    icon: "mdi:clock-end",
+                    device: this.getDevicePayload(),
+                    availability: this.getAvailabilityPayload()
+                },
+                state: results.ceta
+            });
+        }
+
         // Ignition state binary sensor
         if (results.ign !== undefined && results.ign !== null) {
             const ignOn = String(results.ign).toLowerCase() === 'on';
