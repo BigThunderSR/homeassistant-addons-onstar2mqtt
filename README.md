@@ -31,6 +31,9 @@ Home Assistant Add-on of [BigThunderSR/onstar2mqtt](https://github.com/BigThunde
   - You can verify your plan status in the official myChevrolet/myGMC/myCadillac/myBuick app or by running the `getOnstarPlan` command
 - **Supported Region:** Only US and Canadian OnStar accounts are known to work with this integration
 - **Valid Credentials:** You need your OnStar username, password, PIN, and TOTP key
+- **Minimum System RAM:** A minimum of 4GB total system RAM is required.
+  - Devices with 2GB RAM or less (e.g., some Raspberry Pi Compute Module 4 variants) do not have sufficient memory and will experience failures.
+  - If your HA device has limited RAM, consider running the [standalone Docker version](https://github.com/BigThunderSR/onstar2mqtt) on a more capable machine.
 
 ## Add-ons
 
