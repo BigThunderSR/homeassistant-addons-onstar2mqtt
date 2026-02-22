@@ -1,5 +1,9 @@
 # Changelog
 
+## 2.7.0 - Test Build. DO NOT Install!!!
+
+- Testing
+
 ## 2.6.0 - Test Build. DO NOT Install!!!
 
 - Testing
