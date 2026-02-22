@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.7.0
+
+**New Features:**
+
+- **Individual EV Charging Metrics Sensors** - Add 8 standalone sensors from EV charging metrics data (battery level, range, charge state, plug state, odometer, temperature, lifetime energy, charge ETA). These sensors work independently of the diagnostics API, providing EV data even on Connected Access plans where the diagnostics API returns 403.
+
+**Other Updates:**
+
+- Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v2.7.0](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v2.7.0)
+- Update to OnStarJS2 2.15.2
+
 ## 2.6.0
 
 **New Features:**
