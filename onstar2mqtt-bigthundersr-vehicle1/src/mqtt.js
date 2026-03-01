@@ -1682,7 +1682,8 @@ class MQTT {
             }
             // API CHANGE: Add element-level status and statusColor from API v3
             // These appear on individual diagnostic elements (e.g., LEFT_FRONT_TIRE_PRESSURE)
-            if (e.status !== undefined && e.status !== null) {
+            // Include even if null, so json_attributes_template can reference them consistently
+            if (e.status !== undefined) {
                 state[`${MQTT.convertName(e.name)}_status`] = e.status;
             }
             // Include status_color even if null, so templates can reference it consistently
@@ -1705,7 +1706,10 @@ class MQTT {
         unique_id = unique_id.replace(/\s+/g, '-').toLowerCase();
         
         // Always include last_updated (timestamp from cts field) as an attribute
-        const lastUpdatedFieldName = `${MQTT.convertName(diagEl.name)}_last_updated`;
+        const elFieldName = MQTT.convertName(diagEl.name);
+        const lastUpdatedFieldName = `${elFieldName}_last_updated`;
+        const statusFieldName = `${elFieldName}_status`;
+        const statusColorFieldName = `${elFieldName}_status_color`;
         let attributeTemplate;
         
         if (attr) {
@@ -1713,15 +1717,21 @@ class MQTT {
             // Extract the object content from the template {{ {...} | tojson }}
             const match = attr.match(/{{ ({.*}) \| tojson }}/);
             if (match) {
-                // Parse and add last_updated to the existing attribute object
-                attributeTemplate = `{{ {${match[1].substring(1, match[1].length - 1)}, 'last_updated': value_json.${lastUpdatedFieldName}} | tojson }}`;
+                const customContent = match[1].substring(1, match[1].length - 1);
+                if (customContent.includes('status_color')) {
+                    // Sensor already has status_color in custom attributes — preserve as-is
+                    attributeTemplate = `{{ {${customContent}, 'last_updated': value_json.${lastUpdatedFieldName}} | tojson }}`;
+                } else {
+                    // Add status and status_color alongside last_updated
+                    attributeTemplate = `{{ {${customContent}, 'last_updated': value_json.${lastUpdatedFieldName}, 'status': value_json.${statusFieldName}, 'status_color': value_json.${statusColorFieldName}} | tojson }}`;
+                }
             } else {
                 // Fallback: just use the provided attr (shouldn't happen with current patterns)
                 attributeTemplate = attr;
             }
         } else {
-            // No custom attributes, just add last_updated
-            attributeTemplate = `{{ {'last_updated': value_json.${lastUpdatedFieldName}} | tojson }}`;
+            // No custom attributes — add last_updated, status, and status_color
+            attributeTemplate = `{{ {'last_updated': value_json.${lastUpdatedFieldName}, 'status': value_json.${statusFieldName}, 'status_color': value_json.${statusColorFieldName}} | tojson }}`;
         }
         
         return {

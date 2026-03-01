@@ -481,6 +481,79 @@ entities:
 
 **Note**: These sensors are only available for electric vehicles. The Get EV Charging Metrics and Refresh EV Charging Metrics buttons will not create sensors for ICE (Internal Combustion Engine) vehicles.
 
+## Diagnostic Sensor Attributes (Status & Status Color)
+
+All standard diagnostic sensors (odometer, tire pressures, fuel level, oil life, EV battery, etc.) automatically include the following entity attributes:
+
+- **status**: The diagnostic status text from the OnStar API (e.g., `OK`, `CHECK`, or `Unknown` when not available)
+- **status_color**: Color-coded status indicator from the API (e.g., `GREEN`, `YELLOW`, `RED`, or `Unknown` when not available)
+- **last_updated**: Timestamp of the last diagnostic update
+
+These attributes are available on every diagnostic sensor and can be used in templates, automations, and Lovelace cards for color-coded status displays.
+
+> **Note:** Some sensors will show `Unknown` for `status` and `status_color` if the OnStar API does not provide status information for that particular diagnostic element. This is normal — not all diagnostic elements have status data. Your templates should handle this gracefully (see examples below).
+
+### Using Status Color in Templates
+
+```yaml
+# Check the status color of a sensor
+{{ state_attr('sensor.<vehicle_name>_oil_life', 'status_color') }}
+
+# Color-coded conditional display
+{% set color = state_attr('sensor.<vehicle_name>_oil_life', 'status_color') %}
+{% if color == 'GREEN' %}✅ OK
+{% elif color == 'YELLOW' %}⚠️ Attention
+{% elif color == 'RED' %}❌ Critical
+{% else %}ℹ️ Unknown
+{% endif %}
+```
+
+### Automation Example - Alert on Non-Green Status
+
+```yaml
+alias: Alert on Sensor Status Change
+description: Send notification when a diagnostic sensor status turns non-green
+trigger:
+  - platform: template
+    value_template: >-
+      {{ state_attr('sensor.<vehicle_name>_oil_life', 'status_color') != 'GREEN' }}
+condition:
+  - condition: template
+    value_template: >-
+      {{ state_attr('sensor.<vehicle_name>_oil_life', 'status_color') is not none }}
+action:
+  - service: notify.mobile_app
+    data:
+      title: "Vehicle Sensor Alert"
+      message: >
+        Oil Life status is {{ state_attr('sensor.<vehicle_name>_oil_life', 'status') }}
+        ({{ state_attr('sensor.<vehicle_name>_oil_life', 'status_color') }})
+mode: single
+```
+
+### Lovelace Card - Status Overview with Colors
+
+```yaml
+type: markdown
+title: Diagnostic Status Overview
+content: >-
+  | Sensor | Status | Color |
+  |--------|--------|-------|
+  {% set sensors = [
+    ('Oil Life', 'sensor.<vehicle_name>_oil_life'),
+    ('Tire LF', 'sensor.<vehicle_name>_tire_pressure_left_front'),
+    ('Tire RF', 'sensor.<vehicle_name>_tire_pressure_right_front'),
+    ('Tire LR', 'sensor.<vehicle_name>_tire_pressure_left_rear'),
+    ('Tire RR', 'sensor.<vehicle_name>_tire_pressure_right_rear'),
+    ('Fuel', 'sensor.<vehicle_name>_fuel_level'),
+    ('Battery', 'sensor.<vehicle_name>_ev_battery_level')
+  ] %}
+  {% for name, entity in sensors %}
+  {% set color = state_attr(entity, 'status_color') %}
+  | {{ name }} | {{ state_attr(entity, 'status') | default('N/A') }} | {% if color == 'GREEN' %}🟢{% elif color == 'YELLOW' %}🟡{% elif color == 'RED' %}🔴{% else %}⚪{% endif %} |
+  {% endfor %}
+```
+
 ## Dynamically Change Polling Frequency Using MQTT
 
 - Uses the value from `ONSTAR_REFRESH` on initial startup
