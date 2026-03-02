@@ -243,6 +243,64 @@ entities:
     name: Recall Details
 ```
 
+## Warranty Info Sensor
+
+Pressing the **Get Warranty Info** button creates a sensor with vehicle warranty coverage details. _(New in OnStarJS 2.16.0)_
+
+- **Entity**: `sensor.<vehicle_name>_warranty_info`
+- **Icon**: `mdi:shield-check`
+- **State**: Count of applicable warranties (e.g., `3 Applicable`)
+- **Update**: On-demand when the "Get Warranty Info" button is pressed
+
+### Warranty Attributes
+
+- `active_warranties`: Number of warranties with status APPLICABLE or ACTIVE
+- `expired_warranties`: Number of warranties with status EXPIRED
+- `total_warranties`: Total number of warranty records
+- `warranty_info`: Array of warranty objects with details (typeDescription, startDate, expirationDate, startMileage, endMileage, mileageUnit, status, etc.)
+- `last_updated`: Timestamp of last check
+
+### Example Warranty Lovelace Card
+
+```yaml
+type: entities
+title: Vehicle Warranty
+entities:
+  - entity: sensor.my_car_warranty_info
+    name: Warranty Status
+```
+
+## SXM Subscription Sensor
+
+Pressing the **Get SXM Subscription Info** button creates a sensor with SiriusXM satellite radio subscription details. _(New in OnStarJS 2.16.0)_
+
+- **Entity**: `sensor.<vehicle_name>_sxm_subscription`
+- **Icon**: `mdi:radio`
+- **State**: Count of active subscriptions (e.g., `2 Subscribed`) or `None`
+- **Update**: On-demand when the "Get SXM Subscription Info" button is pressed
+
+### SXM Attributes
+
+- `active_subscriptions`: Number of subscriptions with marketType SUBSCRIBED
+- `total_subscriptions`: Total number of subscription records
+- `subscriptions`: Array of subscription objects with details (subscriptionName, packageId, marketType, startDate, endDate, services, etc.)
+- `radio_id`: SiriusXM radio device ID
+- `is_360_device`: Whether the device supports SXM 360L
+- `channel_account_info`: Channel account object (radioId, marketType, packageName, expiryDate, phoneNumber, message)
+- `package_name`: Current package name (from channelAccountInfo)
+- `expiry_date`: Package expiry date (from channelAccountInfo)
+- `last_updated`: Timestamp of last check
+
+### Example SXM Lovelace Card
+
+```yaml
+type: entities
+title: SiriusXM Subscription
+entities:
+  - entity: sensor.my_car_sxm_subscription
+    name: Subscription Status
+```
+
 ## Vehicle Image Entity
 
 The application automatically creates an **image entity** displaying your vehicle's photo from the manufacturer.
@@ -622,6 +680,8 @@ Since the buttons are created but disabled by default, follow these steps to ena
 
 **Available Buttons Include:**
 
+_Vehicle Control:_
+
 - Start Vehicle
 - Cancel Start Vehicle
 - Lock Door
@@ -629,18 +689,26 @@ Since the buttons are created but disabled by default, follow these steps to ena
 - Lock Trunk / Unlock Trunk (if supported by vehicle)
 - Alert / Cancel Alert
 - Flash Lights / Stop Lights (new in OnStarJS 2.12.0)
+
+_EV Charging:_
+
 - ~~Charge Override / Cancel Charge Override~~ (deprecated - use Set Charge Level Target / Stop Charging instead)
 - Set Charge Level Target (new in OnStarJS 2.12.0 - for EVs)
 - Stop Charging (new in OnStarJS 2.12.0 - for EVs)
 - ~~Get Charging Profile~~ (deprecated - use Get EV Charging Metrics instead)
 - ~~Set Charging Profile~~ (deprecated - use Set Charge Level Target instead)
+
+_Data Retrieval:_
+
 - Get Location
 - Get Diagnostics
 - **Get Vehicle Details** (new in OnStarJS 2.12.0)
-- **Get OnStar Plan** (new in OnStarJS 2.12.0)
+- **Get OnStar Plan** (new in OnStarJS 2.12.0 - plan details are **only populated for primary account holders**; shared accounts will receive `onstarInfo` with active status but plan details will be empty or trigger partial errors that are handled gracefully)
 - **Get EV Charging Metrics** (new in OnStarJS 2.12.0)
 - **Refresh EV Charging Metrics** (new in OnStarJS 2.14.0 - live data)
 - **Get Vehicle Recall Info** (new in OnStarJS 2.12.0)
+- **Get Warranty Info** (new in OnStarJS 2.16.0)
+- **Get SXM Subscription Info** (new in OnStarJS 2.16.0)
 
 **⚠️ Warning:** Only enable buttons you need and understand. Accidentally pressing the wrong button could trigger unwanted actions on your vehicle.
 
@@ -670,9 +738,20 @@ icon: "mdi:car-electric"
 
 #### Format for sending command options in the payload
 
+**Vehicle Control:**
+
 - Start Vehicle with Cabin Temperature (for EVs with preconditioning)
   - `{"command": "startVehicle","options": {"cabinTemperature": 21}}` (temperature in Celsius)
   - Note: Temperature is rounded to whole number; feature requires vehicle support
+- Alert (flash or honk)
+  - `{"command": "alert","options": {"action": "Flash"}}` (deprecated - use `flashLights` instead)
+  - `{"command": "alert","options": {"action": "Honk"}}` (deprecated - use vehicle honk if available)
+- Flash Lights / Stop Lights
+  - `{"command": "flashLights"}`
+  - `{"command": "stopLights"}`
+
+**EV Charging:**
+
 - ~~Set Charging Profile~~ (deprecated)
   - ~~`{"command": "setChargingProfile","options": {"chargeMode": "RATE_BASED","rateType": "OFFPEAK"}}`~~
 - Set Charge Level Target (set target charge percentage)
@@ -682,18 +761,29 @@ icon: "mdi:car-electric"
     - `{"command": "setChargeLevelTarget","options": {"tcl": 80}}`
 - Stop Charging (stop active charging session)
   - `{"command": "stopCharging"}`
+
+**Data Retrieval:**
+
+- Get Account Vehicles (list vehicles on your OnStar account)
+  - `{"command": "getAccountVehicles"}`
+- Get Location (get current vehicle GPS coordinates)
+  - `{"command": "getLocation"}`
+- Get Diagnostics (retrieve all diagnostic data - API v3 returns comprehensive data automatically)
+  - `{"command": "diagnostics"}`
+- Get Vehicle Details (get comprehensive vehicle information including specifications)
+  - `{"command": "getVehicleDetails"}`
+- Get OnStar Plan (get OnStar service plan details and status — plan details are **only populated for primary account holders**; shared accounts will receive `onstarInfo` with active status but plan details will be empty or trigger partial errors that are handled gracefully)
+  - `{"command": "getOnstarPlan"}`
+- Get Vehicle Recall Info (get active vehicle recall information)
+  - `{"command": "getVehicleRecallInfo"}`
 - Get EV Charging Metrics (get cached charging data)
   - `{"command": "getEVChargingMetrics"}`
 - Refresh EV Charging Metrics (force fresh charging telemetry from vehicle)
   - `{"command": "refreshEVChargingMetrics"}`
-- Get Diagnostics (retrieve all diagnostic data - API v3 returns comprehensive data automatically)
-  - `{"command": "diagnostics"}`
-- Alert (flash or honk)
-  - `{"command": "alert","options": {"action": "Flash"}}` (deprecated - use `flashLights` instead)
-  - `{"command": "alert","options": {"action": "Honk"}}` (deprecated - use vehicle honk if available)
-- Flash Lights / Stop Lights
-  - `{"command": "flashLights"}`
-  - `{"command": "stopLights"}`
+- Get Warranty Info (get vehicle warranty coverage details)
+  - `{"command": "getWarrantyInfo"}`
+- Get SXM Subscription Info (get SiriusXM subscription details)
+  - `{"command": "getSxmSubscriptionInfo"}`
 
 ### Trigger Precondition via Calendar
 
@@ -935,32 +1025,42 @@ mode: single
 
 Commands Implemented in this Program:
 
+**Vehicle Control:**
+
+1. `startVehicle` (supports optional `cabinTemperature` in Celsius for EVs with preconditioning)
+2. `cancelStartVehicle`
+3. `alert`
+4. `cancelAlert`
+5. `lockDoor`
+6. `unlockDoor`
+7. `lockTrunk` (only available on some vehicles)
+8. `unlockTrunk` (only available on some vehicles)
+9. `alertFlash` (convenience wrapper for `alert` with Flash action - use `flashLights` for API v3)
+10. `alertHonk` (convenience wrapper for `alert` with Honk action)
+11. `flashLights` (uses OnStar API v3 - flash vehicle lights, recommended over alertFlash)
+12. `stopLights` (uses OnStar API v3 - stop flashing vehicle lights)
+
+**EV Charging:**
+
+1. ~~`getChargingProfile`~~ (deprecated - use `getEVChargingMetrics` instead)
+2. ~~`setChargingProfile`~~ (deprecated - use `setChargeLevelTarget` instead)
+3. ~~`chargeOverride`~~ (deprecated - use `setChargeLevelTarget` or `stopCharging` instead)
+4. ~~`cancelChargeOverride`~~ (deprecated - use `setChargeLevelTarget` or `stopCharging` instead)
+5. `setChargeLevelTarget` (EV only - set target charge level percentage and options)
+6. `stopCharging` (EV only - stop active charging session)
+7. `getEVChargingMetrics` (EV only - get cached charging metrics including battery SOC, range, consumption)
+8. `refreshEVChargingMetrics` (EV only - force vehicle to generate fresh charging telemetry and return live data)
+
+**Data Retrieval:**
+
 1. `getAccountVehicles`
-2. `startVehicle` (supports optional `cabinTemperature` in Celsius for EVs with preconditioning)
-3. `cancelStartVehicle`
-4. `alert`
-5. `cancelAlert`
-6. `lockDoor`
-7. `unlockDoor`
-8. `lockTrunk` (only available on some vehicles)
-9. `unlockTrunk` (only available on some vehicles)
-10. ~~`getChargingProfile`~~ (deprecated - use `getEVChargingMetrics` instead)
-11. ~~`setChargingProfile`~~ (deprecated - use `setChargeLevelTarget` instead)
-12. ~~`chargeOverride`~~ (deprecated - use `setChargeLevelTarget` or `stopCharging` instead)
-13. ~~`cancelChargeOverride`~~ (deprecated - use `setChargeLevelTarget` or `stopCharging` instead)
-14. `getLocation`
-15. `alertFlash` (convenience wrapper for `alert` with Flash action - use `flashLights` for API v3)
-16. `alertHonk` (convenience wrapper for `alert` with Honk action)
-17. `flashLights` (uses OnStar API v3 - flash vehicle lights, recommended over alertFlash)
-18. `stopLights` (uses OnStar API v3 - stop flashing vehicle lights)
-19. `diagnostics` (uses OnStar API v3 - retrieves comprehensive diagnostic data for all vehicle systems. Can be requested on-demand but diagnostic data is not real-time and reflects the last cached state from the API. Runs automatically during polling. See "Advanced Diagnostics Sensors" section above for details on the 7 diagnostic system sensors automatically created)
-20. `setChargeLevelTarget` (EV only - set target charge level percentage and options)
-21. `stopCharging` (EV only - stop active charging session)
-22. `getVehicleDetails` (get comprehensive vehicle information including specifications)
-23. `getOnstarPlan` (get OnStar service plan details and status)
-24. `getEVChargingMetrics` (EV only - get cached charging metrics including battery SOC, range, consumption)
-25. `refreshEVChargingMetrics` (EV only - force vehicle to generate fresh charging telemetry and return live data)
-26. `getVehicleRecallInfo` (get active vehicle recall information)
+2. `getLocation`
+3. `diagnostics` (uses OnStar API v3 - retrieves comprehensive diagnostic data for all vehicle systems. Can be requested on-demand but diagnostic data is not real-time and reflects the last cached state from the API. Runs automatically during polling. See "Advanced Diagnostics Sensors" section above for details on the 7 diagnostic system sensors automatically created)
+4. `getVehicleDetails` (get comprehensive vehicle information including specifications)
+5. `getOnstarPlan` (get OnStar service plan details and status — plan details are **only populated for primary account holders**; shared accounts will receive `onstarInfo` with active status but plan details will be empty or trigger partial errors that are handled gracefully)
+6. `getVehicleRecallInfo` (get active vehicle recall information)
+7. `getWarrantyInfo` (get vehicle warranty coverage details and status)
+8. `getSxmSubscriptionInfo` (get SiriusXM satellite radio subscription details)
 
 ### Lovelace Dashboard
 

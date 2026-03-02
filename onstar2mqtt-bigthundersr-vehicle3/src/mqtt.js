@@ -151,6 +151,14 @@ class MQTT {
                 Name: 'getVehicleRecallInfo',
                 Icon: 'mdi:alert-octagon',
             },
+            GetWarrantyInfo: {
+                Name: 'getWarrantyInfo',
+                Icon: 'mdi:shield-check',
+            },
+            GetSxmSubscriptionInfo: {
+                Name: 'getSxmSubscriptionInfo',
+                Icon: 'mdi:radio',
+            },
         }
     };
 
