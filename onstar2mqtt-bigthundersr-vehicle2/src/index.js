@@ -15,6 +15,68 @@ let buttonConfigsPublished = '';
 let refreshIntervalConfigPublished = '';
 let cachedVehicleImageBase64 = null; // Cache the downloaded image
 
+/**
+ * Dynamically log all fields of an API response object.
+ * Automatically handles primitives, arrays, and nested objects so that
+ * new/removed API fields are logged without code changes.
+ *
+ * @param {string} header  - Banner label, e.g. "WARRANTY INFO"
+ * @param {object} data    - The object whose keys should be logged
+ * @param {object} [opts]  - Optional overrides
+ * @param {string} [opts.arrayKey]  - Key within `data` holding the primary
+ *                                     array to enumerate (items logged individually)
+ * @param {string} [opts.itemLabel] - Label prefix for each array item, e.g. "Warranty"
+ */
+const logResponseData = (header, data, opts = {}) => {
+    const border = '='.repeat(header.length + 6);
+    logger.info(`=== ${header} ===`);
+    if (!data || typeof data !== 'object') {
+        logger.info('(no data)');
+        logger.info(border);
+        return;
+    }
+    for (const [key, value] of Object.entries(data)) {
+        if (opts.arrayKey && key === opts.arrayKey) continue; // logged separately below
+        if (value === null || value === undefined) {
+            logger.info(`${key}: N/A`);
+        } else if (Array.isArray(value)) {
+            logger.info(`${key}: (${value.length} items)`);
+            logger.debug(`${key}: ${JSON.stringify(value)}`);
+        } else if (typeof value === 'object') {
+            const json = JSON.stringify(value);
+            if (json.length <= 200) {
+                logger.info(`${key}: ${json}`);
+            } else {
+                logger.info(`${key}: (${Object.keys(value).length} keys)`);
+                logger.debug(`${key}: ${json}`);
+            }
+        } else {
+            logger.info(`${key}: ${value}`);
+        }
+    }
+    if (opts.arrayKey && Array.isArray(data[opts.arrayKey])) {
+        const arr = data[opts.arrayKey];
+        const label = opts.itemLabel || opts.arrayKey;
+        logger.info(`${opts.arrayKey}: (${arr.length} items)`);
+        arr.forEach((item, i) => {
+            if (typeof item === 'object' && item !== null) {
+                const summary = Object.entries(item)
+                    .map(([k, v]) => {
+                        if (v === null || v === undefined) return `${k}: N/A`;
+                        if (Array.isArray(v)) return `${k}: [${v.join(', ')}]`;
+                        if (typeof v === 'object') return `${k}: (object)`;
+                        return `${k}: ${v}`;
+                    })
+                    .join(' | ');
+                logger.info(`  ${label} ${i + 1}: ${summary}`);
+            } else {
+                logger.info(`  ${label} ${i + 1}: ${item}`);
+            }
+        });
+    }
+    logger.info(border);
+};
+
 // In-memory tracking of diagnostic state for EV metrics updates
 // Used when state cache is disabled to enable merging without overwriting
 const diagnosticStateTracker = new Map();
@@ -659,32 +721,7 @@ const configureMQTT = async (commands, client, mqttHA) => {
                             last_updated: completionTimestamp
                         };
                         
-                        // Log all vehicle details
-                        logger.info('=== VEHICLE DETAILS ===');
-                        logger.info(`Make: ${vehicleDetails.make}`);
-                        logger.info(`Model: ${vehicleDetails.model}`);
-                        logger.info(`Year: ${vehicleDetails.year}`);
-                        logger.info(`VIN: ${vehicleDetails.vin}`);
-                        logger.info(`Color: ${vehicleDetails.color || 'N/A'}`);
-                        logger.info(`OnStar Capable: ${vehicleDetails.onstarCapable}`);
-                        logger.info(`Image URL: ${vehicleDetails.imageUrl || 'N/A'}`);
-                        logger.info(`Order Date: ${vehicleDetails.orderDate || 'N/A'}`);
-                        if (vehicleDetails.rpoCodes && vehicleDetails.rpoCodes.length > 0) {
-                            logger.info(`RPO Codes (${vehicleDetails.rpoCodes.length}): ${vehicleDetails.rpoCodes.slice(0, 10).join(', ')}${vehicleDetails.rpoCodes.length > 10 ? '...' : ''}`);
-                        }
-                        if (vehicleDetails.permissions) {
-                            logger.info(`Permissions: ${JSON.stringify(vehicleDetails.permissions)}`);
-                        }
-                        if (vehicleDetails.vehicleCommands) {
-                            logger.info(`Vehicle Commands: ${JSON.stringify(vehicleDetails.vehicleCommands)}`);
-                        }
-                        if (vehicleDetails.vehicleMetaData) {
-                            logger.info(`Vehicle Metadata: ${JSON.stringify(vehicleDetails.vehicleMetaData)}`);
-                        }
-                        if (vehicleDetails.onstarInfo) {
-                            logger.info(`OnStar Info: ${JSON.stringify(vehicleDetails.onstarInfo)}`);
-                        }
-                        logger.info('=======================');
+                        logResponseData('VEHICLE DETAILS', vehicleDetails);
                         
                         logger.info('Publishing vehicle details sensor configuration');
                         client.publish(sensorTopic, JSON.stringify(sensorConfig), { retain: true });
@@ -796,12 +833,12 @@ const configureMQTT = async (commands, client, mqttHA) => {
                             last_updated: completionTimestamp
                         };
                         
+                        logResponseData('ONSTAR PLAN', vehicleDetails, { arrayKey: 'planInfo', itemLabel: 'Plan' });
+                        
                         logger.info('Publishing OnStar plan sensor configuration');
                         client.publish(sensorTopic, JSON.stringify(sensorConfig), { retain: true });
                         logger.info('Publishing OnStar plan sensor state');
                         client.publish(stateTopic, JSON.stringify(sensorState), { retain: true });
-                        
-                        logger.info(`OnStar plan sensor updated: ${activePlans} active of ${planInfo.length} total`);
                     }
                 })
                 .catch((e) => {
@@ -907,7 +944,7 @@ const configureMQTT = async (commands, client, mqttHA) => {
                             last_updated: completionTimestamp
                         };
                         
-                        logger.info(`Warranty sensor updated: ${activeWarranties} applicable of ${warrantyInfo.length} total (${expiredWarranties} expired)`);
+                        logResponseData('WARRANTY INFO', vehicleDetails, { arrayKey: 'warrantyInfo', itemLabel: 'Warranty' });
                         
                         logger.info('Publishing warranty info sensor configuration');
                         client.publish(sensorTopic, JSON.stringify(sensorConfig), { retain: true });
@@ -1026,7 +1063,7 @@ const configureMQTT = async (commands, client, mqttHA) => {
                             last_updated: completionTimestamp
                         };
                         
-                        logger.info(`SXM subscription sensor updated: ${activeSubscriptions} subscribed of ${subscriptions.length} total`);
+                        logResponseData('SXM SUBSCRIPTION INFO', sxmInfo, { arrayKey: 'subscriptions', itemLabel: 'Subscription' });
                         
                         logger.info('Publishing SXM subscription sensor configuration');
                         client.publish(sensorTopic, JSON.stringify(sensorConfig), { retain: true });
