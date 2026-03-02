@@ -193,6 +193,14 @@ class Commands {
         return this.onstar.getVehicleRecallInfo();
     }
 
+    async getWarrantyInfo() {
+        return this.onstar.getWarrantyInfo();
+    }
+
+    async getSxmSubscriptionInfo() {
+        return this.onstar.getSxmSubscriptionInfo();
+    }
+
 }
 
 module.exports = Commands;

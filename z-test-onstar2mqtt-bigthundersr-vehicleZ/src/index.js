@@ -801,34 +801,7 @@ const configureMQTT = async (commands, client, mqttHA) => {
                         logger.info('Publishing OnStar plan sensor state');
                         client.publish(stateTopic, JSON.stringify(sensorState), { retain: true });
                         
-                        // Log all OnStar plan details
-                        logger.info('=== ONSTAR PLAN DETAILS ===');
-                        logger.info(`Vehicle: ${vehicleDetails.year} ${vehicleDetails.make} ${vehicleDetails.model}`);
-                        logger.info(`Active Plans: ${activePlans} of ${planInfo.length} total`);
-                        logger.info('');
-                        logger.info('All Plans:');
-                        planInfo.forEach((plan, index) => {
-                            logger.info(`  ${index + 1}. ${plan.productCode}`);
-                            logger.info(`     Status: ${plan.status}`);
-                            logger.info(`     Type: ${plan.productType}`);
-                            logger.info(`     Billing: ${plan.billingCadence}`);
-                            logger.info(`     Start Date: ${plan.startDate}`);
-                            logger.info(`     End Date: ${plan.endDate || 'No end date'}`);
-                            logger.info(`     Expiry Date: ${plan.expiryDate || 'N/A'}`);
-                            logger.info(`     Trial: ${plan.isTrial ? 'Yes' : 'No'}`);
-                            logger.info(`     Price Plan: ${plan.pricePlan}`);
-                            if (plan.orderItemTags && plan.orderItemTags.length > 0) {
-                                logger.info(`     Tags: ${plan.orderItemTags.join(', ')}`);
-                            }
-                            logger.info('');
-                        });
-                        if (vehicleDetails.planExpiryInfo && vehicleDetails.planExpiryInfo.length > 0) {
-                            logger.info('Plan Expiry Info:');
-                            vehicleDetails.planExpiryInfo.forEach(expiry => {
-                                logger.info(`  - ${JSON.stringify(expiry)}`);
-                            });
-                        }
-                        logger.info('===========================');
+                        logger.info(`OnStar plan sensor updated: ${activePlans} active of ${planInfo.length} total`);
                     }
                 })
                 .catch((e) => {
@@ -839,6 +812,236 @@ const configureMQTT = async (commands, client, mqttHA) => {
                             error: normalizeError(e)
                         };
                         logger.error('getOnstarPlan Command Error!', { error: errorPayload });
+                        logger.error(`Command Status Topic for Errored Command: ${commandStatusTopic}`);
+                        client.publish(commandStatusTopic,
+                            JSON.stringify({
+                                "command": errorPayload,
+                                "completionTimestamp": completionTimestamp
+                            }), { retain: true });
+                    }
+                });
+        }
+
+        else if (command === 'getWarrantyInfo') {
+            // Handle getWarrantyInfo command - doesn't take any parameters
+            logger.warn('Command sent:', { command });
+            logger.warn(`Command Status Topic: ${commandStatusTopic}`);
+            client.publish(commandStatusSensorConfig.topic, JSON.stringify(commandStatusSensorConfig.payload), { retain: true });
+            client.publish(commandStatusSensorTimestampConfig.topic, JSON.stringify(commandStatusSensorTimestampConfig.payload), { retain: true });
+            client.publish(commandStatusTopic,
+                JSON.stringify({
+                    "command": {
+                        "error": {
+                            "message": "Sent",
+                            "response": {
+                                "status": 0,
+                                "statusText": "Sent"
+                            }
+                        }
+                    },
+                    "completionTimestamp": new Date().toISOString()
+                }), { retain: true });
+            
+            commands.getWarrantyInfo()
+                .then(data => {
+                    const completionTimestamp = new Date().toISOString();
+                    logger.debug(`Completion Timestamp: ${completionTimestamp}`);
+                    logger.warn('getWarrantyInfo command completed');
+                    logger.warn(`Command Status Topic: ${commandStatusTopic}`);
+                    
+                    client.publish(
+                        commandStatusTopic,
+                        JSON.stringify({
+                            "command": {
+                                "error": {
+                                    "message": "Completed Successfully",
+                                    "response": {
+                                        "status": 0,
+                                        "statusText": "Completed Successfully"
+                                    }
+                                }
+                            },
+                            "completionTimestamp": completionTimestamp
+                        }), { retain: true }
+                    );
+                    
+                    const responseData = data?.response?.data;
+                    const directData = data?.data;
+                    const actualData = responseData || directData;
+                    
+                    if (actualData) {
+                        const vehicleDetails = actualData.vehicleDetails || actualData;
+                        
+                        const sensorTopic = `${mqttHA.prefix}/sensor/${mqttHA.instance}/warranty_info/config`;
+                        const stateTopic = `${mqttHA.prefix}/sensor/${mqttHA.instance}/warranty_info/state`;
+                        
+                        const warrantyInfo = vehicleDetails.warrantyInfo || [];
+                        // API returns uppercase statuses: APPLICABLE (current), EXPIRED, etc.
+                        const activeWarranties = warrantyInfo.filter(w => {
+                            const s = (w.status || '').toUpperCase();
+                            return s === 'APPLICABLE' || s === 'ACTIVE';
+                        }).length;
+                        const expiredWarranties = warrantyInfo.filter(w => (w.status || '').toUpperCase() === 'EXPIRED').length;
+                        
+                        const sensorConfig = {
+                            name: `${mqttHA.vehicle} Warranty Info`,
+                            unique_id: `${mqttHA.instance}_warranty_info`,
+                            state_topic: stateTopic,
+                            json_attributes_topic: stateTopic,
+                            value_template: '{{ value_json.state }}',
+                            icon: 'mdi:shield-check',
+                            device: mqttHA.getDevicePayload(),
+                            availability: {
+                                topic: mqttHA.getAvailabilityTopic(),
+                                payload_available: 'true',
+                                payload_not_available: 'false'
+                            }
+                        };
+                        
+                        const sensorState = {
+                            state: `${activeWarranties} Applicable`,
+                            active_warranties: activeWarranties,
+                            expired_warranties: expiredWarranties,
+                            total_warranties: warrantyInfo.length,
+                            warranty_info: warrantyInfo,
+                            last_updated: completionTimestamp
+                        };
+                        
+                        logger.info(`Warranty sensor updated: ${activeWarranties} applicable of ${warrantyInfo.length} total (${expiredWarranties} expired)`);
+                        
+                        logger.info('Publishing warranty info sensor configuration');
+                        client.publish(sensorTopic, JSON.stringify(sensorConfig), { retain: true });
+                        logger.info('Publishing warranty info sensor state');
+                        client.publish(stateTopic, JSON.stringify(sensorState), { retain: true });
+                    }
+                })
+                .catch((e) => {
+                    if (e instanceof Error) {
+                        const completionTimestamp = new Date().toISOString();
+                        logger.debug(`Completion Timestamp: ${completionTimestamp}`);
+                        const errorPayload = {
+                            error: normalizeError(e)
+                        };
+                        logger.error('getWarrantyInfo Command Error!', { error: errorPayload });
+                        logger.error(`Command Status Topic for Errored Command: ${commandStatusTopic}`);
+                        client.publish(commandStatusTopic,
+                            JSON.stringify({
+                                "command": errorPayload,
+                                "completionTimestamp": completionTimestamp
+                            }), { retain: true });
+                    }
+                });
+        }
+
+        else if (command === 'getSxmSubscriptionInfo') {
+            // Handle getSxmSubscriptionInfo command - doesn't take any parameters
+            logger.warn('Command sent:', { command });
+            logger.warn(`Command Status Topic: ${commandStatusTopic}`);
+            client.publish(commandStatusSensorConfig.topic, JSON.stringify(commandStatusSensorConfig.payload), { retain: true });
+            client.publish(commandStatusSensorTimestampConfig.topic, JSON.stringify(commandStatusSensorTimestampConfig.payload), { retain: true });
+            client.publish(commandStatusTopic,
+                JSON.stringify({
+                    "command": {
+                        "error": {
+                            "message": "Sent",
+                            "response": {
+                                "status": 0,
+                                "statusText": "Sent"
+                            }
+                        }
+                    },
+                    "completionTimestamp": new Date().toISOString()
+                }), { retain: true });
+            
+            commands.getSxmSubscriptionInfo()
+                .then(data => {
+                    const completionTimestamp = new Date().toISOString();
+                    logger.debug(`Completion Timestamp: ${completionTimestamp}`);
+                    logger.warn('getSxmSubscriptionInfo command completed');
+                    logger.warn(`Command Status Topic: ${commandStatusTopic}`);
+                    
+                    client.publish(
+                        commandStatusTopic,
+                        JSON.stringify({
+                            "command": {
+                                "error": {
+                                    "message": "Completed Successfully",
+                                    "response": {
+                                        "status": 0,
+                                        "statusText": "Completed Successfully"
+                                    }
+                                }
+                            },
+                            "completionTimestamp": completionTimestamp
+                        }), { retain: true }
+                    );
+                    
+                    const responseData = data?.response?.data;
+                    const directData = data?.data;
+                    const actualData = responseData || directData;
+                    
+                    if (actualData) {
+                        const vehicleDetails = actualData.vehicleDetails || actualData;
+                        
+                        const sensorTopic = `${mqttHA.prefix}/sensor/${mqttHA.instance}/sxm_subscription/config`;
+                        const stateTopic = `${mqttHA.prefix}/sensor/${mqttHA.instance}/sxm_subscription/state`;
+                        
+                        const sxmInfo = vehicleDetails.sxmSubscriptionInfo || {};
+                        const subscriptions = sxmInfo.subscriptions || [];
+                        // API uses marketType (e.g. "SUBSCRIBED") not status field
+                        const activeSubscriptions = subscriptions.filter(s => {
+                            const market = (s.marketType || '').toUpperCase();
+                            const status = (s.status || '').toUpperCase();
+                            return market === 'SUBSCRIBED' || status === 'ACTIVE' || status === 'SUBSCRIBED';
+                        }).length;
+                        
+                        const sensorConfig = {
+                            name: `${mqttHA.vehicle} SXM Subscription`,
+                            unique_id: `${mqttHA.instance}_sxm_subscription`,
+                            state_topic: stateTopic,
+                            json_attributes_topic: stateTopic,
+                            value_template: '{{ value_json.state }}',
+                            icon: 'mdi:radio',
+                            device: mqttHA.getDevicePayload(),
+                            availability: {
+                                topic: mqttHA.getAvailabilityTopic(),
+                                payload_available: 'true',
+                                payload_not_available: 'false'
+                            }
+                        };
+                        
+                        // channelAccountInfo is at the top level of sxmSubscriptionInfo, contains radioId, packageName, expiryDate
+                        const channelInfo = sxmInfo.channelAccountInfo || null;
+                        
+                        const sensorState = {
+                            state: activeSubscriptions > 0 ? `${activeSubscriptions} Subscribed` : 'None',
+                            active_subscriptions: activeSubscriptions,
+                            total_subscriptions: subscriptions.length,
+                            subscriptions: subscriptions,
+                            radio_id: channelInfo?.radioId || sxmInfo.radioId || null,
+                            is_360_device: sxmInfo.is360Device || null,
+                            channel_account_info: channelInfo,
+                            package_name: channelInfo?.packageName || null,
+                            expiry_date: channelInfo?.expiryDate || null,
+                            last_updated: completionTimestamp
+                        };
+                        
+                        logger.info(`SXM subscription sensor updated: ${activeSubscriptions} subscribed of ${subscriptions.length} total`);
+                        
+                        logger.info('Publishing SXM subscription sensor configuration');
+                        client.publish(sensorTopic, JSON.stringify(sensorConfig), { retain: true });
+                        logger.info('Publishing SXM subscription sensor state');
+                        client.publish(stateTopic, JSON.stringify(sensorState), { retain: true });
+                    }
+                })
+                .catch((e) => {
+                    if (e instanceof Error) {
+                        const completionTimestamp = new Date().toISOString();
+                        logger.debug(`Completion Timestamp: ${completionTimestamp}`);
+                        const errorPayload = {
+                            error: normalizeError(e)
+                        };
+                        logger.error('getSxmSubscriptionInfo Command Error!', { error: errorPayload });
                         logger.error(`Command Status Topic for Errored Command: ${commandStatusTopic}`);
                         client.publish(commandStatusTopic,
                             JSON.stringify({
