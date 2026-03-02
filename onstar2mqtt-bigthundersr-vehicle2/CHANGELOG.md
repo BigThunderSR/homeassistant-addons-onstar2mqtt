@@ -1,5 +1,19 @@
 # Changelog
 
+## 2.8.0
+
+**New Features:**
+
+- **Universal Status Attributes** - All diagnostic sensors now expose `status` and `status_color` as HA entity attributes, allowing any HA card (Mushroom, card-mod, etc.) to dynamically colorize sensors. Sensors with existing custom `status_color` attributes are preserved as-is.
+- **Warranty Info Command** - New `getWarrantyInfo` command and sensor showing vehicle warranty coverage details (active/expired warranties, warranty info)
+- **SXM Subscription Info Command** - New `getSxmSubscriptionInfo` command and sensor showing SiriusXM subscription status (active subscriptions, radio ID, package name, expiry date)
+
+**Other Updates:**
+
+- Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v2.8.0](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v2.8.0)
+- Update to OnStarJS2 2.16.0 - Add `getWarrantyInfo` and `getSxmSubscriptionInfo` commands
+- **Note:** The `getOnstarPlan` command only returns full plan details for **primary account holders**; shared accounts will receive `onstarInfo` with active status but plan details will be empty
+
 ## 2.7.0
 
 **New Features:**
