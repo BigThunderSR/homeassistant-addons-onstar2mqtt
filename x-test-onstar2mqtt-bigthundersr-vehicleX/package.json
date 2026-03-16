@@ -41,7 +41,7 @@
     "winston": "^3.19.0"
   },
   "overrides": {
-    "patchright": "^1.57.0"
+    "patchright": "^1.58.2"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
