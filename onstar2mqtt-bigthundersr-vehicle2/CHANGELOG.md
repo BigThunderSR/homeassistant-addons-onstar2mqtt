@@ -1,5 +1,15 @@
 # Changelog
 
+## 2.8.2
+
+**Bug Fixes:**
+
+- **OnStarJS2 2.16.1** - Propagate HTTP status/statusText on RequestError responses for better error diagnostics
+
+**Other Updates:**
+
+- Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v2.8.2](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v2.8.2)
+
 ## 2.8.1
 
 **Bug Fixes:**
