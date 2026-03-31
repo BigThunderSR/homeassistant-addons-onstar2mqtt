@@ -21,8 +21,8 @@ RUN apt-get update \
 # Previous Node.js installation from Debian repos (Node 18.x)
 # RUN apt-get update \
 #     && apt-get install -y --no-install-recommends \
-#         nodejs \
-#         npm \
+#     nodejs \
+#     npm \
 #     && apt-get clean \
 #     && rm -rf /var/lib/apt/lists/*
 
@@ -34,6 +34,9 @@ COPY ["package-lock.json", "/app/"]
 RUN npm ci --omit=dev --no-fund --legacy-peer-deps
 RUN npx patchright install chromium --with-deps
 
+COPY ["overrides/index.cjs", "/app/node_modules/onstarjs/dist/"]
+COPY ["overrides/index.mjs", "/app/node_modules/onstarjs/dist/"]
+
 COPY ["src", "/app/src"]
 
 COPY run.sh /app/
@@ -43,8 +46,8 @@ CMD [ "/app/run.sh" ]
 
 #  Labels 
 
-ARG BUILD_DESCRIPTION="Home Assistant Add On Version of BigThunderSR/onstar2mqtt for Vehicle 1"
-ARG BUILD_NAME="OnStar2MQTT Home Assistant Add-on (BigThunderSR) for Vehicle 1"
+ARG BUILD_DESCRIPTION="Z Test Home Assistant Add On Version of BigThunderSR/onstar2mqtt for Vehicle 1"
+ARG BUILD_NAME="Z Test OnStar2MQTT Home Assistant Add-on (BigThunderSR) for Vehicle 1"
 ARG BUILD_REPOSITORY="BigThunderSR/homeassistant-addons-onstar2mqtt"
 
 LABEL \
@@ -55,4 +58,4 @@ LABEL \
     org.opencontainers.image.authors="BigThunderSR (https://github.com/BigThunderSR)" \    
     org.opencontainers.image.url="https://github.com/BigThunderSR" \
     org.opencontainers.image.source="https://github.com/${BUILD_REPOSITORY}" \
-    org.opencontainers.image.documentation="https://github.com/${BUILD_REPOSITORY}/blob/main/README.md" 
+    org.opencontainers.image.documentation="https://github.com/${BUILD_REPOSITORY}/blob/main/README.md"
