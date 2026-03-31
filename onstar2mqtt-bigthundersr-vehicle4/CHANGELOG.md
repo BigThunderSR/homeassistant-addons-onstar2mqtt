@@ -1,5 +1,17 @@
 # Changelog
 
+## 2.8.4
+
+**Bug Fixes:**
+
+- **Axios Downgrade** - Downgrade axios to ^1.14.0 (1.14.1 was pulled from the npm registry)
+- **OnStarJS2 2.16.3** - Pin axios to ^1.14.0 in OnStarJS2 as well
+
+**Other Updates:**
+
+- Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v2.8.4](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v2.8.4)
+- Update to OnStarJS2 2.16.3
+
 ## 2.8.3
 
 **Other Updates:**
