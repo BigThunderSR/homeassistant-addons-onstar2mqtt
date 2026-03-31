@@ -1,5 +1,12 @@
 # Changelog
 
+## 2.8.3
+
+**Other Updates:**
+
+- Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v2.8.3](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v2.8.3)
+- Update to OnStarJS2 2.16.2
+
 ## 2.8.2
 
 **Bug Fixes:**
