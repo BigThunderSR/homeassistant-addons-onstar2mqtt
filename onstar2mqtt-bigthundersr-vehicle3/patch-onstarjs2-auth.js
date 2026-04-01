@@ -23,7 +23,7 @@ const frameReplacement = `                yield client.send("Network.enable");
                     const locationCode = this.getRegexMatch(normalizedUrl, \`[?&]code=([^&]*)\`);
                     if (locationCode && normalizedUrl.toLowerCase().includes("msauth.com.gm.mychevrolet")) {
                         this.capturedAuthCode = locationCode;
-                        console.log(\`[SUCCESS handleMFA \${source}] Extracted authorization code: \${locationCode}\`);
+                        console.log(\`[SUCCESS handleMFA \${source}] Captured authorization redirect\`);
                         return true;
                     }
                     return false;
@@ -134,7 +134,7 @@ const otpReplacement = `                const otpField = yield page
                 yield otpField.type(otp, { delay: Math.random() * 120 + 40 });
                 const typedValue = yield otpField.inputValue();
                 if (typedValue !== otp) {
-                    console.log(\`[TRACE handleMFA] OTP input value after typing was "\${typedValue}", forcing DOM value assignment\`);
+                    console.log("[TRACE handleMFA] OTP input did not persist, forcing DOM value assignment");
                     yield otpField.evaluate((element, expected) => {
                         const input = element;
                         const nativeSetter = Object.getOwnPropertyDescriptor(window.HTMLInputElement.prototype, "value").set;
