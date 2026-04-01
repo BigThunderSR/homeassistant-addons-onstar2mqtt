@@ -31,7 +31,9 @@ WORKDIR /app
 
 COPY ["package.json", "/app/"]
 COPY ["package-lock.json", "/app/"]
+COPY ["patch-onstarjs2-auth.js", "/app/"]
 RUN npm ci --omit=dev --no-fund --legacy-peer-deps
+RUN node /app/patch-onstarjs2-auth.js
 RUN npx patchright install chromium --with-deps
 
 COPY ["src", "/app/src"]

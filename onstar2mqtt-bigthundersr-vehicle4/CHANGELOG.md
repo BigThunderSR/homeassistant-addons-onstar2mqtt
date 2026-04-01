@@ -1,5 +1,11 @@
 # Changelog
 
+## 2.8.5
+
+**Bug Fixes:**
+
+- **MFA/TOTP Login Reliability** - Patch `onstarjs2` so Microsoft MFA OTP entry persists before submit, waits through GM's client-side verification delay, keeps redirect capture active, and avoids repeated auth retry loops that can trigger access-denied lockouts
+
 ## 2.8.4
 
 **Bug Fixes:**
