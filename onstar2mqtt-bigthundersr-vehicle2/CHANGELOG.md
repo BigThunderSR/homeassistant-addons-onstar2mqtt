@@ -14,10 +14,14 @@
 
 ## 2.8.3
 
+> **⚠️ RETRACTED:** This version included the malicious `axios@1.14.1` and `onstarjs2@2.16.2` packages
+> ([details](https://socket.dev/blog/axios-supply-chain-attack)).
+> All associated container images have been deleted. Please update to v2.8.4 immediately.
+
 **Other Updates:**
 
-- Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v2.8.3](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v2.8.3)
-- Update to OnStarJS2 2.16.2
+- ~~Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v2.8.3](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v2.8.3)~~
+- ~~Update to OnStarJS2 2.16.2~~
 
 ## 2.8.2
 
