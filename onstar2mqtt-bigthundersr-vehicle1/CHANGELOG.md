@@ -14,7 +14,7 @@
 
 ## 2.8.3
 
-> **⚠️ RETRACTED:** This version included the malicious `axios@1.14.1` and `onstarjs2@2.16.2` packages
+> **⚠️ RETRACTED:** This version included `onstarjs2@2.16.2`, which transitively pulled in the malicious `axios@1.14.1`
 > ([details](https://www.stepsecurity.io/blog/axios-compromised-on-npm-malicious-versions-drop-remote-access-trojan)).
 > All associated container images have been deleted. Please update to v2.8.4 immediately.
 
