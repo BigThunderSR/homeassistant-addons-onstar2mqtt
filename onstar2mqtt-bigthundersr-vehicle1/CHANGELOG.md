@@ -15,7 +15,7 @@
 ## 2.8.3
 
 > **⚠️ RETRACTED:** This version included the malicious `axios@1.14.1` and `onstarjs2@2.16.2` packages
-> ([details](https://socket.dev/blog/axios-supply-chain-attack)).
+> ([details](https://socket.dev/blog/axios-npm-package-compromised)).
 > All associated container images have been deleted. Please update to v2.8.4 immediately.
 
 **Other Updates:**
