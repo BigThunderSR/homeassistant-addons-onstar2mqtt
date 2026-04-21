@@ -1,0 +1,25 @@
+{
+  "name": "homeassistant-addons-onstar2mqtt (Home Assistant)",
+  "image": "ghcr.io/home-assistant/devcontainer:addons",
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+  "forwardPorts": [
+    8123
+  ],
+  "portsAttributes": {
+    "8123": {
+      "label": "Home Assistant",
+      "onAutoForward": "notify"
+    }
+  },
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "timonwong.shellcheck",
+        "ms-azuretools.vscode-docker"
+      ]
+    }
+  },
+  "mounts": []
+}
