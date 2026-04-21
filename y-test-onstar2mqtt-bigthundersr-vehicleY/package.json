@@ -46,7 +46,7 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "c8": "^11.0.0",
-    "eslint": "^10.1.0",
+    "eslint": "^10.2.1",
     "globals": "^17.4.0",
     "mocha": "^11.7.5"
   }
