@@ -1,0 +1,52 @@
+name: Cleanup packages
+
+on:
+  schedule:
+    - cron: "0 4 * * 0" # Weekly on Sunday at 4am UTC
+  workflow_dispatch:
+
+permissions:
+  packages: write
+
+jobs:
+  discover:
+    runs-on: ubuntu-latest
+    name: Discover packages
+    outputs:
+      packages: ${{ steps.packages.outputs.packages }}
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v6
+
+      - name: Build package list from config.yaml files
+        id: packages
+        run: |
+          packages=()
+          for config in */config.yaml; do
+            image=$(yq -r '.image' "$config" 2>/dev/null || true)
+            [[ -z "$image" || "$image" == "null" ]] && continue
+            # Strip registry prefix: ghcr.io/owner/name-{arch} → name-{arch}
+            base="${image#ghcr.io/*/}"
+            for arch in amd64 aarch64; do
+              pkg="${base//\{arch\}/$arch}"
+              packages+=("\"$pkg\"")
+            done
+          done
+          echo "packages=[$(IFS=,; echo "${packages[*]}")]" >> "$GITHUB_OUTPUT"
+
+  cleanup:
+    needs: discover
+    runs-on: ubuntu-latest
+    name: Clean ${{ matrix.package }}
+    strategy:
+      fail-fast: false
+      matrix:
+        package: ${{ fromJSON(needs.discover.outputs.packages) }}
+    steps:
+      - name: Delete untagged versions
+        uses: actions/delete-package-versions@v5
+        with:
+          package-name: ${{ matrix.package }}
+          package-type: container
+          delete-only-untagged-versions: true
+          min-versions-to-keep: 4
