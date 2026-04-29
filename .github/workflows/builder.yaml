@@ -54,10 +54,8 @@ jobs:
         run: |
           declare -a changed_addons
 
-          # Rebuild all addons on workflow_dispatch or if workflow file changed
-          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]] || \
-             [[ "$CHANGED_FILES" =~ \.github/workflows/builder\.yaml ]] || \
-             [[ "$CHANGED_FILES" =~ \.github/workflows/build-addon\.yaml ]]; then
+          # Rebuild all addons on workflow_dispatch only
+          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
             for addon in ${{ steps.addons.outputs.addons }}; do
               changed_addons+=("\"${addon}\",")
             done
