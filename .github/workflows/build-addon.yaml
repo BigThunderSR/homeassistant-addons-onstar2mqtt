@@ -1,0 +1,130 @@
+name: Build addon
+
+on:
+  workflow_call:
+    inputs:
+      addon:
+        required: true
+        type: string
+      publish:
+        required: true
+        type: boolean
+
+permissions:
+  contents: read
+  id-token: write
+  packages: write
+
+jobs:
+  prepare:
+    name: Prepare ${{ inputs.addon }}
+    runs-on: ubuntu-latest
+    outputs:
+      build_matrix: ${{ steps.matrix.outputs.matrix }}
+      version: ${{ steps.matrix.outputs.version }}
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v6
+
+      - name: Get addon information
+        id: info
+        uses: home-assistant/actions/helpers/info@master
+        with:
+          path: "./${{ inputs.addon }}"
+
+      - name: Prepare build matrix
+        id: matrix
+        shell: bash
+        env:
+          ARCHITECTURES: ${{ steps.info.outputs.architectures }}
+          IMAGE: ${{ steps.info.outputs.image }}
+          VERSION: ${{ steps.info.outputs.version }}
+          ADDON_PATH: "./${{ inputs.addon }}"
+        run: |
+          # Strip JSON quotes from info action outputs (yq -o=json wraps strings in quotes)
+          IMAGE="${IMAGE//\"/}"
+          VERSION="${VERSION//\"/}"
+
+          if [[ "$IMAGE" == "null" || -z "$IMAGE" ]]; then
+            echo "::error::Image property is not defined for ${{ inputs.addon }}"
+            exit 1
+          fi
+
+          # Find build file (build.yaml/yml/json) for BUILD_FROM values
+          build_file=""
+          for ext in yaml yml json; do
+            if [[ -f "${ADDON_PATH}/build.${ext}" ]]; then
+              build_file="${ADDON_PATH}/build.${ext}"
+              break
+            fi
+          done
+
+          matrix='{"include":[]}'
+          for arch in $(jq -r '.[]' <<< "${ARCHITECTURES}"); do
+            case "${arch}" in
+              amd64)   os="ubuntu-24.04" ;;
+              aarch64) os="ubuntu-24.04-arm" ;;
+              *)
+                echo "::error::Unsupported architecture: ${arch}. Supported: amd64, aarch64"
+                exit 1
+                ;;
+            esac
+            # Replace {arch} placeholder in image name from config.yaml
+            image="${IMAGE//\{arch\}/${arch}}"
+
+            # Read base image from build file
+            build_from=""
+            if [[ -n "$build_file" ]]; then
+              build_from=$(yq e -N -M ".build_from.${arch}" "$build_file")
+              if [[ "$build_from" == "null" ]]; then
+                build_from=""
+              fi
+            fi
+
+            if [[ -z "$build_from" ]]; then
+              echo "::error::No build_from defined for arch ${arch} in ${{ inputs.addon }}"
+              exit 1
+            fi
+
+            matrix=$(jq -c --arg arch "$arch" --arg os "$os" --arg image "$image" --arg build_from "$build_from" \
+              '.include += [{arch: $arch, os: $os, image: $image, build_from: $build_from}]' <<< "${matrix}")
+          done
+
+          echo "matrix=${matrix}" >> "$GITHUB_OUTPUT"
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          jq . <<< "${matrix}"
+
+  build:
+    name: Build ${{ matrix.arch }} image
+    needs: prepare
+    runs-on: ${{ matrix.os }}
+    permissions:
+      contents: read
+      id-token: write
+      packages: write
+    strategy:
+      fail-fast: false
+      matrix: ${{ fromJSON(needs.prepare.outputs.build_matrix) }}
+    steps:
+      - name: Check out the repository
+        uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+
+      - name: Build ${{ inputs.addon }} add-on
+        uses: home-assistant/builder/actions/build-image@2026.03.2
+        with:
+          arch: ${{ matrix.arch }}
+          build-args: |
+            BUILD_FROM=${{ matrix.build_from }}
+          container-registry-password: ${{ secrets.GITHUB_TOKEN }}
+          context: "./${{ inputs.addon }}"
+          image: ${{ matrix.image }}
+          image-tags: |
+            ${{ needs.prepare.outputs.version }}
+            latest
+          push: ${{ inputs.publish }}
+          version: ${{ needs.prepare.outputs.version }}
+          #--no-cache: use cache-gha: "false" to disable caching
+        #env:
+        #  CAS_API_KEY: ${{ secrets.CAS_API_KEY }}
