@@ -53,25 +53,17 @@ jobs:
           CHANGED_FILES: ${{ steps.changed_files.outputs.all }}
         run: |
           declare -a changed_addons
-
-          # Rebuild all addons on workflow_dispatch only
-          if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
-            for addon in ${{ steps.addons.outputs.addons }}; do
-              changed_addons+=("\"${addon}\",")
-            done
-          else
-            for addon in ${{ steps.addons.outputs.addons }}; do
-              if [[ "$CHANGED_FILES" =~ $addon ]]; then
-                for file in ${{ env.MONITORED_FILES }}; do
-                    if [[ "$CHANGED_FILES" =~ $addon/$file ]]; then
-                      if [[ ! "${changed_addons[@]}" =~ $addon ]]; then
-                        changed_addons+=("\"${addon}\",");
-                      fi
+          for addon in ${{ steps.addons.outputs.addons }}; do
+            if [[ "$CHANGED_FILES" =~ $addon ]]; then
+              for file in ${{ env.MONITORED_FILES }}; do
+                  if [[ "$CHANGED_FILES" =~ $addon/$file ]]; then
+                    if [[ ! "${changed_addons[@]}" =~ $addon ]]; then
+                      changed_addons+=("\"${addon}\",");
                     fi
-                done
-              fi
-            done
-          fi
+                  fi
+              done
+            fi
+          done
 
           changed=$(echo ${changed_addons[@]} | rev | cut -c 2- | rev)
 
