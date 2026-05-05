@@ -30,7 +30,7 @@
   },
   "homepage": "https://github.com/BigThunderSR/onstar2mqtt#readme",
   "dependencies": {
-    "axios": "^1.15.2",
+    "axios": "^1.16.0",
     "chromium-bidi": "^15.0.0",
     "convert-units": "^2.3.4",
     "dotenv": "^17.4.2",
@@ -46,8 +46,8 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "c8": "^11.0.0",
-    "eslint": "^10.2.1",
-    "globals": "^17.5.0",
+    "eslint": "^10.3.0",
+    "globals": "^17.6.0",
     "mocha": "^11.7.5"
   }
 }

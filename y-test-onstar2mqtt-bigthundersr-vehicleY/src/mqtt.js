@@ -749,6 +749,10 @@ class MQTT {
             case 'BRAKE FLUID LOW':
                 groupIcon = 'mdi:car-brake-fluid-level';
                 break;
+            case 'BRAKE_PAD_LIFE':
+            case 'BRAKE PAD LIFE':
+                groupIcon = 'mdi:car-brake-worn-linings';
+                break;
             case 'WASHER_FLUID_LOW':
             case 'WASHER FLUID LOW':
                 groupIcon = 'mdi:wiper-wash';
@@ -2084,6 +2088,18 @@ class MQTT {
             case 'CHARGE_ABORT_REASON_PID':
             case 'CHARGE ABORT REASON PID':
                 return this.mapSensorConfigPayload(diag, diagEl, undefined, undefined, undefined, undefined, 'mdi:alert-circle');
+            case 'BRAKE_PAD_LIFE_FRONT': // Numeric percentage (e.g., 77%)
+            case 'BRAKE PAD LIFE FRONT':
+                return this.mapSensorConfigPayload(diag, diagEl, 'measurement', undefined, undefined, undefined, 'mdi:car-brake-worn-linings');
+            case 'BRAKE_PAD_LIFE_REAR': // Numeric percentage (e.g., 80%)
+            case 'BRAKE PAD LIFE REAR':
+                return this.mapSensorConfigPayload(diag, diagEl, 'measurement', undefined, undefined, undefined, 'mdi:car-brake-worn-linings');
+            case 'BRAKE_PAD_LIFE_STATUS_INDICATION_REQUEST': // String value (e.g., "OK")
+            case 'BRAKE PAD LIFE STATUS INDICATION REQUEST':
+                return this.mapSensorConfigPayload(diag, diagEl, undefined, undefined, undefined, undefined, 'mdi:car-brake-worn-linings');
+            case 'EE_BPLM_DRV_ENABLE': // String value (e.g., "TRUE")
+            case 'EE BPLM DRV ENABLE':
+                return this.mapSensorConfigPayload(diag, diagEl, undefined, undefined, undefined, undefined, 'mdi:car-brake-worn-linings');
             default:
                 return this.mapSensorConfigPayload(diag, diagEl, 'measurement');
         }
