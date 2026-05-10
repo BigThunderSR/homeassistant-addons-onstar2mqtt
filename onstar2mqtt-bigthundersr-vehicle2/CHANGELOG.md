@@ -1,5 +1,16 @@
 # Changelog
 
+## 2.9.0
+
+**New Features:**
+
+- **Brake Pad Life Sensors** - Add brake pad life sensors for front and rear brake pad life percentage, status indication request, and BPLM driver enable
+
+**Other Updates:**
+
+- Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v2.9.0](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v2.9.0)
+- Update to OnStarJS2 2.16.4
+
 ## 2.8.4
 
 **Bug Fixes:**
