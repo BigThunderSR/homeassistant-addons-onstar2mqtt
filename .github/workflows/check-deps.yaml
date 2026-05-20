@@ -1,0 +1,35 @@
+name: Check Dependencies
+
+on:
+  pull_request:
+    branches:
+      - main
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+jobs:
+  check-deps:
+    name: Verify deep imports (${{ matrix.addon }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        addon:
+          - onstar2mqtt-bigthundersr-vehicle1
+    steps:
+      - name: Check out the repo
+        uses: actions/checkout@v6
+
+      - name: Use Node.js 22.x
+        uses: actions/setup-node@v6
+        with:
+          node-version: 22.x
+
+      - name: Install dependencies
+        working-directory: ${{ matrix.addon }}
+        run: npm ci
+
+      - name: Check deep imports
+        working-directory: ${{ matrix.addon }}
+        run: npm run check-deps

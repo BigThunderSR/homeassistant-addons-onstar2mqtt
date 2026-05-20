@@ -4,6 +4,7 @@
   "description": "OnStarJS wrapper for MQTT",
   "main": "src/index.js",
   "scripts": {
+    "check-deps": "node scripts/check-deep-imports.js",
     "coverage": "c8 npm test",
     "lint": "npx eslint src test",
     "start": "node src/index.js",
