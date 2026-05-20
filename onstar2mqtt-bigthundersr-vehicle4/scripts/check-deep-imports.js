@@ -43,9 +43,8 @@ function extractDeepRequires(filePath) {
         const spec = m[1];
         // Skip relative, built-in, or bare (no sub-path) imports
         if (spec.startsWith(".") || spec.startsWith("node:")) continue;
-        // Determine package name vs sub-path
-        const parts = spec.startsWith("@") ? spec.split("/") : spec.split("/");
-        const pkgName = spec.startsWith("@") ? parts.slice(0, 2).join("/") : parts[0];
+        // Determine if there's a sub-path beyond the package name
+        const parts = spec.split("/");
         const subPath = spec.startsWith("@") ? parts.slice(2).join("/") : parts.slice(1).join("/");
         if (subPath) results.add(spec);
     }

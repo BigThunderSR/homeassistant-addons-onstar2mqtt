@@ -18,6 +18,8 @@ ln -f ../submodules/bigthundersr/onstar2mqtt/src/vehicle.js ./src/vehicle.js
 
 ln -f ../submodules/bigthundersr/onstar2mqtt/src/deps/index.cjs ./src/deps/index.cjs
 
+ln -f ../submodules/bigthundersr/onstar2mqtt/scripts/check-deep-imports.js ./scripts/check-deep-imports.js
+
 ln -f ../submodules/bigthundersr/onstar2mqtt/HA-MQTT.md ./DOCS.md
 
 echo "Vehicle 2"
@@ -37,6 +39,8 @@ ln -f ../submodules/bigthundersr/onstar2mqtt/src/mqtt.js ./src/mqtt.js
 ln -f ../submodules/bigthundersr/onstar2mqtt/src/vehicle.js ./src/vehicle.js
 
 ln -f ../submodules/bigthundersr/onstar2mqtt/src/deps/index.cjs ./src/deps/index.cjs
+
+ln -f ../submodules/bigthundersr/onstar2mqtt/scripts/check-deep-imports.js ./scripts/check-deep-imports.js
 
 ln -f ../submodules/bigthundersr/onstar2mqtt/HA-MQTT.md ./DOCS.md
 
@@ -58,6 +62,8 @@ ln -f ../submodules/bigthundersr/onstar2mqtt/src/vehicle.js ./src/vehicle.js
 
 ln -f ../submodules/bigthundersr/onstar2mqtt/src/deps/index.cjs ./src/deps/index.cjs
 
+ln -f ../submodules/bigthundersr/onstar2mqtt/scripts/check-deep-imports.js ./scripts/check-deep-imports.js
+
 ln -f ../submodules/bigthundersr/onstar2mqtt/HA-MQTT.md ./DOCS.md
 
 echo "Vehicle 4"
@@ -77,6 +83,8 @@ ln -f ../submodules/bigthundersr/onstar2mqtt/src/mqtt.js ./src/mqtt.js
 ln -f ../submodules/bigthundersr/onstar2mqtt/src/vehicle.js ./src/vehicle.js
 
 ln -f ../submodules/bigthundersr/onstar2mqtt/src/deps/index.cjs ./src/deps/index.cjs
+
+ln -f ../submodules/bigthundersr/onstar2mqtt/scripts/check-deep-imports.js ./scripts/check-deep-imports.js
 
 ln -f ../submodules/bigthundersr/onstar2mqtt/HA-MQTT.md ./DOCS.md
 
