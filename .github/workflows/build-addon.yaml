@@ -112,7 +112,7 @@ jobs:
           persist-credentials: false
 
       - name: Build ${{ inputs.addon }} add-on
-        uses: home-assistant/builder/actions/build-image@2026.03.2
+        uses: home-assistant/builder/actions/build-image@2026.06.0
         with:
           arch: ${{ matrix.arch }}
           build-args: |
