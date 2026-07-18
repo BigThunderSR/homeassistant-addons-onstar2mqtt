@@ -1184,7 +1184,7 @@ class MQTT {
                     unique_id: `${this.vehicle.vin}_ev_trip_odometer`,
                     state_topic: `${this.prefix}/sensor/${this.instance}/ev_trip_odometer/state`,
                     device_class: "distance",
-                    state_class: "total_increasing",
+                    state_class: "measurement",
                     unit_of_measurement: "km",
                     icon: "mdi:map-marker-distance",
                     device: this.getDevicePayload(),
@@ -1349,7 +1349,7 @@ class MQTT {
                     unique_id: `${this.vehicle.vin}_ev_charging_lifetime_energy`,
                     state_topic: `${this.prefix}/sensor/${this.instance}/ev_charging_lifetime_energy/state`,
                     device_class: "energy",
-                    state_class: "total_increasing",
+                    state_class: "total",
                     unit_of_measurement: "kWh",
                     icon: "mdi:lightning-bolt",
                     device: this.getDevicePayload(),
@@ -1422,7 +1422,7 @@ class MQTT {
                     unique_id: `${this.vehicle.vin}_ev_charging_odometer`,
                     state_topic: `${this.prefix}/sensor/${this.instance}/ev_charging_odometer/state`,
                     device_class: "distance",
-                    state_class: "total_increasing",
+                    state_class: "total",
                     unit_of_measurement: "km",
                     icon: "mdi:counter",
                     device: this.getDevicePayload(),
@@ -1797,7 +1797,7 @@ class MQTT {
             // API v1 uses spaces, API v3 uses underscores - support both
             case 'LIFETIME ENERGY USED':
             case 'LIFETIME_ENERGY_USED':
-                return this.mapSensorConfigPayload(diag, diagEl, 'total_increasing', 'energy', undefined, undefined, 'mdi:lightning-bolt');
+                return this.mapSensorConfigPayload(diag, diagEl, 'total', 'energy', undefined, undefined, 'mdi:lightning-bolt');
             case 'INTERM VOLT BATT VOLT':
                 return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'voltage', undefined, undefined, 'mdi:car-battery');
             case 'EV PLUG VOLTAGE':
@@ -1934,14 +1934,14 @@ class MQTT {
                 return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'distance', undefined, undefined, 'mdi:map-marker-path');
             case 'ODOMETER':
             case 'ODOMETER MI':
-                return this.mapSensorConfigPayload(diag, diagEl, 'total_increasing', 'distance', undefined, undefined, 'mdi:counter');
+                return this.mapSensorConfigPayload(diag, diagEl, 'total', 'distance', undefined, undefined, 'mdi:counter');
             case 'LIFETIME FUEL USED':
             case 'LIFETIME FUEL USED GAL':
             case 'LIFETIME FUEL USED L':
             case 'LIFETIME_FUEL_USED':
             case 'LIFETIME_FUEL_USED_GAL':
             case 'LIFETIME_FUEL_USED_L':
-                return this.mapSensorConfigPayload(diag, diagEl, 'total_increasing', 'volume', undefined, undefined, 'mdi:gas-station');
+                return this.mapSensorConfigPayload(diag, diagEl, 'total', 'volume', undefined, undefined, 'mdi:gas-station');
             case 'FUEL AMOUNT':
             case 'FUEL AMOUNT GAL':
                 return this.mapSensorConfigPayload(diag, diagEl, 'measurement', 'volume_storage', undefined, undefined, 'mdi:gas-station');
@@ -2021,7 +2021,7 @@ class MQTT {
             case 'ODO_READ':
             case 'ODO_READ MI':
             case 'ODO_READ_MI':
-                return this.mapSensorConfigPayload(diag, diagEl, 'total_increasing', 'distance', undefined, undefined, 'mdi:counter');
+                return this.mapSensorConfigPayload(diag, diagEl, 'total', 'distance', undefined, undefined, 'mdi:counter');
             case 'TRIP A ODO':
             case 'TRIP A ODO MI':
             case 'TRIP_A_ODO':
