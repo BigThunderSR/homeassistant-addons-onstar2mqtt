@@ -1,5 +1,21 @@
 # Changelog
 
+## 2.10.0
+
+**Bug Fixes:**
+
+- **State Class Corrections** - Correct `state_class` for lifetime accumulator sensors (`total_increasing` → `total`) and EV trip odometer (`total_increasing` → `measurement`)
+
+**Other Updates:**
+
+- Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v2.10.0](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v2.10.0)
+- Update to OnStarJS2 2.16.5
+- Sync patchright to 1.60.2
+
+**Add-on Updates:**
+
+- Update Node.js to 24.x in Docker image
+
 ## 2.9.0
 
 **New Features:**
