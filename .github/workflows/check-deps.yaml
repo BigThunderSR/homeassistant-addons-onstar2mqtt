@@ -22,7 +22,7 @@ jobs:
           - onstar2mqtt-bigthundersr-vehicle1
     steps:
       - name: Check out the repo
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
 
       - name: Use Node.js 22.x
         uses: actions/setup-node@v6
