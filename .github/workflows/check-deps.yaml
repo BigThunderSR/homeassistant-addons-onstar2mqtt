@@ -24,10 +24,10 @@ jobs:
       - name: Check out the repo
         uses: actions/checkout@v7
 
-      - name: Use Node.js 22.x
+      - name: Use Node.js 24.x
         uses: actions/setup-node@v6
         with:
-          node-version: 22.x
+          node-version: 24.x
 
       - name: Install dependencies
         working-directory: ${{ matrix.addon }}
