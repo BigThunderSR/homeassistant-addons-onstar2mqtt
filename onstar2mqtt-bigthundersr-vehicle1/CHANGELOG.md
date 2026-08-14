@@ -1,5 +1,17 @@
 # Changelog
 
+## 2.10.1
+
+**Bug Fixes:**
+
+- **OnStarJS2 2.16.6** - Stop retrying auth on Access Denied and other permanent failures
+- **OnStarJS2 2.16.6** - Strip UTF-8 BOM before parsing cached token files
+
+**Other Updates:**
+
+- Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v2.10.1](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v2.10.1)
+- Update to OnStarJS2 2.16.6
+
 ## 2.10.0
 
 **Bug Fixes:**
