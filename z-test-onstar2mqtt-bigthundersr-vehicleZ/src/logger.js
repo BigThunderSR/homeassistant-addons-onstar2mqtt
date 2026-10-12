@@ -1,4 +1,5 @@
 const winston = require('winston');
+const { redactFormat } = require('./redact');
 
 const logger = winston.createLogger({
     level: process.env?.LOG_LEVEL ?? 'info',
@@ -6,6 +7,7 @@ const logger = winston.createLogger({
         winston.format.timestamp({
             format: 'YYYY-MM-DD HH:mm:ss'
         }),
+        redactFormat(),
         winston.format.colorize({ all: true }),
         winston.format.simple()
     ),

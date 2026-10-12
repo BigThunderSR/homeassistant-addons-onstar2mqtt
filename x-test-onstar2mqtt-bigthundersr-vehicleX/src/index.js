@@ -8,7 +8,9 @@ const MQTT = require('./mqtt');
 const Commands = require('./commands');
 const logger = require('./logger');
 const { normalizeError } = require('./error-utils');
+const { buildSecrets, setSecrets, isEnabled: isRedactionEnabled, redactAlways } = require('./redact');
 const fs = require('fs');
+const path = require('path');
 //const CircularJSON = require('circular-json');
 
 let buttonConfigsPublished = '';
@@ -75,6 +77,39 @@ const logResponseData = (header, data, opts = {}) => {
         });
     }
     logger.info(border);
+};
+
+// Dump the raw diagnostics response from the "Dump Diagnostics" button.
+// Always logs; also writes a file when ONSTAR_DIAGNOSTIC_DUMP is 'file' or 'both'.
+// Redacted when forceRedact (the button default) or LOG_REDACT is set.
+const dumpDiagnostics = (rawData, { forceRedact = false } = {}) => {
+    if (rawData === null || rawData === undefined) {
+        logger.warn('Diagnostics dump requested but no diagnostics data was available');
+        return;
+    }
+
+    const mode = String(process.env.ONSTAR_DIAGNOSTIC_DUMP || 'log').toLowerCase();
+    const toFile = ['file', 'both'].includes(mode);
+
+    const redactActive = forceRedact || isRedactionEnabled();
+    const payload = redactActive ? redactAlways(rawData) : rawData;
+    const json = JSON.stringify(payload, null, 2);
+    const suffix = redactActive ? ' (redacted)' : '';
+
+    logger.info(`=== RAW DIAGNOSTICS RESPONSE${suffix} ===\n${json}\n=== END RAW DIAGNOSTICS RESPONSE ===`);
+    if (toFile) {
+        const dir = process.env.ONSTAR_DIAGNOSTIC_DUMP_DIR
+            || process.env.UNIT_CACHE_DIR
+            || process.env.TOKEN_LOCATION
+            || process.cwd();
+        const file = path.join(dir, `onstar-diagnostics-${new Date().toISOString().replace(/[:.]/g, '-')}.json`);
+        try {
+            fs.writeFileSync(file, json, 'utf8');
+            logger.info(`Raw diagnostics response written to ${file}${suffix}`);
+        } catch (error) {
+            logger.warn(`Failed to write diagnostics dump to ${file}: ${error.message}`);
+        }
+    }
 };
 
 // In-memory tracking of diagnostic state for EV metrics updates
@@ -159,6 +194,16 @@ if (process.env.LOG_LEVEL === 'debug') {
     logger.debug('MQTT Config:', { mqttConfig });
 } else {
     logger.info('MQTT Config:', { mqttConfig: { ...mqttConfig, password: '********', ca: undefined, cert: undefined, key: undefined } });
+}
+
+// Register secret values so LOG_REDACT can scrub them from all log output.
+setSecrets(buildSecrets(onstarConfig, mqttConfig));
+if (isRedactionEnabled()) {
+    logger.info('Log redaction: ENABLED — PII is scrubbed from all log output (LOG_REDACT=true)');
+}
+const diagnosticDumpMode = String(process.env.ONSTAR_DIAGNOSTIC_DUMP || 'log').toLowerCase();
+if (['file', 'both'].includes(diagnosticDumpMode)) {
+    logger.info(`Dump Diagnostics button: dumps will also be written to file (ONSTAR_DIAGNOSTIC_DUMP=${diagnosticDumpMode})`);
 }
 
 const init = () => new Commands(OnStar.create(onstarConfig));
@@ -310,7 +355,7 @@ const configureMQTT = async (commands, client, mqttHA) => {
 
         const commandFn = cmd.bind(commands);
         logger.debug(`List of const: Command: ${command}, cmd: ${cmd}, commandFn: ${commandFn.toString()}, options: ${options}`);
-        if (command === 'diagnostics') { // || command === 'enginerpm') {
+        if (command === 'diagnostics' || command === 'dumpDiagnostics') { // || command === 'enginerpm') {
             logger.warn('Command sent:', { command });
             logger.warn(`Command Status Topic: ${commandStatusTopic}`);
             client.publish(commandStatusSensorConfig.topic, JSON.stringify(commandStatusSensorConfig.payload), { retain: true });
@@ -342,6 +387,12 @@ const configureMQTT = async (commands, client, mqttHA) => {
                 logger.info('Diagnostic request status', { status: statsRes?.status });
                 logger.info('Diagnostic response keys:', Object.keys(statsRes || {}));
                 logger.info('Diagnostic response.data keys:', Object.keys(statsRes?.response?.data || {}));
+                // Self-contained dump: only the Dump Diagnostics button dumps; the
+                // existing diagnostics command is left untouched.
+                if (command === 'dumpDiagnostics') {
+                    const buttonRedact = String(process.env.ONSTAR_DUMP_BUTTON_REDACT ?? 'true').toLowerCase() !== 'false';
+                    dumpDiagnostics(statsRes?.response?.data, { forceRedact: buttonRedact });
+                }
                 
                 // API CHANGE: New API v3 format changes diagnostic response structure completely
                 // Old path: response.data.commandResponse.body.diagnosticResponse (array)
