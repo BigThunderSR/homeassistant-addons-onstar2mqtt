@@ -125,6 +125,8 @@ jobs:
             latest
           push: ${{ inputs.publish }}
           version: ${{ needs.prepare.outputs.version }}
+          # Skip push/sign if this version tag already exists; bump version to publish
+          skip-existing: ${{ needs.prepare.outputs.version }}
           #--no-cache: use cache-gha: "false" to disable caching
         #env:
         #  CAS_API_KEY: ${{ secrets.CAS_API_KEY }}
