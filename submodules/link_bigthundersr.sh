@@ -14,6 +14,7 @@ ln -f ../submodules/bigthundersr/onstar2mqtt/src/index.js ./src/index.js
 ln -f ../submodules/bigthundersr/onstar2mqtt/src/logger.js ./src/logger.js
 ln -f ../submodules/bigthundersr/onstar2mqtt/src/measurement.js ./src/measurement.js
 ln -f ../submodules/bigthundersr/onstar2mqtt/src/mqtt.js ./src/mqtt.js
+ln -f ../submodules/bigthundersr/onstar2mqtt/src/redact.js ./src/redact.js
 ln -f ../submodules/bigthundersr/onstar2mqtt/src/vehicle.js ./src/vehicle.js
 
 ln -f ../submodules/bigthundersr/onstar2mqtt/src/deps/index.cjs ./src/deps/index.cjs
@@ -36,6 +37,7 @@ ln -f ../submodules/bigthundersr/onstar2mqtt/src/index.js ./src/index.js
 ln -f ../submodules/bigthundersr/onstar2mqtt/src/logger.js ./src/logger.js
 ln -f ../submodules/bigthundersr/onstar2mqtt/src/measurement.js ./src/measurement.js
 ln -f ../submodules/bigthundersr/onstar2mqtt/src/mqtt.js ./src/mqtt.js
+ln -f ../submodules/bigthundersr/onstar2mqtt/src/redact.js ./src/redact.js
 ln -f ../submodules/bigthundersr/onstar2mqtt/src/vehicle.js ./src/vehicle.js
 
 ln -f ../submodules/bigthundersr/onstar2mqtt/src/deps/index.cjs ./src/deps/index.cjs
@@ -58,6 +60,7 @@ ln -f ../submodules/bigthundersr/onstar2mqtt/src/index.js ./src/index.js
 ln -f ../submodules/bigthundersr/onstar2mqtt/src/logger.js ./src/logger.js
 ln -f ../submodules/bigthundersr/onstar2mqtt/src/measurement.js ./src/measurement.js
 ln -f ../submodules/bigthundersr/onstar2mqtt/src/mqtt.js ./src/mqtt.js
+ln -f ../submodules/bigthundersr/onstar2mqtt/src/redact.js ./src/redact.js
 ln -f ../submodules/bigthundersr/onstar2mqtt/src/vehicle.js ./src/vehicle.js
 
 ln -f ../submodules/bigthundersr/onstar2mqtt/src/deps/index.cjs ./src/deps/index.cjs
@@ -80,6 +83,7 @@ ln -f ../submodules/bigthundersr/onstar2mqtt/src/index.js ./src/index.js
 ln -f ../submodules/bigthundersr/onstar2mqtt/src/logger.js ./src/logger.js
 ln -f ../submodules/bigthundersr/onstar2mqtt/src/measurement.js ./src/measurement.js
 ln -f ../submodules/bigthundersr/onstar2mqtt/src/mqtt.js ./src/mqtt.js
+ln -f ../submodules/bigthundersr/onstar2mqtt/src/redact.js ./src/redact.js
 ln -f ../submodules/bigthundersr/onstar2mqtt/src/vehicle.js ./src/vehicle.js
 
 ln -f ../submodules/bigthundersr/onstar2mqtt/src/deps/index.cjs ./src/deps/index.cjs
