@@ -1,5 +1,27 @@
 # Changelog
 
+## 2.11.0
+
+**New Features:**
+
+- **Dump Diagnostics Button & Log Redaction** - Add an opt-in `LOG_REDACT` option that scrubs PII (VIN, device ID, credentials, account/vehicle ID, email, phone, GPS/geohash) from all log output, plus a self-contained Dump Diagnostics button for safely capturing a raw diagnostics snapshot
+
+**Bug Fixes:**
+
+- **Advanced Diagnostics** - Guard `json_attributes_template` against missing `*_attr` values
+- **Log Redaction** - Scrub lowercase VIN, geohash, and squishVin
+- **Diagnostic Sensor Attributes** - Always publish `status`/`status_color` attributes (coerced to `null` when GM's API omits them), preventing repeated Home Assistant template warnings
+- **EV Binary Sensors** - Use string literals for `payload_on`/`payload_off`
+
+**Other Updates:**
+
+- Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v2.11.0](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v2.11.0)
+- Update to OnStarJS2 2.16.7
+
+**Add-on Updates:**
+
+- Add redaction & diagnostics-dump options: `LOG_REDACT`, `ONSTAR_DUMP_BUTTON_REDACT`, `ONSTAR_DIAGNOSTIC_DUMP`, `ONSTAR_DIAGNOSTIC_DUMP_DIR`
+
 ## 2.10.1
 
 **Bug Fixes:**
