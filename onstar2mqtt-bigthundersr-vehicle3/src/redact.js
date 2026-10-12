@@ -12,6 +12,7 @@ const SENSITIVE_KEYS = new Set([
     'firstname', 'lastname', 'middlename',
     'phonenumber', 'phone', 'mobilephone',
     'latitude', 'longitude', 'lat', 'lon', 'lng',
+    'geohash', 'squishvin',
 ]);
 
 const REDACTED = '<REDACTED>';
@@ -21,7 +22,8 @@ const REDACTED = '<REDACTED>';
 const MIN_SECRET_LENGTH = 6;
 
 const EMAIL_RE = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi;
-const VIN_RE = /\b[A-HJ-NPR-Z0-9]{17}\b/g;
+// Case-insensitive: the VIN appears lowercased in some values (e.g. HA unique_id).
+const VIN_RE = /\b[A-HJ-NPR-Z0-9]{17}\b/gi;
 
 const escapeRegExp = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
@@ -58,7 +60,7 @@ function buildSecrets(onstarConfig = {}, mqttConfig = {}) {
 function redactString(str, secrets = []) {
     let out = str;
     for (const { value, placeholder } of secrets) {
-        out = out.replace(new RegExp(escapeRegExp(value), 'g'), placeholder);
+        out = out.replace(new RegExp(escapeRegExp(value), 'gi'), placeholder);
     }
     out = out.replace(EMAIL_RE, '<EMAIL>');
     out = out.replace(VIN_RE, '<VIN>');
