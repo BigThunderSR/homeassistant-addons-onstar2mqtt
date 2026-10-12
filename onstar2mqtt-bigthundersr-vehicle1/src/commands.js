@@ -167,6 +167,12 @@ class Commands {
         return this.onstar.diagnostics({ diagnosticItem });
     }
 
+    // Fresh diagnostics request used by the "Dump Diagnostics" button; the raw
+    // response is dumped for troubleshooting / fixture capture by index.js.
+    async dumpDiagnostics({ diagnosticItem } = {}) {
+        return this.diagnostics({ diagnosticItem });
+    }
+
     // async enginerpm({ diagnosticItem = [
     //     Commands.CONSTANTS.DIAGNOSTICS.ENGINE_RPM,
     // ] }) {
