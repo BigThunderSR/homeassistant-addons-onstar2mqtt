@@ -9,6 +9,28 @@ configuration:
     description: >-
       The level of log output by the add-on and the underlying OnStar2MQTT program. 
       Options are: info (default - passwords masked) and debug (passwords unmasked in logs).
+  LOG_REDACT:
+    name: Log Redact
+    description: >-
+      Redact PII (VIN, device ID, credentials, account number, vehicle ID, email, phone number, and GPS coordinates) 
+      from all ongoing log output so logs can be shared for support without manual editing. 
+      Does not affect the Dump Diagnostics button. Default is "false".
+  ONSTAR_DUMP_BUTTON_REDACT:
+    name: OnStar Dump Button Redact
+    description: >-
+      Redact the output of the Dump Diagnostics button so it is safe to share. Set to "false" for a raw (unredacted) dump. 
+      Note: if Log Redact is enabled, the dump is redacted regardless of this setting. Default is "true".
+  ONSTAR_DIAGNOSTIC_DUMP:
+    name: OnStar Diagnostic Dump
+    description: >-
+      Where the Dump Diagnostics button writes its output. It always logs to the console. 
+      Options are: log (console only) and file/both (console plus a copy saved to disk). Default is "log".
+  ONSTAR_DIAGNOSTIC_DUMP_DIR:
+    name: OnStar Diagnostic Dump Dir
+    description: >-
+      Directory for the on-disk copy when OnStar Diagnostic Dump is set to "file" or "both". 
+      This can be located in /ssl or in /share directory of Home Assistant (e.g. "/ssl" or "/share"). 
+      Falls back to UNIT_CACHE_DIR, then TOKEN_LOCATION, then the current directory. Optional.
   ONSTAR_DEVICEID:
     name: OnStar Device ID
     description: >-
@@ -126,25 +148,3 @@ configuration:
     description: >-
       Key file for MQTT client. This can be located in /ssl or in /share directory of Home Assistant.
       Please provide the full path to the file (e.g. "/ssl/client-key.pem" or "/share/client-key.pem").
-  LOG_REDACT:
-    name: Log Redact
-    description: >-
-      Redact PII (VIN, device ID, credentials, account number, vehicle ID, email, phone number, and GPS coordinates) 
-      from all ongoing log output so logs can be shared for support without manual editing. 
-      Does not affect the Dump Diagnostics button. Default is "false".
-  ONSTAR_DUMP_BUTTON_REDACT:
-    name: OnStar Dump Button Redact
-    description: >-
-      Redact the output of the Dump Diagnostics button so it is safe to share. Set to "false" for a raw (unredacted) dump. 
-      Note: if Log Redact is enabled, the dump is redacted regardless of this setting. Default is "true".
-  ONSTAR_DIAGNOSTIC_DUMP:
-    name: OnStar Diagnostic Dump
-    description: >-
-      Where the Dump Diagnostics button writes its output. It always logs to the console. 
-      Options are: log (console only) and file/both (console plus a copy saved to disk). Default is "log".
-  ONSTAR_DIAGNOSTIC_DUMP_DIR:
-    name: OnStar Diagnostic Dump Dir
-    description: >-
-      Directory for the on-disk copy when OnStar Diagnostic Dump is set to "file" or "both". 
-      This can be located in /ssl or in /share directory of Home Assistant (e.g. "/ssl" or "/share"). 
-      Falls back to UNIT_CACHE_DIR, then TOKEN_LOCATION, then the current directory. Optional.

@@ -944,7 +944,10 @@ class MQTT {
             state_topic: `homeassistant/${this.vehicle.vin}/adv_diag/state`,
             value_template: `{{ value_json.${baseName} }}`,
             json_attributes_topic: `homeassistant/${this.vehicle.vin}/adv_diag/state`,
-            json_attributes_template: `{{ value_json.${baseName}_attr | tojson }}`,
+            // GM returns some advanced-diagnostic systems only intermittently; when a system is
+            // absent its *_attr key is missing from adv_diag/state, which renders as Undefined and
+            // fails `tojson`. Default to {} so an orphaned/retained entity degrades gracefully.
+            json_attributes_template: `{{ (value_json.${baseName}_attr if value_json.${baseName}_attr is defined else {}) | tojson }}`,
             icon: icon,
             availability_topic: this.getAvailabilityTopic(),
             payload_available: 'true',
