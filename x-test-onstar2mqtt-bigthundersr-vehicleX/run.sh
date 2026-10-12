@@ -29,6 +29,10 @@ export MQTT_REJECT_UNAUTHORIZED=$(bashio::config 'MQTT_REJECT_UNAUTHORIZED')
 export MQTT_CA_FILE=$(bashio::config 'MQTT_CA_FILE')
 export MQTT_CERT_FILE=$(bashio::config 'MQTT_CERT_FILE')
 export MQTT_KEY_FILE=$(bashio::config 'MQTT_KEY_FILE')
+export LOG_REDACT=$(bashio::config 'LOG_REDACT')
+export ONSTAR_DUMP_BUTTON_REDACT=$(bashio::config 'ONSTAR_DUMP_BUTTON_REDACT')
+export ONSTAR_DIAGNOSTIC_DUMP=$(bashio::config 'ONSTAR_DIAGNOSTIC_DUMP')
+export ONSTAR_DIAGNOSTIC_DUMP_DIR=$(bashio::config 'ONSTAR_DIAGNOSTIC_DUMP_DIR')
 
 bashio::log.info "Starting OnStar2MQTT for $VEHICLE_NAME..."
 npm run start
