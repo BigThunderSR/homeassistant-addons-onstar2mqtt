@@ -33,9 +33,10 @@ configuration:
     description: >-
       Strongly Recommended Setting: Location to store the long-lived OnStar tokens to persist container rebuilds. Recommendation is to use /ssl/vehicle2 (NOTE: you will need to create this directory first) if you wish to change the token location. Optional but strongly recommended. Remove default value if you wish to use the default location of in-memory storage (not recommended).
   ONSTAR_URL:
-    name: OnStar URL
+    name: OnStar URL (Deprecated)
     description: >-
-      OnStar URL for your OnStar Account.
+      Deprecated and no longer used — the OnStar URL is hard coded in the program and cannot be changed. 
+      Retained for backward compatibility and may be removed in a future release.
   ONSTAR_REFRESH:
     name: OnStar Refresh Period
     description: >-

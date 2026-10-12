@@ -1,6 +1,6 @@
 {
   "name": "onstar2mqtt",
-  "version": "2.10.1",
+  "version": "2.11.0",
   "description": "OnStarJS wrapper for MQTT",
   "main": "src/index.js",
   "scripts": {
@@ -37,7 +37,7 @@
     "dotenv": "^18.0.7",
     "jsonwebtoken": "^9.0.3",
     "mqtt": "^5.16.0",
-    "onstarjs2": "^2.16.6",
+    "onstarjs2": "^2.16.7",
     "uuid": "^14.0.3",
     "winston": "^3.19.0"
   },
@@ -52,7 +52,7 @@
     "mocha": "^12.0.3"
   },
   "allowScripts": {
-    "onstarjs2@2.16.6": true,
-    "sleep@6.1.0": true
+    "onstarjs2": true,
+    "sleep": true
   }
 }
