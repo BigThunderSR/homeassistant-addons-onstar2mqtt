@@ -22,8 +22,9 @@ const REDACTED = '<REDACTED>';
 const MIN_SECRET_LENGTH = 6;
 
 const EMAIL_RE = /[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}/gi;
-// Case-insensitive: the VIN appears lowercased in some values (e.g. HA unique_id).
-const VIN_RE = /\b[A-HJ-NPR-Z0-9]{17}\b/gi;
+// Case-insensitive, with VIN-class lookarounds instead of \b so the VIN is caught
+// even when adjacent to an underscore (e.g. the .unit_cache_<VIN>.json filename).
+const VIN_RE = /(?<![A-HJ-NPR-Z0-9])[A-HJ-NPR-Z0-9]{17}(?![A-HJ-NPR-Z0-9])/gi;
 
 const escapeRegExp = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
