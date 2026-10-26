@@ -34,9 +34,9 @@
     "axios": "^1.20.0",
     "chromium-bidi": "^15.0.0",
     "convert-units": "^2.3.4",
-    "dotenv": "^18.0.7",
+    "dotenv": "^18.0.9",
     "jsonwebtoken": "^9.0.3",
-    "mqtt": "^5.16.0",
+    "mqtt": "^5.16.1",
     "onstarjs2": "^2.16.7",
     "uuid": "^14.0.3",
     "winston": "^3.19.0"
@@ -47,7 +47,7 @@
   "devDependencies": {
     "@eslint/js": "^10.0.1",
     "c8": "^12.0.0",
-    "eslint": "^10.12.0",
+    "eslint": "^10.13.0",
     "globals": "^17.13.0",
     "mocha": "^12.0.3"
   },
