@@ -37,7 +37,7 @@
     "dotenv": "^18.0.10",
     "jsonwebtoken": "^9.0.3",
     "mqtt": "^5.16.1",
-    "onstarjs2": "^2.16.7",
+    "onstarjs2": "^2.16.8",
     "uuid": "^14.0.3",
     "winston": "^3.19.0"
   },
