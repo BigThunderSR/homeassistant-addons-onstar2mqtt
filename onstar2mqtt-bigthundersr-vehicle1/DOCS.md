@@ -646,7 +646,7 @@ Buttons are added **disabled by default** because it's easy to accidentally pres
 > **Sharing logs safely — which do I use?**
 >
 > - **One diagnostics snapshot / contributing a fixture** → just press **Dump Diagnostics**. Its dump is redacted by default (addon option `ONSTAR_DUMP_BUTTON_REDACT`, default `true`), so the dumped file is safe to share on its own.
-> - **A full log** (startup, polling, an error trace) → set the addon option **`LOG_REDACT=true`** (default `false`). It scrubs PII — VIN, device ID, OnStar/MQTT credentials, account number, vehicle ID, email, phone, and GPS/geohash — from **every** log line, at any `LOG_LEVEL`. VIN-bearing MQTT topics stay readable (shown as `<VIN>`).
+> - **A full log** (startup, polling, an error trace) → set the addon option **`LOG_REDACT=true`** (default `false`). It scrubs PII — VIN, device ID, OnStar/MQTT credentials, account number, vehicle ID, email, phone, and GPS/geohash (including EV charging location) — from **every** log line, at any `LOG_LEVEL`. VIN-bearing MQTT topics stay readable (shown as `<VIN>`).
 > - **Gotcha:** the Dump Diagnostics button only redacts the dump payload, **not** the surrounding log lines. If you copy the whole log around a button press (not just the saved dump), enable `LOG_REDACT=true` first or the VIN and other PII in those other lines are not masked.
 
 **Steps to Enable Buttons:**
