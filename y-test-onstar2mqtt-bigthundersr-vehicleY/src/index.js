@@ -253,12 +253,7 @@ const connectMQTT = async availabilityTopic => {
     };
     logger.info('Connecting to MQTT:', { url, config: { username: config.username, rejectUnauthorized: config.rejectUnauthorized, will: config.will } });
 
-    // Use Promise wrapper for regular mqtt.connect() with timeout
     const client = await new Promise((resolve, reject) => {
-        const timeout = global.setTimeout(() => {
-            reject(new Error('MQTT connection timeout'));
-        }, 30000); // 30 second timeout
-        
         const mqttClient = mqtt.connect(url, config);
         
         // Set up persistent event handler for availability restoration on every (re)connect
@@ -269,18 +264,23 @@ const connectMQTT = async availabilityTopic => {
             logger.debug('Published availability=true');
         });
         
-        // Use .once() for initial connection to resolve Promise only once
+        // Broker rejections (bad credentials etc.) carry a numeric CONNACK reason code and won't succeed on retry;
+        // network errors have string codes and mqtt.js keeps retrying them, so wait for the broker.
+        const onStartupError = (error) => {
+            if (typeof error.code === 'number') {
+                mqttClient.removeListener('error', onStartupError);
+                logger.error('MQTT initial connection error:', error);
+                reject(error);
+                return;
+            }
+            logger.warn(`Waiting for MQTT broker at ${url}: ${error.message}`);
+        };
+        mqttClient.on('error', onStartupError);
+
         mqttClient.once('connect', () => {
-            global.clearTimeout(timeout);
+            mqttClient.removeListener('error', onStartupError);
             logger.info('Connected to MQTT!');
             resolve(mqttClient);
-        });
-        
-        // Use .once() for initial connection error to reject Promise only once
-        mqttClient.once('error', (error) => {
-            global.clearTimeout(timeout);
-            logger.error('MQTT initial connection error:', error);
-            reject(error);
         });
     });
     

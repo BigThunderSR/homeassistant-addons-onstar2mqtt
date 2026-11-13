@@ -12,6 +12,8 @@ const SENSITIVE_KEYS = new Set([
     'firstname', 'lastname', 'middlename',
     'phonenumber', 'phone', 'mobilephone',
     'latitude', 'longitude', 'lat', 'lon', 'lng',
+    // getEVChargingMetrics: 'loc' is a "lat,lng" string, 'clocLoc' the charge location
+    'loc', 'clocloc',
     'geohash', 'squishvin',
 ]);
 
