@@ -1,5 +1,19 @@
 # Changelog
 
+## 2.11.1
+
+**Bug Fixes:**
+
+- **MQTT Startup** - Wait for the MQTT broker on startup instead of stalling
+- **Log Redaction** - Mask EV charging metrics location fields
+- **OnStarJS2 2.16.8** - Keep saved tokens when GM token lacks vehicle information
+- **OnStarJS2 2.16.8** - Send `pull_to_refresh` and `clientDeviceId` in EV charging metrics refresh
+
+**Other Updates:**
+
+- Pickup latest upstream updates in [BigThunderSR/onstar2mqtt v2.11.1](https://github.com/BigThunderSR/onstar2mqtt/releases/tag/v2.11.1)
+- Update to OnStarJS2 2.16.8
+
 ## 2.11.0
 
 **New Features:**
